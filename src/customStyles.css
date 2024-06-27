@@ -1,0 +1,13 @@
+/* customStyles.css
+.react-calendar__tile:focus {
+  outline: none !important;
+}
+.react-calendar__tile--active {
+  background: none !important;
+  color: inherit !important;
+} */
+.selected-date {
+  width: 30% !important; /* Adjust this value to your desired width */
+  margin: 0 auto; /* Center the date */
+}
+
