@@ -27,6 +27,9 @@ unBlockDates:(dates)=>{
 },
 addNewUser:(data)=>{
     return axios_instance.post(`/api/users/usersProfile/`,data)
+},
+getPilgrimDetails:(date)=>{
+    return axios_instance.get(`/api/users/pilgrims/?booked_datetime=${date}`)
 }
 }
 

@@ -44,7 +44,7 @@ const Calendar2 = () => {
         const updatedBookings = { ...prev };
         Object.keys(updatedBookings).forEach(key => {
           if (Object.prototype.hasOwnProperty.call(transformedObject, key)) {
-            console.log("key",key,transformedObject[key])
+         
             updatedBookings[key] = transformedObject[key];
           }
         });
@@ -65,9 +65,7 @@ const Calendar2 = () => {
      }
   }, [currentPageStart.getMonth(),currentPageStart.getFullYear(),toastMessage.type]); // Empty dependency array to ensure this runs only once when the component mounts
 
-  useEffect(() => {
-    console.log("bookings", bookings);
-  }, [bookings]);
+  
 
   const handleBooking = (day) => {
     // setBookings((prev) => ({

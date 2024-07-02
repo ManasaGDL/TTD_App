@@ -15,11 +15,13 @@ const Calendar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState();
   const [blockedDates, setBlockedDates] = useState([]);
-  const [initialBookings, setInitialBookings] = useState(localStorage.getItem('is_mla') ? constants.Mla : constants.Mp);
+  const [initialBookings, setInitialBookings] = useState(localStorage.getItem('is_mla')==='true' ? constants.Mla : constants.Mp);
   const [toastMessage, setToastMessage] = useState({ type: '', message: '' });
   const mid_bookings = localStorage.getItem('is_mla') ? 3 : 5;
+  const [ bookedPilgrimDetails , setBookedPilgrimDetails] = useState([])
 
   useEffect(() => {
+  
     const fetchBlockedDatesAndAvailability = async () => {
       try {
         await getBlockedDates()
@@ -34,7 +36,7 @@ const Calendar = () => {
   }, [currentPageStart]);
   
 useEffect(()=>{
-  console.log("useffect BD",blockedDates)
+
 if(blockedDates.length>0)
   getMonthSlotAvailability()
 },[blockedDates])
@@ -50,6 +52,17 @@ if(blockedDates.length>0)
     }, {});
     setBookings(days);
   }, [currentPageStart, initialBookings]);
+  const getPilgrimDetails=async(date)=>{
+    try{
+    
+     const res = await apis.getPilgrimDetails(format(date,'yyyy-MM-dd'))
+    setBookedPilgrimDetails(res?.data)
+    }catch(e)
+    {
+    console.log(e)
+    }
+
+  }
  const getBlockedDates=async()=>{
 try{
   const blockedDatesResponse = await apis.getBlockedDates();
@@ -107,6 +120,7 @@ res?.data.forEach(({booked_datetime,vacant_count})=>{
   const handleBooking = day => {
     setIsModalOpen(true);
     setSelectedDate(day);
+    getPilgrimDetails(format(day,'yyyy-MM-dd'))
   };
 
   const getDayClass = day => {
@@ -116,7 +130,15 @@ res?.data.forEach(({booked_datetime,vacant_count})=>{
     if (bookingsLeft > 0) return 'text-orange-500';
     return 'text-red-500';
   };
+const getDayClassforSmallScreens = day =>{
+ 
+  const bookingsLeft = bookings[format(day, 'yyyy-MM-dd')];
+  if (bookingsLeft === initialBookings) return 'bg-lime-500';
+  if (bookingsLeft > mid_bookings) return 'bg-yellow-500';
+  if (bookingsLeft > 0) return 'bg-orange-500';
+  return 'bg-red-500';
 
+}
   const goToPreviousPage = () => {
     setCurrentPageStart(subMonths(currentPageStart, 1));
   };
@@ -141,7 +163,7 @@ res?.data.forEach(({booked_datetime,vacant_count})=>{
   };
 
   return (
-    <div className="w-full mx-auto sm:max-w-4xl pb-7">
+    <div className="w-full mx-auto sm:max-w-4xl mb-4">
       <Toaster richColors position="top-center" />
       <div className="flex justify-between mb-4">
         <button onClick={goToPreviousPage} className="text-3xl text-black px-4 py-2 rounded hover:text-4xl">
@@ -154,7 +176,10 @@ res?.data.forEach(({booked_datetime,vacant_count})=>{
       </div>
       <div className="grid grid-cols-7 gap-4 md:gap-4">
         {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map((day, index) => (
-          <div key={day} className="text-center font-mono md:bg-gray-200 p-2 rounded-lg mb-2 md:mb-0 md:p-2">
+          <div key={day} className={`text-center font-mono md:bg-gray-200 
+          p-2 rounded-lg mb-2 md:mb-0 md:p-2
+       
+          `}>
             <span className="hidden md:inline">{day}</span>
             <span className="md:hidden">{'Sun Mon Tue Wed Thu Fri Sat'.split(' ')[index]}</span>
           </div>
@@ -163,31 +188,34 @@ res?.data.forEach(({booked_datetime,vacant_count})=>{
           <div key={index} className="text-center">
             {day && (
               <div
-                className={`w-16 h-16 text-center rounded-lg text-black border border-gray-300 mb-2 md:grid md:grid-cols-12 items-center hover:bg-slate-200`}
+                className={`w-18 h-14 sm:h-16 sm:w-18 text-center rounded-lg text-black border  
+                 ${window.innerWidth <= 768 ? getDayClassforSmallScreens(day):''}
+                   border-gray-300 mb-2 md:grid md:grid-cols-12 items-center hover:bg-slate-200`}
                 onClick={() => handleBooking(format(day, 'yyyy-MM-dd'))}
                 style={{
                   width: 'auto',
+             
                   margin: 'auto',
                   ...(window.innerWidth <= 768 && {
                     height: '40px',
-                    width: '30px',
+                    width: '50px',
                     margin: 'auto',
                   }),
                 }}
               >
-                <span className="font-bold text-xs md:text-sm block md:col-span-2 pl-5">{format(day, 'd')}</span>
+                <span className="font-bold flex text-xs text-center justify-center md:text-sm block md:col-span-2 pr-1 sm:pl-5">{format(day, 'd')}</span>
                 <div className="text-xs md:text-base block md:col-span-8 flex flex-col items-center justify-center">
                   {bookings[format(day, 'yyyy-MM-dd')] === 0 ? (
                     <div className="grid grid-rows-2 pl-4">
-                      <div><FaTicketAlt className={`text-red-500 text-3xl`} /></div>
-                      <div className='text-red-500 text-base font-mono'>NA</div>
+                     {<div className="hidden sm:block"><FaTicketAlt className={`text-red-500 `} /></div>}
+                      <div className='sm:text-red-500 sm:text-base font-mono pr-5 text-xs text-white'>NA</div>
                     </div>
                   ) : (
                     <>
-                      <span className="md:hidden">{bookings[format(day, 'yyyy-MM-dd')]}/6</span>
+                      {/* <span className="md:hidden">{bookings[format(day, 'yyyy-MM-dd')]}/6</span> */}
                       <div className="grid grid-rows-2 text-center justify-center pl-6">
-                        <div><FaTicketAlt className={`${getDayClass(day)} text-3xl`} /></div>
-                        <div>{bookings[format(day, 'yyyy-MM-dd')]}/{initialBookings}</div>
+                       { <div className="hidden sm:block"><FaTicketAlt className={`${getDayClass(day)} text-base  `} /></div>}
+                        <div className="pr-5 text-white sm:text-black">Avl:{bookings[format(day, 'yyyy-MM-dd')]}</div>
                       </div>
                     </>
                   )}
@@ -206,6 +234,8 @@ res?.data.forEach(({booked_datetime,vacant_count})=>{
             setIsModalOpen={setIsModalOpen}
             setToastMessage={setToastMessage}
             isModalOpen={isModalOpen}
+            bookedPilgrimDetails={bookedPilgrimDetails}
+            
           />
         </Modal>
       )}

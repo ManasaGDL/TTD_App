@@ -9,7 +9,7 @@ const Login2 = () => {
     const navigate = useNavigate()
     const handleSubmit =async(e)=>{
         e.preventDefault()
-        console.log(loginDetails)
+      
    try{
     const res = await apis.login(loginDetails)
  

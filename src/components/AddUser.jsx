@@ -22,7 +22,7 @@ const RegistrationForm = () => {
 
   // Handle form submission
   const onSubmit = async(data) => {
-    console.log(data);
+   
     try{
  const response = await apis.addNewUser(data)
  if(response.status === 201)

@@ -48,7 +48,7 @@ let refreshSubscribers = [];
 
 axiosInstance.interceptors.response.use(
   (response) => {
-    console.log('Interceptor Response:', response);
+    
     return response;
   },
   async (error) => {

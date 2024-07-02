@@ -14,10 +14,7 @@ export default function BlockDateSelector() {
   useEffect(()=>{
     getBlockedDates()
   },[])
-  useEffect(() => {
-    console.log(selectedDates);
-    
-  }, [selectedDates]);
+ 
  const getBlockedDates = async()=>{
   try{
    const res = await apis.getBlockedDates()
@@ -115,7 +112,7 @@ if(res.status === 201)
   toast.error("Something went wrong!")
   console.log(e)
 }
-console.log(transformedDates)
+
 }
 const handleUnBlock=async()=>{
   if(selectedDates.length!==0)
@@ -140,7 +137,7 @@ catch(e)
   {
     console.log(e)
   }
-  console.log(transformedDates)
+
   
 } else{
  toast.warning("Please select dates to unblock")
