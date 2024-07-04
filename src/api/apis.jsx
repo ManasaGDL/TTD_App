@@ -30,6 +30,9 @@ addNewUser:(data)=>{
 },
 getPilgrimDetails:(date)=>{
     return axios_instance.get(`/api/users/pilgrims/?booked_datetime=${date}`)
+},
+getAllUsers:()=>{
+    return axios_instance.get(`/api/users/usersProfile/`)
 }
 }
 

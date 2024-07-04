@@ -50,12 +50,23 @@ const Navbar = () => {
               to={link.href}
               key={key}
               className={`font-mono hover:text-xl hidden sm:block ${
-                location.pathname === link.href ? 'text-red-400 text-xl' : 'text-black-400'
+                location.pathname === link.href ? 'text-lime-500 text-xl' : 'text-black-400'
               }`}
             >
               {link.label}
             </Link>
           ))}
+          {localStorage.getItem("super_user") === "true" && (
+            <Link
+              to="/view-users"
+              key="view-users"
+              className={`font-mono hover:text-xl hidden sm:block ${
+                location.pathname === "/view-users" ? 'text-lime-500 text-xl' : 'text-black-400'
+              }`}
+            >
+              ViewUsers
+            </Link>
+          )}
         </div>
         <div
           className={clsx(
@@ -70,6 +81,15 @@ const Navbar = () => {
                 {link.label}
               </Link>
             ))}
+            {localStorage.getItem("super_user") === "true" && (
+              <Link
+                to="/view-users"
+                key="view-users-mobile"
+                className="font-mono text-black-900"
+              >
+                ViewUsers
+              </Link>
+            )}
           </section>
         </div>
         <section className="flex items-center gap-4 font-mono">
@@ -95,7 +115,7 @@ const Navbar = () => {
                       location.pathname === "/add_newuser" ? 'text-red-400 text-xl' : 'text-black-400'
                     }`}
                   >
-                    Add NewUser
+                    Add New User
                   </Link>
                 )}
                 <button onClick={() => logout()} className="block px-4 py-2 text-gray-800 hover:bg-gray-100">

@@ -12,7 +12,7 @@ const Login2 = () => {
       
    try{
     const res = await apis.login(loginDetails)
- 
+    console.log(res?.data)
     login(res.data)
     if(res?.data?.access)
         {

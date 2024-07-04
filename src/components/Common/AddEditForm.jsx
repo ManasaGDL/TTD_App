@@ -121,13 +121,13 @@ const AddEditForm = ({ bookingsObject, date, bookingsLeft, setIsModalOpen, setTo
   const parseDate = (date) => {
     const parsedDate = parseISO(date);
     if (isValid(parsedDate)) {
-      return format(parsedDate, 'd-MMMM-yyyy');
+      return format(parsedDate, 'd-MM-yy');
     }
     return 'Invalid Date';
   };
 
   return (
-    <div>
+    <div className="overflow-y-auto h-full">
       <div className="flex justify-between m-2">
         {date && <span className="font-mono text-sm">Booking Date: {parseDate(date)}</span>}
         {fields.length < initialBookings && (
@@ -137,7 +137,7 @@ const AddEditForm = ({ bookingsObject, date, bookingsLeft, setIsModalOpen, setTo
             className="flex items-center ml-3  text-black p-2 rounded font-mono border border-gray-200 hover:bg-gray-200"
           >
             <IoPersonAddSharp className="text-xl mr-1 text-lime-500" />
-            Add {fields.length + 1} Pilgrim-{bookingsLeft} available
+            Avl:{bookingsLeft}-Add {fields.length + 1} Pilgrim
           </button>
         )}
       </div>
@@ -149,7 +149,7 @@ const AddEditForm = ({ bookingsObject, date, bookingsLeft, setIsModalOpen, setTo
 
         {fields.map((field, index) => (
           <div key={field.id} className="grid sm:grid-cols-12 gap-2 mb-4">
-            <div className="col-span-3">
+            <div className=" col-span-12 md:col-span-3">
               <input
                 placeholder={`Name ${index + 1}`}
                 type="text"
@@ -163,7 +163,7 @@ const AddEditForm = ({ bookingsObject, date, bookingsLeft, setIsModalOpen, setTo
                 </p>
               )}
             </div>
-            <div className="col-span-1">
+            <div className="md:col-span-1 col-span-6">
               <input
                 placeholder={`Age ${index + 1}`}
                 type="number"
@@ -177,7 +177,7 @@ const AddEditForm = ({ bookingsObject, date, bookingsLeft, setIsModalOpen, setTo
                 </p>
               )}
             </div>
-            <div className="col-span-2">
+            <div className="md:col-span-2 col-span-6">
               <input
                 placeholder={`Phone ${index + 1}`}
                 type="number"
@@ -191,7 +191,7 @@ const AddEditForm = ({ bookingsObject, date, bookingsLeft, setIsModalOpen, setTo
                 </p>
               )}
             </div>
-            <div className="col-span-3">
+            <div className="md:col-span-3 col-span-6">
               <input
                 placeholder={`Adhaar ${index + 1}`}
                 type="number"
@@ -205,7 +205,7 @@ const AddEditForm = ({ bookingsObject, date, bookingsLeft, setIsModalOpen, setTo
                 </p>
               )}
             </div>
-            <div className="col-span-2">
+            <div className="md:col-span-2 col-span-6">
               <select
                 {...register(`pilgrims.${index}.seva`)}
                 className={`border border-gray-300 rounded p-2 w-full ${field.editable?"bg-slate-200":''}`}
