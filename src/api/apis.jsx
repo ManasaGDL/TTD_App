@@ -33,6 +33,12 @@ getPilgrimDetails:(date)=>{
 },
 getAllUsers:()=>{
     return axios_instance.get(`/api/users/usersProfile/`)
+},
+deletePilgrim:()=>{
+    
+},
+updatePilgrims:(pilgrims)=>{
+
 }
 }
 

@@ -12,5 +12,23 @@ export default {
       }
     },
   },
-  plugins: [],
+  plugins: [
+    // Other plugins...
+    function ({ addUtilities }) {
+      const newUtilities = {
+        '.disable-spinner::-webkit-outer-spin-button': {
+          '-webkit-appearance': 'none',
+          margin: '0',
+        },
+        '.disable-spinner::-webkit-inner-spin-button': {
+          '-webkit-appearance': 'none',
+          margin: '0',
+        },
+        '.disable-spinner': {
+          '-moz-appearance': 'textfield',
+        },
+      };
+      addUtilities(newUtilities, ['responsive', 'hover']);
+    },
+  ],
 }

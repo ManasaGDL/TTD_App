@@ -93,7 +93,12 @@ const Navbar = () => {
           </section>
         </div>
         <section className="flex items-center gap-4 font-mono">
+          <div className="grid grid-col-1">
+            <div >
           <span>{localStorage.getItem('email')}</span>
+          </div>
+          <div><span className="text-sm">{localStorage.getItem('constituency')} Constituency</span></div>
+          </div>
           <div className="relative">
             <button onClick={toggleUserSettings}>
               <RxAvatar className="h-10 w-10 text-green-500 text-sm" />
