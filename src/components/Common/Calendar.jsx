@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { startOfMonth, endOfMonth, eachDayOfInterval, format, addDays, subMonths, addMonths, getDay, getDaysInMonth } from 'date-fns';
+import { startOfMonth, endOfMonth, eachDayOfInterval, format, addDays, subMonths, addMonths, getDay, getDaysInMonth,isBefore,startOfToday } from 'date-fns';
 import { FiArrowRight, FiArrowLeft } from 'react-icons/fi';
 import { FaTicketAlt } from 'react-icons/fa';
 import Modal from './Modal';
 import AddEditForm from './AddEditForm';
 import { constants } from '../../constant';
 import apis from '../../api/apis';
-
+import { useLoading } from '../../context/LoadingContext';
 import { Toaster, toast } from 'sonner';
+import AddEditFormTest from './AddEditTest';
 
 const Calendar = () => {
   const [currentPageStart, setCurrentPageStart] = useState(startOfMonth(new Date()));
@@ -19,16 +20,19 @@ const Calendar = () => {
   const [toastMessage, setToastMessage] = useState({ type: '', message: '' });
   const mid_bookings = localStorage.getItem('is_mla') ? 3 : 5;
   const [ bookedPilgrimDetails , setBookedPilgrimDetails] = useState([])
-
+   const { setIsLoading} = useLoading()
   useEffect(() => {
   
     const fetchBlockedDatesAndAvailability = async () => {
+      setIsLoading(true)
       try {
         await getBlockedDates()
   
         await getMonthSlotAvailability(); // Call availability function after blockedDates is updated
       } catch (error) {
         console.error('Error fetching blocked dates and availability:', error);
+      }finally{
+        setIsLoading(false)
       }
     };
 
@@ -54,22 +58,27 @@ if(blockedDates.length>0)
   }, [currentPageStart, initialBookings]);
   const getPilgrimDetails=async(date)=>{
     try{
-    
+
      const res = await apis.getPilgrimDetails(format(date,'yyyy-MM-dd'))
     setBookedPilgrimDetails(res?.data)
     }catch(e)
-    {
+    {toast.error("Something went wrong!")
     console.log(e)
     }
 
   }
+  const isDayBeforeToday = (day) => {
+    const today = startOfToday();
+   
+    return isBefore(day, today);
+  };
  const getBlockedDates=async()=>{
 try{
   const blockedDatesResponse = await apis.getBlockedDates();
   const dates = blockedDatesResponse.data.map(item => format(new Date(item.blockdate), 'yyyy-MM-dd'));
   setBlockedDates(dates);
 }catch(e)
-{
+{toast.error("Something went wrong!")
 console.log(e)
 }
  }
@@ -164,7 +173,7 @@ const getDayClassforSmallScreens = day =>{
 
   return (
     <div className="w-full mx-auto sm:max-w-4xl mb-4">
-      <Toaster richColors position="top-center" />
+      {/* <Toaster richColors position="top-center" /> */}
       <div className="flex justify-between mb-4">
         <button onClick={goToPreviousPage} className="text-3xl text-black px-4 py-2 rounded hover:text-4xl">
           <FiArrowLeft />
@@ -188,10 +197,11 @@ const getDayClassforSmallScreens = day =>{
           <div key={index} className="text-center">
             {day && (
               <div
-                className={`w-18 h-14 sm:h-16 sm:w-18 text-center rounded-lg text-black border  
-                 ${window.innerWidth <= 768 ? getDayClassforSmallScreens(day):''}
-                   border-gray-300 mb-2 md:grid md:grid-cols-12 items-center hover:bg-slate-200`}
-                onClick={() => handleBooking(format(day, 'yyyy-MM-dd'))}
+                className={`w-18 h-14 sm:h-16 sm:w-18 text-center rounded-lg text-black border    ${isDayBeforeToday(day) ?'bg-gray-400 sm:bg-gray-400 sm:hover:bg-gray-400'  : 'hover:bg-slate-200'}
+               
+                   ${window.innerWidth <= 768 ? (isDayBeforeToday(day) ? 'bg-gray-400 hover:bg-gray-400' : getDayClassforSmallScreens(day)):''}
+                   border-gray-300 mb-2 md:grid md:grid-cols-12 items-center `}
+                onClick={() => !isDayBeforeToday(day) && handleBooking(format(day, 'yyyy-MM-dd'))}
                 style={{
                   width: 'auto',
              
@@ -225,9 +235,12 @@ const getDayClassforSmallScreens = day =>{
           </div>
         ))}
       </div>
-      {bookings[selectedDate] > 0 && (
+      {
+      // bookings[selectedDate] > 0 && 
+      (
         <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
           <AddEditForm
+            getPilgrimDetails={getPilgrimDetails}
             bookingsObject={bookings}
             date={selectedDate}
             bookingsLeft={bookings[selectedDate]}

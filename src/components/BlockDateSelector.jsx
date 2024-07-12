@@ -21,7 +21,7 @@ export default function BlockDateSelector() {
    const dates = res.data.map(item=>new Date(item.blockdate))
   setBlockedDates(dates)
   }catch(e)
-  {
+  { toast.error("Something went wrong!")
     console.log(e)
   }
  }
@@ -134,7 +134,7 @@ const handleUnBlock=async()=>{
   
   }
 catch(e)
-  {
+  {toast.error("Something went wrong!")
     console.log(e)
   }
 

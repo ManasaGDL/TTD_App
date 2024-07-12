@@ -4,7 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import apis from '../api/apis';
 import { Toaster, toast } from 'sonner';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams ,useNavigate } from 'react-router-dom';
 
 // Define the validation schema using yup
 const schema = yup.object().shape({
@@ -25,7 +25,7 @@ const RegistrationForm = () => {
   const location = useLocation();
   const initialData = location.state || {};
   const { id } = useParams();
-
+  const navigate = useNavigate()
   // Initialize useForm with validation schema
   const { register, handleSubmit, setValue, formState: { errors }, reset } = useForm({
     resolver: yupResolver(schema),
@@ -70,14 +70,20 @@ const RegistrationForm = () => {
            constituency:'',
         gender:''
         });
-      } else if (response.status === 200) {
-        toast.success("User updated successfully!");
-      }
+        // navigate('/view-users')
+      } 
+      // else if (response.status === 200) {
+      //   toast.success("User updated successfully!");
+      // }
+    
     }
     else{
-      console.log("edit")
+     const res = await apis.updateUser(id,data);
+     toast.success("User updated successfully!");
+    //  navigate('/view-users')
     }
     } catch (e) {
+      console.log(e)
       toast.error("Something went wrong!");
     }
   };
@@ -116,7 +122,7 @@ const RegistrationForm = () => {
         </div>}
 
         <div className="mb-4">
-          <label htmlFor="first_name" className="block text-gray-700">First Name</label>
+          <label htmlFor="first_name" className="block text-gray-700">FirstName of MLA/MP</label>
           <input
             type="text"
             id="first_name"
@@ -127,7 +133,7 @@ const RegistrationForm = () => {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="last_name" className="block text-gray-700">Last Name</label>
+          <label htmlFor="last_name" className="block text-gray-700">LastName of MLA/MP</label>
           <input
             type="text"
             id="last_name"

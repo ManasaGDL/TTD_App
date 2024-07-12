@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { Pencil } from "lucide-react";
 import { IoPersonAddSharp } from "react-icons/io5";
-import { format, parseISO, isValid } from "date-fns";
+import { format, parseISO, isValid ,differenceInHours} from "date-fns";
 import PropTypes from 'prop-types';
 import apis from "../../api/apis";
 import { constants } from "../../constant";
@@ -15,6 +15,8 @@ import MyModal from "./MyModal";
 import { FaPhoneAlt } from "react-icons/fa";
 import { IoMdPerson } from "react-icons/io";
 import { FaAddressCard } from "react-icons/fa6";
+import { MdOutlineEditOff } from "react-icons/md";
+import { IoPrint } from "react-icons/io5";
 
 const schema = yup.object({
   pilgrims: yup.array().of(
@@ -22,40 +24,45 @@ const schema = yup.object({
       pilgrim_name: yup.string().required("Name is required"),
       age: yup.number().typeError("Age must be a number").positive().integer().required("Age is required"),
       phone_number: yup.string().matches(/^[0-9]{10}$/, 'Phone number must be exactly 10 digits').required('Phone number is required'),
-      aadhaar_number: yup.number().typeError("Adhaar number must be a number").required("Adhaar is required"),
+      aadhaar_number: yup.string().matches(/^[0-9]{12}$/, 'Aadhaar must be exactly 12 digits').required("Adhaar is required"),
       seva: yup.string(),
-      booked_datetime: yup.string(),
-      gender: yup.string().oneOf(['male', 'female']).required('Gender is required')
+      booked_datetime: yup.string()
     })
   ),
 });
 
-const AddEditForm = ({ bookingsObject, date, bookingsLeft, setIsModalOpen, setToastMessage, isModalOpen, bookedPilgrimDetails }) => {
+const AddEditForm = ({ bookingsObject,getPilgrimDetails, date, bookingsLeft, setIsModalOpen, setToastMessage, isModalOpen, bookedPilgrimDetails }) => {
   const [initialBookings, setInitialBookings] = useState(localStorage.getItem('is_mla')==='true' ? constants.Mla : constants.Mp);
-const [ deleteIndex, setDeleteIndex] = useState(null)
-const mid_bookings = localStorage.getItem('is_mla') ? 3 : 5;
+  const [ deleteIndex, setDeleteIndex] = useState(null)
+  const [ openModal , setOpenModal] = useState(false)
+  const mid_bookings = localStorage.getItem('is_mla') ? 3 : 5;
+  const [ selectedPilgrims, setSelectedPilgrims] = useState([])
+  
   const { register, control, handleSubmit, formState: { errors }, reset ,setValue} = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
       pilgrims: bookedPilgrimDetails.map(pilgrim => ({
         ...pilgrim,
         editable: true,
-        clicked:false // All initially booked pilgrims are editable
+        clicked:false ,
+        booked_datetime:pilgrim.booked_datetime// All initially booked pilgrims are editable
       }))
     },
   });
-const [ openModal , setOpenModal] = useState(false)
+
   const { fields, append ,remove,update} = useFieldArray({
     control,
     name: "pilgrims",
   });
 
   useEffect(() => {
+    
     reset({
       pilgrims: bookedPilgrimDetails.map(pilgrim => ({
         ...pilgrim,
         editable: true,
-        clicked:false // Ensure editable flag is set to true for booked pilgrims on reset
+        clicked:false ,
+        booked_datetime:pilgrim.booked_datetime// Ensure editable flag is set to true for booked pilgrims on reset
       }))
     });
   }, [date, bookedPilgrimDetails, reset]);
@@ -63,16 +70,22 @@ const [ openModal , setOpenModal] = useState(false)
   useEffect(() => {
     if (!isModalOpen) reset();
   }, [isModalOpen, reset]);
+const shouldDisableEditDeleteIn38hrs=(bookingDate)=>{
+  const currentDate = new Date();
+  const parsedBookingDate = parseISO(bookingDate);
+  return differenceInHours(parsedBookingDate,currentDate)<38
 
+
+}
   const onSubmit = async (data) => {
-    console.log("fields",fields)
+   
     try {
       // Filter out pilgrims that are already booked and should not be added again
       // const newPilgrims = data.pilgrims.filter(pilgrim => !bookedPilgrimDetails.some(bookedPilgrim => bookedPilgrim.aadhaar_number === pilgrim.aadhaar_number));
   const editPilgrims =[]
   const newPilgrims =[]
   data.pilgrims.forEach(pilgrim=>{
-    console.log(pilgrim)
+    
     if( pilgrim.clicked && pilgrim.editable==false)
       {
         editPilgrims.push(pilgrim)
@@ -86,8 +99,7 @@ const [ openModal , setOpenModal] = useState(false)
   console.log("op",editPilgrims)
   // Object.values(data).flat()
   if(newPilgrims.length>0)
-     {
-       const response = await apis.addPilgrims(newPilgrims);
+     { const response = await apis.addPilgrims(newPilgrims);
       if (response.status === 201) {
         setIsModalOpen(false);
         setToastMessage({ type: 'success', message: "Booked Successfully" });
@@ -95,15 +107,15 @@ const [ openModal , setOpenModal] = useState(false)
       }
     }
     if(editPilgrims.length>0)
-    {
-      const response = await apis.updatePilgrims(editPilgrims);
-      if (response.status === 201) {
-        setIsModalOpen(false);
-        setToastMessage({ type: 'success', message: "Booked/Edited Successfully" });
-        reset();
+      {
+        const response = await apis.updatePilgrims(editPilgrims);
+        if (response.status === 200) {
+          setIsModalOpen(false);
+          setToastMessage({ type: 'success', message: "Booked/Edited Successfully" });
+          reset();
+        }
+  
       }
-
-    }
     } catch (e) {
       if (e.response && e.response.status === 400) {
         setToastMessage({ type: 'error', message: "Something went wrong!" });
@@ -128,61 +140,88 @@ const [ openModal , setOpenModal] = useState(false)
   };
 
   const toggleEdit = (index) => {
- console.log(index,fields)
-
-   
+ 
     const updatedPilgrims = [...fields];
-    console.log("Updated",updatedPilgrims)
+   
     updatedPilgrims[index].editable = !updatedPilgrims[index].editable;
     updatedPilgrims[index].clicked = true
+    update(index, updatedPilgrims[index]);
     // reset({
     //   pilgrims: updatedPilgrims
     // });
-    update(index, updatedPilgrims[index]);
   };
 
   const parseDate = (date) => {
     const parsedDate = parseISO(date);
     if (isValid(parsedDate)) {
-      return format(parsedDate, 'd-MM-yy');
+      return format(parsedDate, 'd-MMMM-yyyy');
     }
     return 'Invalid Date';
   };
-const handleDelete=(index)=>{
-setDeleteIndex(index)
-  if(Object.prototype.hasOwnProperty.call(fields[index], "editable"))
-  {
-  setOpenModal(true)
+  const handleDelete=(index)=>{
+    setDeleteIndex(index)
+      if(Object.prototype.hasOwnProperty.call(fields[index], "editable"))
+      {
+      
+      setOpenModal(true)
+    
+      }
+      else remove(index)
+    
+    }
+    const handleCheckboxChange = (index, checked) => {
+      const updatedPilgrims = [...fields];
+      updatedPilgrims[index].selected = checked;
+      update(index, updatedPilgrims[index]);
+  
+      if (checked) {
+        setSelectedPilgrims([...selectedPilgrims, updatedPilgrims[index]]);
+      } else {
+        setSelectedPilgrims(selectedPilgrims.filter(pilgrim => pilgrim.id !== updatedPilgrims[index].id));
+      }
+    };
+    const handlePilgrimDelete=async()=>{
 
-  }
-  else remove(index)
-
-}
-const handlePilgrimDelete=async()=>{
-alert(deleteIndex)
-try{
-const res = await apis.deletePilgrim(fields[deleteIndex].pilgrim_id)
-if(res.status==200)
-  toast.success("Pilgrim deleted successfully")
-}catch(e)
-{
-
-}
-
-}
-const getTicketClass = bookingsLeft => {
+      try{
+      const res = await apis.deletePilgrim(fields[deleteIndex].pilgrim_id)
+      if(res.status==204)
+        {  setToastMessage({ type: 'success', message: "Successfully deleted" });
+          setOpenModal(false)
+          getPilgrimDetails(date)
+        }
+      }catch(e)
+      {toast.error("Something went wrong!")
+      console.log(e)
+      }
+      
+      }
+      const getTicketClass = bookingsLeft => {
  
-  if (bookingsLeft === initialBookings) return 'text-lime-500';
-  if (bookingsLeft > mid_bookings) return 'text-yellow-500';
-  if (bookingsLeft > 0) return 'text-orange-500';
-  return 'text-red-500';
-};
+        if (bookingsLeft === initialBookings) return 'text-lime-500';
+        if (bookingsLeft > mid_bookings) return 'text-yellow-500';
+        if (bookingsLeft > 0) return 'text-orange-500';
+        return 'text-red-500';
+      };
   return (
     <div className="overflow-y-auto h-full max-h-screen">
-      {/* <Toaster richColors position="top-center"/> */}
-      <div className="flex justify-between ">
-        {date && <span className="font-mono text-sm">Date: {parseDate(date)} </span>}
-        {date && <span className={`font-mono text-base mr-5 text-black font-bold ${getTicketClass(bookingsLeft)} `}> Available:{bookingsLeft}</span>}
+      <MyModal isOpen={openModal} handlePilgrimDelete = { handlePilgrimDelete} setIsModalOpen={setOpenModal} title="Delete?" message="Are you sure to Delete the Booked Pilgrim"/>
+       <div className="flex justify-between ">
+       <span>{date && <span className="font-mono text-sm">Date: {parseDate(date)} </span>}</span> 
+     
+       <div className="relative group">
+        <div>
+          <button className=" bg-gray-300 hover:bg-lime-500 px-4 py-2 rounded" onClick={()=>setSelectedPilgrims([])}>
+            <IoPrint></IoPrint><span className="font-mono text-xs text-lime-700">{selectedPilgrims.length>0?"Pilgrims selected for print":""} </span>
+          </button>
+          </div>
+          { <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-full bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            Print 
+            <svg className="absolute text-gray-800 h-2 w-full left-0 top-full" x="0px" y="0px" viewBox="0 0 255 255">
+              <polygon className="fill-current" points="0,0 127.5,127.5 255,0" />
+            </svg>
+          </div>}
+        {date && <span className={`font-mono ml-4 text-base mr-5 text-black font-bold ${getTicketClass(bookingsLeft)} `}> Available:{bookingsLeft}</span>}
+        </div>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-lg p-6 w-full max-w-8xl">
@@ -190,8 +229,11 @@ const getTicketClass = bookingsLeft => {
           <h2 className="text-lg font-mono">Pilgrim Details</h2>
         </div>} */}
 
-{fields.map((field, index) => (
-  <div key={field.id} className="grid sm:grid-cols-12 gap-2 mb-4">
+{fields.map((field, index) =>(
+
+  <div key={field.id} className="grid sm:grid-cols-12 gap-1 mb-4">
+    
+    
     <div className="col-span-12 md:col-span-2 relative">
       <input
         placeholder={`Name ${index + 1}`}
@@ -282,34 +324,72 @@ const getTicketClass = bookingsLeft => {
     </div>
     
 
-    <div className="col-span-2 flex items-center">
-      {(Object.prototype.hasOwnProperty.call(field, "editable")) && 
+    {<div className="col-span-2 flex items-center">
+      {field.editable ? (
+                <button
+                  type="button"
+                  className="text-black"
+                  onClick={() => toggleEdit(index)}
+                  disabled={shouldDisableEditDeleteIn38hrs(field.booked_datetime)}
+                >
+                  <MdOutlineEditOff className="mx-auto" />
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="text-black"
+                  onClick={() => toggleEdit(index)}
+                >
+                  <Pencil className="mx-auto" />
+                </button>
+              )}
+      {/* {(Object.prototype.hasOwnProperty.call(field, "editable")) && !shouldDisableEditDeleteIn38hrs(field.booked_datetime)&&
         <button
           type="button"
+          // disabled={shouldDisableEditDeleteIn38hrs(field.booked_datetime)}
           className="text-lime-500 rounded hover:bg-lime-700"
           onClick={() => toggleEdit(index)} // Toggle edit mode on click
         >
-          <Pencil />
+         <Pencil/>
+         
         </button>
-      }
-      <button
+      } */}
+      { <button
         type="button"
         className="text-red-500 rounded hover:bg-red-700 ml-2"
         onClick={() => handleDelete(index)} // Handle delete action
       >
         <MdDeleteOutline size={24} />
-      </button>
-    </div>
+      </button>}
+<div>
+              <input
+                type="checkbox"
+                id={`pilgrims.${index}.select`}
+                name={`pilgrims.${index}.select`}
+                onChange={(e) => {
+                  const checked = e.target.checked;
+                  const updatedPilgrims = [...fields];
+                  updatedPilgrims[index].selected = checked;
+                  update(index, updatedPilgrims[index]);
+                  handleCheckboxChange(index,e.target.checked)
+                }}
+                checked={field.selected||false}
+              />
+              </div>
+          
+    </div>}
   </div>
 ))}
 
-     
-   <div className={`grid grid-cols-2 gap-2`}>
+    
+
+<div className={`grid grid-cols-2 gap-2`}>
     <div className="flex justify-end">
     { fields.length < initialBookings &&(
           <button
             type="button"
             onClick={addPilgrim}
+        
             className="flex items-center ml-3  text-black p-2 rounded font-mono border border-lime-500 hover:bg-gray-200 sm:text-lg
              text-xs"
           
@@ -320,14 +400,13 @@ const getTicketClass = bookingsLeft => {
         )}
    </div>
         <div className={`flex justify-start `}>
-          <button type="submit" className="bg-lime-500 text-white py-2 w-20 px-2 rounded hover:bg-lime-700">
+          {!bookingsLeft==0 &&<button type="submit" className="bg-lime-500 text-white py-2 w-20 px-2 rounded hover:bg-lime-700" >
             Submit
-          </button>
+          </button>}
         </div>
         </div>
-        <MyModal isOpen={openModal} handlePilgrimDelete = { handlePilgrimDelete} setIsModalOpen={setOpenModal} title="Delete?" message="Are you sure to Delete the Booked Pilgrim"/>
+       
       </form>
-    
     </div>
   );
 };

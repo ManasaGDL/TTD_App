@@ -7,7 +7,7 @@ import { AuthContext } from '../../context/AuthProvider';
 import { RxAvatar } from 'react-icons/rx';
 import clsx from 'clsx';
 
-const Navbar = () => {
+const Navbar = ({setBlur}) => {
   const [isSideMenuOpen, setMenu] = useState(false);
   const { auth, logout } = useContext(AuthContext);
   const [openUserSettings, setOpenUserSettings] = useState(false);
@@ -36,10 +36,12 @@ const Navbar = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
+  useEffect(() => {
+    setBlur(isSideMenuOpen);
+  }, [isSideMenuOpen, setBlur]);
   return (
     <main>
-      <nav className="flex justify-between px-4 sm:px-8 items-center py-4">
+      <nav className="flex justify-between px-4 sm:px-8 items-center py-4  ">
         <div className="flex items-center gap-4">
           <FiMenu className="text-3xl cursor-pointer lg:hidden" onClick={() => setMenu(true)} />
           <Link to="/">
@@ -74,10 +76,10 @@ const Navbar = () => {
             isSideMenuOpen ? 'translate-x-0' : 'translate-x-full'
           )}
         >
-          <section className="text-black w-64 bg-white flex flex-col absolute right-0 top-0 h-screen p-6 gap-6 z-50">
+          <section className="text-black w-64 bg-white flex flex-col absolute left-0 top-0 h-screen p-8 gap-8 z-50">
             <IoMdClose className="text-3xl cursor-pointer self-end" onClick={() => setMenu(false)} />
             {navLinks.map((link, key) => (
-              <Link to={link.href} key={key} className="font-mono text-black-900">
+              <Link to={link.href} key={key} className="font-mono text-black-900" onClick={()=>setMenu(false)}>
                 {link.label}
               </Link>
             ))}
@@ -86,6 +88,7 @@ const Navbar = () => {
                 to="/view-users"
                 key="view-users-mobile"
                 className="font-mono text-black-900"
+                onClick={()=>setMenu(false)}
               >
                 ViewUsers
               </Link>
@@ -97,6 +100,9 @@ const Navbar = () => {
             <div >
           <span>{localStorage.getItem('email')}</span>
           </div>
+          <div><span className="text-sm">{localStorage.getItem('user_name')} , {localStorage.getItem('is_mla') === 'true' ? 'MLA' :
+     localStorage.getItem('is_mla') === 'false' ? 'MP' :
+     'Admin'}</span></div>
           <div><span className="text-sm">{localStorage.getItem('constituency')} Constituency</span></div>
           </div>
           <div className="relative">
