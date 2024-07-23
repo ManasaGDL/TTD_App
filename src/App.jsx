@@ -12,11 +12,16 @@ import { AuthContext } from './context/AuthProvider';
 import { useContext } from 'react';
 import BlockedDateSelector from './components/BlockDateSelector';
 import AddUser from './components/AddUser';
+import ViewUsers from './components/ViewUsers';
+import { useLoading } from './context/LoadingContext';
+import Spinner from './components/Common/Spinner';
 
 const App = () => {
   const { auth } = useContext(AuthContext);
-  
+  const { isLoading } = useLoading();
   return (
+    <div className="relative">
+    {isLoading && <Spinner/>}
     <Routes>
       <Route path="/login" element={<Login2 />} />
       <Route
@@ -29,8 +34,11 @@ const App = () => {
       <Route path="/about" element={<PrivateRoute><Layouts><About /></Layouts></PrivateRoute>} />
       <Route path="/contact" element={<PrivateRoute><Layouts><Contact /></Layouts></PrivateRoute>} />
       <Route path="/blockdates" element={<PrivateRoute><Layouts><BlockedDateSelector /></Layouts></PrivateRoute>} />
+      <Route path="/edit_user/:id" element={<PrivateRoute><Layouts><AddUser/></Layouts></PrivateRoute>} />
       <Route path="/add_newuser" element={<PrivateRoute><Layouts><AddUser/></Layouts></PrivateRoute>} />
+      <Route path="/view-users" element={<PrivateRoute><Layouts><ViewUsers/></Layouts></PrivateRoute>}/>
     </Routes>
+    </div>
   );
 };
 
