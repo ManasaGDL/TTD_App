@@ -17,6 +17,7 @@ import { IoMdPerson } from "react-icons/io";
 import { FaAddressCard } from "react-icons/fa6";
 import { MdOutlineEditOff } from "react-icons/md";
 import { IoPrint } from "react-icons/io5";
+import PDFViewer from "../PDFViewer";
 
 const schema = yup.object({
   pilgrims: yup.array().of(
@@ -37,7 +38,10 @@ const AddEditForm = ({ bookingsObject,getPilgrimDetails, date, bookingsLeft, set
   const [ openModal , setOpenModal] = useState(false)
   const mid_bookings = localStorage.getItem('is_mla') ? 3 : 5;
   const [ selectedPilgrims, setSelectedPilgrims] = useState([])
-  
+  const [ masterPilgrim ,setMasterPilgrim] = useState(null)
+  const [ showMaster , setShowMaster] = useState(false)
+  const [payloadForDownload , setPayloadForDownload] = useState({})
+  const [ startPreviewDownload , setStartPreviewDownload] = useState(false)
   const { register, control, handleSubmit, formState: { errors }, reset ,setValue} = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -77,6 +81,13 @@ const shouldDisableEditDeleteIn38hrs=(bookingDate)=>{
 
 
 }
+useEffect(()=>{
+if(!isModalOpen)
+{
+  setSelectedPilgrims([])
+  setMasterPilgrim(null)
+}
+},[isModalOpen])
   const onSubmit = async (data) => {
    
     try {
@@ -93,10 +104,7 @@ const shouldDisableEditDeleteIn38hrs=(bookingDate)=>{
  if(!Object.prototype.hasOwnProperty.call(pilgrim, 'editable'))
      newPilgrims.push(pilgrim)
   })
-  console.log("NP",newPilgrims
 
-  )
-  console.log("op",editPilgrims)
   // Object.values(data).flat()
   if(newPilgrims.length>0)
      { const response = await apis.addPilgrims(newPilgrims);
@@ -169,15 +177,28 @@ const shouldDisableEditDeleteIn38hrs=(bookingDate)=>{
       else remove(index)
     
     }
+    useEffect(()=>{
+if(selectedPilgrims.length>0 && masterPilgrim >=0)
+ { setStartPreviewDownload(true)
+  
+  const ids=selectedPilgrims.map(pilgrim => pilgrim.pilgrim_id)
+  console.log(bookedPilgrimDetails[masterPilgrim]?.booked_datetime)
+  setPayloadForDownload({"pilgrim_id":ids,is_master:true,"accommodation_date":format(parseISO(bookedPilgrimDetails[masterPilgrim]?.booked_datetime),"yyyy-MM-dd"),"darshan_date":format(parseISO(bookedPilgrimDetails[masterPilgrim]?.booked_datetime),'yyyy-MM-dd'),"email":bookedPilgrimDetails[masterPilgrim]?.email,"contact":bookedPilgrimDetails[masterPilgrim]?.phone_number})
+ }
+    },[masterPilgrim ])
     const handleCheckboxChange = (index, checked) => {
       const updatedPilgrims = [...fields];
       updatedPilgrims[index].selected = checked;
       update(index, updatedPilgrims[index]);
   
       if (checked) {
+        
         setSelectedPilgrims([...selectedPilgrims, updatedPilgrims[index]]);
+ 
       } else {
-        setSelectedPilgrims(selectedPilgrims.filter(pilgrim => pilgrim.id !== updatedPilgrims[index].id));
+      
+       
+        setSelectedPilgrims(selectedPilgrims.filter(pilgrim=>!(pilgrim.pilgrim_id === updatedPilgrims[index].pilgrim_id && !updatedPilgrims[index].selected)));
       }
     };
     const handlePilgrimDelete=async()=>{
@@ -195,6 +216,32 @@ const shouldDisableEditDeleteIn38hrs=(bookingDate)=>{
       }
       
       }
+      
+    //  P
+      const handlePreviewOrDownload = () => {
+       
+       if(selectedPilgrims.length<=0)
+       {
+        toast.error("Select the Checkboxes for print")
+       }
+       
+        else if (masterPilgrim === null) {
+          setShowMaster(true)
+          toast.error('Please select a master pilgrim before previewing or downloading.');
+          return;
+
+        }
+  //  if(selectedPilgrims.length>0 && masterPilgrim >=0)
+    
+  //     {  
+        
+      
+  //       // const ids=selectedPilgrims.map(pilgrim => pilgrim.pilgrim_id)
+  //       // setPayloadForDownload({"pilgrim_id":ids,"accommodation_date":format(bookedPilgrimDetails[masterPilgrim]?.booked_datetime,"yyyy-MM-dd"),"darshan_date":format(bookedPilgrimDetails[masterPilgrim]?.booked_datetime,'yyyy-MM-dd'),"email":bookedPilgrimDetails[masterPilgrim]?.email,"contact":bookedPilgrimDetails[masterPilgrim]?.phone_number})
+    
+  //     }
+        // Proceed with your preview or download logic here
+      };
       const getTicketClass = bookingsLeft => {
  
         if (bookingsLeft === initialBookings) return 'text-lime-500';
@@ -208,10 +255,17 @@ const shouldDisableEditDeleteIn38hrs=(bookingDate)=>{
        <div className="flex justify-between ">
        <span>{date && <span className="font-mono text-sm">Date: {parseDate(date)} </span>}</span> 
      
-       <div className="relative group">
+       {
+       bookedPilgrimDetails.length>0 
+       &&
+        <div >
+        {/* <span>{"Edit is disabled before 38hrs of darshan"}</span> */}
         <div>
-          <button className=" bg-gray-300 hover:bg-lime-500 px-4 py-2 rounded" onClick={()=>setSelectedPilgrims([])}>
-            <IoPrint></IoPrint><span className="font-mono text-xs text-lime-700">{selectedPilgrims.length>0?"Pilgrims selected for print":""} </span>
+          <button className=" px-4 py-2 rounded" onClick={()=>{
+            handlePreviewOrDownload()
+          }}>
+            <PDFViewer payloadForDownload={payloadForDownload} download={startPreviewDownload} setSelectedPilgrims={setSelectedPilgrims} setMasterPilgrim={setMasterPilgrim}/>
+            {/* <IoPrint size={25}></IoPrint><span className="font-mono text-xs text-lime-700">{selectedPilgrims.length>0?"Pilgrims selected for print":""} </span> */}
           </button>
           </div>
           { <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-full bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -222,6 +276,7 @@ const shouldDisableEditDeleteIn38hrs=(bookingDate)=>{
           </div>}
         {date && <span className={`font-mono ml-4 text-base mr-5 text-black font-bold ${getTicketClass(bookingsLeft)} `}> Available:{bookingsLeft}</span>}
         </div>
+}
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-lg p-6 w-full max-w-8xl">
@@ -230,11 +285,28 @@ const shouldDisableEditDeleteIn38hrs=(bookingDate)=>{
         </div>} */}
 
 {fields.map((field, index) =>(
-
-  <div key={field.id} className="grid sm:grid-cols-12 gap-1 mb-4">
+  <div key={field.id} className="grid gap-2 mb-4" style={{ gridTemplateColumns: 'repeat(14, 1fr)' }}>
+ 
+     
     
+     {bookedPilgrimDetails.some(pilgrim => pilgrim.aadhaar_number === field.aadhaar_number) && (
+      <div className="flex flex-col items-center col-span-1">
+        <label htmlFor="master" className="text-sm font-medium text-gray-700">
+          Master
+        </label>
+        <input
+          type="radio"
+          id={`pilgrims.${index}.is_master`}
+          name="is_master"
+          value={index}
+          checked={masterPilgrim === index}
+          onChange={() => setMasterPilgrim(index)}
+          className="mt-1 focus:ring-green-500 h-4 w-4 text-green-600 border-gray-300"
+        />
+      </div>
+    )}
     
-    <div className="col-span-12 md:col-span-2 relative">
+    <div className="col-span-12 md:col-span-3 relative ml-2">
       <input
         placeholder={`Name ${index + 1}`}
         type="text"
@@ -306,7 +378,7 @@ const shouldDisableEditDeleteIn38hrs=(bookingDate)=>{
       )}
     </div>
     
-    <div className="md:col-span-2 col-span-6">
+    <div className="md:col-span-2 col-span-4">
       <select
         {...register(`pilgrims.${index}.seva`)}
         className={`border border-gray-300 rounded p-2 w-full ${field.editable ? "bg-slate-200" : ''}`}

@@ -7,7 +7,7 @@ import { AuthContext } from '../../context/AuthProvider';
 import { RxAvatar } from 'react-icons/rx';
 import clsx from 'clsx';
 
-const Navbar = ({setBlur}) => {
+const Navbar = ({ setBlur }) => {
   const [isSideMenuOpen, setMenu] = useState(false);
   const { auth, logout } = useContext(AuthContext);
   const [openUserSettings, setOpenUserSettings] = useState(false);
@@ -36,12 +36,14 @@ const Navbar = ({setBlur}) => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
   useEffect(() => {
     setBlur(isSideMenuOpen);
   }, [isSideMenuOpen, setBlur]);
+
   return (
     <main>
-      <nav className="flex justify-between px-4 sm:px-8 items-center py-4  ">
+      <nav className="flex justify-between px-4 sm:px-8 items-center py-4">
         <div className="flex items-center gap-4">
           <FiMenu className="text-3xl cursor-pointer lg:hidden" onClick={() => setMenu(true)} />
           <Link to="/">
@@ -51,9 +53,7 @@ const Navbar = ({setBlur}) => {
             <Link
               to={link.href}
               key={key}
-              className={`font-mono hover:text-xl hidden sm:block ${
-                location.pathname === link.href ? 'text-lime-500 text-xl' : 'text-black-400'
-              }`}
+              className={`font-mono hover:text-xl hidden sm:block ${location.pathname === link.href ? 'text-lime-500 text-xl' : 'text-black-400'}`}
             >
               {link.label}
             </Link>
@@ -62,9 +62,7 @@ const Navbar = ({setBlur}) => {
             <Link
               to="/view-users"
               key="view-users"
-              className={`font-mono hover:text-xl hidden sm:block ${
-                location.pathname === "/view-users" ? 'text-lime-500 text-xl' : 'text-black-400'
-              }`}
+              className={`font-mono hover:text-xl hidden sm:block ${location.pathname === "/view-users" ? 'text-lime-500 text-xl' : 'text-black-400'}`}
             >
               ViewUsers
             </Link>
@@ -79,7 +77,7 @@ const Navbar = ({setBlur}) => {
           <section className="text-black w-64 bg-white flex flex-col absolute left-0 top-0 h-screen p-8 gap-8 z-50">
             <IoMdClose className="text-3xl cursor-pointer self-end" onClick={() => setMenu(false)} />
             {navLinks.map((link, key) => (
-              <Link to={link.href} key={key} className="font-mono text-black-900" onClick={()=>setMenu(false)}>
+              <Link to={link.href} key={key} className="font-mono text-black-900" onClick={() => setMenu(false)}>
                 {link.label}
               </Link>
             ))}
@@ -88,7 +86,7 @@ const Navbar = ({setBlur}) => {
                 to="/view-users"
                 key="view-users-mobile"
                 className="font-mono text-black-900"
-                onClick={()=>setMenu(false)}
+                onClick={() => setMenu(false)}
               >
                 ViewUsers
               </Link>
@@ -97,15 +95,21 @@ const Navbar = ({setBlur}) => {
         </div>
         <section className="flex items-center gap-4 font-mono">
           <div className="grid grid-col-1">
-            <div >
-          <span>{localStorage.getItem('email')}</span>
-          </div>
-          <div><span className="text-sm">{localStorage.getItem('user_name')} , {localStorage.getItem('is_mla') === 'true' ? 'MLA' :
+            <div>
+              <span>{localStorage.getItem('email')}</span>
+            </div>
+            <div>
+              <span className="text-sm">
+                {localStorage.getItem('user_name')} , {localStorage.getItem('is_mla') === 'true' ? 'MLA' :
      localStorage.getItem('is_mla') === 'false' ? 'MP' :
-     'Admin'}</span></div>
-          <div><span className="text-sm">{localStorage.getItem('constituency')} Constituency</span></div>
+     'Admin'}
+              </span>
+            </div>
+            <div>
+              <span className="text-sm">{localStorage.getItem('constituency')} Constituency</span>
+            </div>
           </div>
-          <div className="relative">
+          <div className="relative z-50">
             <button onClick={toggleUserSettings}>
               <RxAvatar className="h-10 w-10 text-green-500 text-sm" />
             </button>
@@ -113,18 +117,14 @@ const Navbar = ({setBlur}) => {
               <div className="absolute right-0 w-48 bg-white border border-gray-200 rounded-lg shadow-lg" ref={userSettingsRef}>
                 <Link
                   to="/blockdates"
-                  className={`block px-4 py-2 text-gray-800 hover:bg-gray-100 ${
-                    location.pathname === "/blockdates" ? 'text-red-400 text-xl' : 'text-black-400'
-                  }`}
+                  className={`block px-4 py-2 text-gray-800 hover:bg-gray-100 ${location.pathname === "/blockdates" ? 'text-red-400 text-xl' : 'text-black-400'}`}
                 >
                   Block
                 </Link>
                 {localStorage.getItem("super_user") === 'true' && (
                   <Link
                     to="/add_newuser"
-                    className={`block px-4 py-2 text-gray-800 hover:bg-gray-100 ${
-                      location.pathname === "/add_newuser" ? 'text-red-400 text-xl' : 'text-black-400'
-                    }`}
+                    className={`block px-4 py-2 text-gray-800 hover:bg-gray-100 ${location.pathname === "/add_newuser" ? 'text-red-400 text-xl' : 'text-black-400'}`}
                   >
                     Add New User
                   </Link>

@@ -48,6 +48,12 @@ updateUser:(id,data)=>{
 },
 deleteUser:(id)=>{
     return axios_instance.delete(`/api/users/usersProfile/${id}/`)
+},
+downloadLetter:(payload)=>{
+
+    return axios_instance.post(`/api/users/vip-darshan-letter/`,payload, {
+        responseType: 'blob', // Specify responseType as 'blob'
+    })
 }
 }
 

@@ -6,11 +6,14 @@ import { PencilIcon, CircleX } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Toaster, toast } from 'sonner';
 import { useLoading } from './../context/LoadingContext';
+import MyModal from './Common/MyModal';
 
 function ViewUsers() {
   const [usersList, setUsersList] = useState([]);
   const navigate = useNavigate();
   const { setIsLoading } = useLoading();
+  const [openModal, setOpenModal] = useState(false);
+  const [idToDelete, setIdToDelete] = useState('');
 
   const columns = [
     { field: 'user_id', headerClassName: 'custom-header', headerName: 'ID', minWidth: 90, flex: 0.5 },
@@ -20,7 +23,7 @@ function ViewUsers() {
       headerName: 'Name',
       minWidth: 150,
       flex: 1,
-      valueGetter: (params,row) => `${row.first_name || ''} ${row.last_name || ''}`,
+      valueGetter: (params, row) => `${row.first_name || ''} ${row.last_name || ''}`,
     },
     { field: 'phone_number', headerName: 'Phone', minWidth: 150, flex: 0.7 },
     {
@@ -35,7 +38,6 @@ function ViewUsers() {
       headerName: 'Constituency',
       minWidth: 100,
       flex: 0.5,
-      
     },
     {
       field: 'edit',
@@ -57,7 +59,12 @@ function ViewUsers() {
       minWidth: 140,
       flex: 0.5,
       renderCell: (params) => (
-        <button onClick={() => handleDeleteUser(params.row.user_id)}>
+        <button
+          onClick={() => {
+            setOpenModal(true);
+            setIdToDelete(params.row.user_id);
+          }}
+        >
           <CircleX className="text-red-500 text-center" />
         </button>
       ),
@@ -68,6 +75,7 @@ function ViewUsers() {
     try {
       const res = await apis.deleteUser(id);
       toast.success('User deleted successfully!');
+      setOpenModal(false);
       getUsers();
     } catch (e) {
       toast.error('Something went wrong!');
@@ -82,11 +90,7 @@ function ViewUsers() {
     try {
       setIsLoading(true);
       const response = await apis.getAllUsers();
-      const filteredSuperUsers = response.data.filter(user => {
-      
-        return user.is_superuser!==true})
-      console.log("filtered",filteredSuperUsers)
-      console.log(response?.data);
+      const filteredSuperUsers = response.data.filter(user => !user.is_superuser);
       setUsersList(filteredSuperUsers);
     } catch (e) {
       console.log(e);
@@ -97,9 +101,16 @@ function ViewUsers() {
 
   return (
     <>
-      <Toaster richColors position="top-center" />
+      <MyModal
+        isOpen={openModal}
+        id={idToDelete}
+        handlePilgrimDelete={handleDeleteUser}
+        setIsModalOpen={setOpenModal}
+        title="Delete?"
+        message="Are you sure to Delete the User"
+      />
       <div className="w-full mx-auto sm:max-w-7xl mb-4 h-5/6 sm:h-[500px]">
-        {usersList?.length > 0 && (
+        {usersList?.length > 0 ? (
           <DataGrid
             rows={usersList}
             columns={columns}
@@ -110,6 +121,8 @@ function ViewUsers() {
             className="h-full"
             getRowId={(row) => row.user_id}
           />
+        ) : (
+          <p className="text-center text-gray-500">No users</p>
         )}
       </div>
     </>

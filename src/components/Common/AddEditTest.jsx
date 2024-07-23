@@ -14,7 +14,7 @@ import MyModal from "./MyModal";
 import { FaPhoneAlt } from "react-icons/fa";
 import { IoMdPerson } from "react-icons/io";
 import { FaAddressCard } from "react-icons/fa6";
-import { MdOutlineEditOff } from "react-icons/md";
+import { MdEditOff } from "react-icons/md";
 
 const schema = yup.object({
   pilgrims: yup.array().of(

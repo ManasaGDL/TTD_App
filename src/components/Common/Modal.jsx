@@ -6,7 +6,7 @@ const Modal = ({ open, onClose, children }) => {
 
   return (
     <div
-      className={`fixed inset-0 flex justify-center items-center transition-colors  ${
+      className={`fixed inset-0 flex justify-center items-center transition-colors w-full sm:max-w-9xl ${
         open ? "visible bg-black/20" : "invisible"
       }`}
       onClick={onClose}
@@ -14,7 +14,7 @@ const Modal = ({ open, onClose, children }) => {
       <div
         className={`bg-white rounded-lg shadow p-6 transition-all ${
           open ? "scale-100 opacity-100" : "scale-110 opacity-0"
-        } max-w-md w-full mx-4 sm:max-w-lg md:max-w-2xl lg:max-w-4xl`}
+        } max-w-7xl flex w-full mx-4 sm:max-w-7xl md:max-w-7xl lg:max-w-4xl`}
         onClick={(e) => e.stopPropagation()}
       >
         <button

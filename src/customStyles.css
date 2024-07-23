@@ -11,3 +11,48 @@
   margin: 0 auto; /* Center the date */
 }
 
+/* customStyles.css */
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+nav {
+  background-color: white;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.custom-header {
+  background-color: #f3f4f6;
+}
+
+.custom-header-bg {
+  background-color: #f3f4f6;
+}
+
+.text-lime-500 {
+  color: #84cc16;
+}
+
+.text-black-400 {
+  color: #1f2937;
+}
+
+.text-green-500 {
+  color: #10b981;
+}
+
+.text-red-400 {
+  color: #f87171;
+}
+
+.text-red-500 {
+  color: #ef4444;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.no-underline {
+  text-decoration: none;
+}

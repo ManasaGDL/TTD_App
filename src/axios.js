@@ -56,7 +56,7 @@ axiosInstance.interceptors.response.use(
       // toast.error('Session expired. Please log in again.');
       localStorage.removeItem('access_token');
       localStorage.removeItem('refresh_token'); // Remove this if not using refresh tokens
-       window.location.href = '/login';
+      //  window.location.href = '/login';
     }
 
     if (error.response && error.response.status === 404) {
@@ -81,7 +81,10 @@ axiosInstance.interceptors.response.use(
             } finally {
               isRefreshing = false;
             }
-          } else {
+          } else if(error.response && error.response.status === 401){
+            resolve(axiosInstance(originalRequest));
+          }
+          else {
             // While refreshing, queue the original request
             return new Promise((resolve, reject) => {
               refreshSubscribers.push((accessToken) => {

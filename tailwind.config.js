@@ -5,11 +5,18 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {
+    extend:
+     {
+      // textDecoration: ['hover', 'focus'],
       colors:{
         'custom-header-bg':"#4CAF50",
         'custom-header-text': '#FFFFFF'
       }
+    },
+  },
+  variants:{
+    extend: {
+      textDecoration: ['hover', 'focus'],
     },
   },
   plugins: [
@@ -26,6 +33,10 @@ export default {
         },
         '.disable-spinner': {
           '-moz-appearance': 'textfield',
+        },
+        '.no-underline': {
+          'text-decoration': 'none',
+          'border-bottom': 'none',
         },
       };
       addUtilities(newUtilities, ['responsive', 'hover']);

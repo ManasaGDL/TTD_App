@@ -8,7 +8,7 @@ import { constants } from '../../constant';
 import apis from '../../api/apis';
 import { useLoading } from '../../context/LoadingContext';
 import { Toaster, toast } from 'sonner';
-import AddEditFormTest from './AddEditTest';
+import AddEditTest from './AddEditTest';
 
 const Calendar = () => {
   const [currentPageStart, setCurrentPageStart] = useState(startOfMonth(new Date()));
@@ -172,7 +172,7 @@ const getDayClassforSmallScreens = day =>{
   };
 
   return (
-    <div className="w-full mx-auto sm:max-w-4xl mb-4">
+    <div className="w-full mx-auto sm:max-w-4xl md:max-w-4xl mb-4">
       {/* <Toaster richColors position="top-center" /> */}
       <div className="flex justify-between mb-4">
         <button onClick={goToPreviousPage} className="text-3xl text-black px-4 py-2 rounded hover:text-4xl">
