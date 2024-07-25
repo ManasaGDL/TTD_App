@@ -178,14 +178,24 @@ if(!isModalOpen)
     
     }
     useEffect(()=>{
-if(selectedPilgrims.length>0 && masterPilgrim >=0)
- { setStartPreviewDownload(true)
+if(selectedPilgrims.length>0 && masterPilgrim !== null && masterPilgrim !== undefined && masterPilgrim >= 0)
+ { 
+const master_id= bookedPilgrimDetails[masterPilgrim].pilgrim_id;
+const exists = selectedPilgrims.some(pilgrim=>pilgrim.pilgrim_id===master_id)
+
+if(exists)
+  {setStartPreviewDownload(true)
   
   const ids=selectedPilgrims.map(pilgrim => pilgrim.pilgrim_id)
-  console.log(bookedPilgrimDetails[masterPilgrim]?.booked_datetime)
-  setPayloadForDownload({"pilgrim_id":ids,is_master:true,"accommodation_date":format(parseISO(bookedPilgrimDetails[masterPilgrim]?.booked_datetime),"yyyy-MM-dd"),"darshan_date":format(parseISO(bookedPilgrimDetails[masterPilgrim]?.booked_datetime),'yyyy-MM-dd'),"email":bookedPilgrimDetails[masterPilgrim]?.email,"contact":bookedPilgrimDetails[masterPilgrim]?.phone_number})
- }
-    },[masterPilgrim ])
+
+   setPayloadForDownload({"pilgrim_id":ids,is_master:true,"accommodation_date":format(parseISO(bookedPilgrimDetails[masterPilgrim]?.booked_datetime),"yyyy-MM-dd"),"darshan_date":format(parseISO(bookedPilgrimDetails[masterPilgrim]?.booked_datetime),'yyyy-MM-dd'),"email":bookedPilgrimDetails[masterPilgrim]?.email,"contact":bookedPilgrimDetails[masterPilgrim]?.phone_number})
+  }
+  else{
+    toast.error("Master Pilgrim not checked for print. Please check!")
+    setStartPreviewDownload(false)
+  }
+  }
+    },[masterPilgrim ,selectedPilgrims])
     const handleCheckboxChange = (index, checked) => {
       const updatedPilgrims = [...fields];
       updatedPilgrims[index].selected = checked;
@@ -231,6 +241,7 @@ if(selectedPilgrims.length>0 && masterPilgrim >=0)
           return;
 
         }
+      
   //  if(selectedPilgrims.length>0 && masterPilgrim >=0)
     
   //     {  
@@ -310,11 +321,12 @@ if(selectedPilgrims.length>0 && masterPilgrim >=0)
       <input
         placeholder={`Name ${index + 1}`}
         type="text"
+        title={field.pilgrim_name}
         {...register(`pilgrims.${index}.pilgrim_name`)}
         className={`border pl-6 border-gray-300 rounded p-2 w-full  ${field.editable ? "bg-slate-200" : ''}`}
         disabled={field.editable} // Disable input based on editable flag
       />
-      <div className="absolute pl-2 inset-y-0 left-0 flex items-center pointer-events-none">
+      <div className="absolute pl-2 inset-y-0 left-0 flex items-center pointer-events-none h-9">
         <IoMdPerson className="text-gray-400" />
       </div>
       {errors?.pilgrims?.[index]?.pilgrim_name && (
@@ -328,29 +340,32 @@ if(selectedPilgrims.length>0 && masterPilgrim >=0)
       <input
         placeholder={`Phone ${index + 1}`}
         type="number"
+      title={field.phone_number}
         {...register(`pilgrims.${index}.phone_number`)}
-        className={`border pl-6 border-gray-300 rounded p-2 w-full ${field.editable ? "bg-slate-200" : ''}`}
+        className={`border pl-6 border-gray-300 rounded p-2 w-full relative ${field.editable ? "bg-slate-200" : ''}`}
         disabled={field.editable} // Disable input based on editable flag
       />
-      <div className="absolute inset-y-0 left-0 flex items-center pointer-events-none pl-2">
+      {/* <div className="absolute inset-y-0 left-0 flex items-center pointer-events-none pl-2"> */}
+      <div className="flex absolute items-center inset-y-0 left-0 h-9 space-x-2">
         <FaPhoneAlt className="text-gray-400" />
-      </div>
+        </div>
       {errors?.pilgrims?.[index]?.phone_number && (
-        <p className="text-red-600 text-sm">
+        <p className="text-red-600 text-sm mt-2">
           {errors.pilgrims[index].phone_number.message}
         </p>
       )}
+  
     </div>
-    
     <div className="md:col-span-3 col-span-6 relative">
       <input
         placeholder={`Adhaar ${index + 1}`}
         type="number"
+        title={field.aadhaar_number}
         {...register(`pilgrims.${index}.aadhaar_number`)}
         className={`border border-gray-300 rounded p-2 pl-7 w-full ${field.editable ? "bg-slate-200" : ''}`}
         disabled={field.editable} // Disable input based on editable flag
       />
-      <div className="absolute pl-2 inset-y-0 left-0 flex items-center pointer-events-none ">
+      <div className="absolute pl-2 inset-y-0 left-0 flex items-center pointer-events-none h-9">
         <FaAddressCard className="text-gray-400" />
       </div>
       {errors?.pilgrims?.[index]?.aadhaar_number && (
@@ -368,8 +383,8 @@ if(selectedPilgrims.length>0 && masterPilgrim >=0)
         className={`border border-gray-300 rounded p-2 w-full disable-spinner ${field.editable ? "bg-slate-200" : ''}`}
         disabled={field.editable} // Disable input based on editable flag
       />
-      <div className="absolute pl-8 inset-y-0 left-0 flex items-center pointer-events-none">
- Y
+      <div className="absolute pl-8 inset-y-0 left-0 flex items-center pointer-events-none h-9">
+
       </div>
       {errors?.pilgrims?.[index]?.age && (
         <p className="text-red-600 text-sm">
@@ -384,6 +399,7 @@ if(selectedPilgrims.length>0 && masterPilgrim >=0)
         className={`border border-gray-300 rounded p-2 w-full ${field.editable ? "bg-slate-200" : ''}`}
         disabled={field.editable} // Disable input based on editable flag
         defaultValue={"VIP Break"}
+        title={field.seva}
       >
         <option value="">Select Seva</option>
         <option value="VIP Break">VIP Break</option>
@@ -396,8 +412,8 @@ if(selectedPilgrims.length>0 && masterPilgrim >=0)
     </div>
     
 
-    {<div className="col-span-2 flex items-center">
-      {field.editable ? (
+    {<div className="col-span-2 flex items-center h-9">
+      {bookedPilgrimDetails.some(pilgrim => pilgrim.aadhaar_number === field.aadhaar_number) &&<div>{ field.editable ? (
                 <button
                   type="button"
                   className="text-black"
@@ -415,17 +431,7 @@ if(selectedPilgrims.length>0 && masterPilgrim >=0)
                   <Pencil className="mx-auto" />
                 </button>
               )}
-      {/* {(Object.prototype.hasOwnProperty.call(field, "editable")) && !shouldDisableEditDeleteIn38hrs(field.booked_datetime)&&
-        <button
-          type="button"
-          // disabled={shouldDisableEditDeleteIn38hrs(field.booked_datetime)}
-          className="text-lime-500 rounded hover:bg-lime-700"
-          onClick={() => toggleEdit(index)} // Toggle edit mode on click
-        >
-         <Pencil/>
-         
-        </button>
-      } */}
+      </div>}
       { <button
         type="button"
         className="text-red-500 rounded hover:bg-red-700 ml-2"
@@ -434,7 +440,7 @@ if(selectedPilgrims.length>0 && masterPilgrim >=0)
         <MdDeleteOutline size={24} />
       </button>}
 <div>
-              <input
+             {bookedPilgrimDetails.some(pilgrim => pilgrim.aadhaar_number === field.aadhaar_number) &&<input
                 type="checkbox"
                 id={`pilgrims.${index}.select`}
                 name={`pilgrims.${index}.select`}
@@ -446,7 +452,7 @@ if(selectedPilgrims.length>0 && masterPilgrim >=0)
                   handleCheckboxChange(index,e.target.checked)
                 }}
                 checked={field.selected||false}
-              />
+              />}
               </div>
           
     </div>}
