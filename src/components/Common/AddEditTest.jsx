@@ -189,7 +189,7 @@ const AddEditFormTest = ({ bookingsObject, getPilgrimDetails, date, bookingsLeft
         {date && <span className="font-mono text-sm">Date: {parseDate(date)}</span>}
         {date && <span className={`font-mono text-base mr-5 text-black font-bold ${getTicketClass(bookingsLeft)}`}> Available: {bookingsLeft}</span>}
       </div>
-
+    <div className="text-xs text-green-600 font-mono">Enter number of pilgrims</div>
       <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-lg p-6 w-full max-w-8xl">
         {fields.map((field, index) => (
           <div key={field.id} className="grid sm:grid-cols-12 gap-2 mb-4">
