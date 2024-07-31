@@ -507,8 +507,8 @@ const pilgrimCountsallowed = Array.from({length:initialBookings},(_,index)=>inde
         )}
    </div>
         <div className={`flex justify-start `}>
-          {hideAddCountButton &&!bookedPilgrimDetails.length> 0&& <button type="submit" className="bg-lime-500 text-white py-2 w-20 px-2 rounded hover:bg-lime-700" >
-            Submit
+          {hideAddCountButton &&!bookedPilgrimDetails.length> 0&& <button type="submit" className="bg-lime-500 text-white  text-xs py-2 w-20 px-2 rounded hover:bg-lime-700" >
+          AddPilgrims
           </button>
       
           }
