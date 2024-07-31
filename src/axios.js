@@ -30,7 +30,7 @@ const refreshAccessToken = async () => {
 // Request interceptor to attach token to headers
 axiosInstance.interceptors.request.use(
   (config) => {
-    console.log(config)
+    // console.log(config)
     const token = localStorage.getItem('access_token');
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
@@ -53,10 +53,12 @@ axiosInstance.interceptors.response.use(
   },
   async(error) => {
     if (error.response && error.response.status === 401) {
-      // toast.error('Session expired. Please log in again.');
+   
       localStorage.removeItem('access_token');
       localStorage.removeItem('refresh_token'); // Remove this if not using refresh tokens
-      //  window.location.href = '/login';
+       window.location.href = '/login';
+       toast.error('Session expired. Please log in again.');
+    
     }
 
     if (error.response && error.response.status === 404) {
@@ -84,6 +86,7 @@ axiosInstance.interceptors.response.use(
           } else if(error.response && error.response.status === 401){
             resolve(axiosInstance(originalRequest));
           }
+         
           else {
             // While refreshing, queue the original request
             return new Promise((resolve, reject) => {
@@ -95,7 +98,10 @@ axiosInstance.interceptors.response.use(
           }
         }
 
-
+      if(error.response && error.response.status === 500 && ! (localStorage.getItem('access_token')))
+          {
+           window.location.href="/login"
+          }
 
     return Promise.reject(error);
   }

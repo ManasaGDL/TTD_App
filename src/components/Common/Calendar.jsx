@@ -3,12 +3,13 @@ import { startOfMonth, endOfMonth, eachDayOfInterval, format, addDays, subMonths
 import { FiArrowRight, FiArrowLeft } from 'react-icons/fi';
 import { FaTicketAlt } from 'react-icons/fa';
 import Modal from './Modal';
-import AddEditForm from './AddEditForm';
+
 import { constants } from '../../constant';
 import apis from '../../api/apis';
 import { useLoading } from '../../context/LoadingContext';
 import { Toaster, toast } from 'sonner';
-import AddEditTest from './AddEditTest';
+
+import AddEditFormNewLayout from './AddEditFormNewLayout';
 
 const Calendar = () => {
   const [currentPageStart, setCurrentPageStart] = useState(startOfMonth(new Date()));
@@ -22,7 +23,7 @@ const Calendar = () => {
   const [ bookedPilgrimDetails , setBookedPilgrimDetails] = useState([])
    const { setIsLoading} = useLoading()
   useEffect(() => {
-  
+
     const fetchBlockedDatesAndAvailability = async () => {
       setIsLoading(true)
       try {
@@ -51,16 +52,16 @@ if(blockedDates.length>0)
       start: currentPageStart,
       end: endDate,
     }).reduce((acc, day) => {
-      acc[format(day, 'yyyy-MM-dd')] = initialBookings;
+      acc[format(day, 'yyyy-MM-dd')] = null;
       return acc;
     }, {});
     setBookings(days);
-  }, [currentPageStart, initialBookings]);
+  }, [currentPageStart]);
   const getPilgrimDetails=async(date)=>{
     try{
 
      const res = await apis.getPilgrimDetails(format(date,'yyyy-MM-dd'))
-    setBookedPilgrimDetails(res?.data)
+    setBookedPilgrimDetails(res?.data || [])
     }catch(e)
     {toast.error("Something went wrong!")
     console.log(e)
@@ -82,6 +83,11 @@ try{
 console.log(e)
 }
  }
+
+ const isCurrentMonth = () =>{
+  const today = startOfToday();
+  return (currentPageStart.getFullYear() === today.getFullYear() && currentPageStart.getMonth() === today.getMonth())
+ }
   useEffect(() => {
     if (toastMessage.type === 'success') {
       toast.success(toastMessage.message);
@@ -91,7 +97,9 @@ console.log(e)
       toast.error(toastMessage.message);
     }
   }, [toastMessage]);
-
+useEffect(()=>{
+console.log(bookings)
+},[bookings])
   const getMonthSlotAvailability = async () => {
     try {
       const res = await apis.getMonthSlotAvailability(currentPageStart.getMonth() + 1, currentPageStart.getFullYear());
@@ -105,10 +113,10 @@ const transformedObject = blockedDates.reduce((acc,blockdate)=>{
   acc[blockdate]=0
   return acc;
 },{})
-res?.data.forEach(({booked_datetime,vacant_count})=>{
+res?.data.forEach(({booked_datetime,pilgrim_count})=>{
   if(!blockedDates.includes(booked_datetime))
     {
-      transformedObject[booked_datetime]= vacant_count
+      transformedObject[booked_datetime]= pilgrim_count
     }
 })
       setBookings(prev => {
@@ -133,22 +141,35 @@ res?.data.forEach(({booked_datetime,vacant_count})=>{
   };
 
   const getDayClass = day => {
-    const bookingsLeft = bookings[format(day, 'yyyy-MM-dd')];
-    if (bookingsLeft === initialBookings) return 'text-lime-500';
-    if (bookingsLeft > mid_bookings) return 'text-yellow-500';
-    if (bookingsLeft > 0) return 'text-orange-500';
-    return 'text-red-500';
+    const bookingsDone = bookings[format(day, 'yyyy-MM-dd')]>0?true:false;
+
+    if(bookingsDone)
+    {
+      return 'text-red-500'
+    }
+    else return 'text-lime-500'
+    // console.log("bl",bookingsLeft)
+    // if (bookingsLeft === initialBookings) return 'text-lime-500';
+    // if (bookingsLeft > mid_bookings) return 'text-yellow-500';
+    // if (bookingsLeft > 0) return 'text-orange-500';
+    // return 'text-red-500';
   };
 const getDayClassforSmallScreens = day =>{
- 
-  const bookingsLeft = bookings[format(day, 'yyyy-MM-dd')];
-  if (bookingsLeft === initialBookings) return 'bg-lime-500';
-  if (bookingsLeft > mid_bookings) return 'bg-yellow-500';
-  if (bookingsLeft > 0) return 'bg-orange-500';
-  return 'bg-red-500';
+  const bookingsDone = bookings[format(day, 'yyyy-MM-dd')]<6?true:false;
+  if(bookingsDone)
+    {
+      return 'bg-red-500'
+    }
+    else return 'bg-lime-500'
+  // const bookingsLeft = bookings[format(day, 'yyyy-MM-dd')];
+  // if (bookingsLeft === initialBookings) return 'bg-lime-500';
+  // if (bookingsLeft > mid_bookings) return 'bg-yellow-500';
+  // if (bookingsLeft > 0) return 'bg-orange-500';
+  // return 'bg-red-500';
 
 }
   const goToPreviousPage = () => {
+   
     setCurrentPageStart(subMonths(currentPageStart, 1));
   };
 
@@ -174,11 +195,11 @@ const getDayClassforSmallScreens = day =>{
   return (
     <div className="w-full mx-auto sm:max-w-4xl md:max-w-4xl mb-4">
       {/* <Toaster richColors position="top-center" /> */}
-      <div className="flex justify-between mb-4">
-        <button onClick={goToPreviousPage} className="text-3xl text-black px-4 py-2 rounded hover:text-4xl">
+      <div className={`flex justify-center mb-4`}>
+        {!isCurrentMonth() && <button onClick={goToPreviousPage} className="text-3xl text-black px-4 py-2 rounded hover:text-4xl">
           <FiArrowLeft />
-        </button>
-        <h2 className="text-xl">{format(currentPageStart, 'MMMM yyyy')}</h2>
+        </button>}
+        <h2 className={`text-xl mt-2`}>{format(currentPageStart, 'MMMM yyyy')}</h2>
         <button onClick={goToNextPage} className="text-3xl text-black px-4 py-2 rounded hover:text-4xl">
           <FiArrowRight />
         </button>
@@ -197,7 +218,7 @@ const getDayClassforSmallScreens = day =>{
           <div key={index} className="text-center">
             {day && (
               <div
-                className={`w-18 h-14 sm:h-16 sm:w-18 text-center rounded-lg text-black border    ${isDayBeforeToday(day) ?'bg-gray-400 sm:bg-gray-400 sm:hover:bg-gray-400'  : 'hover:bg-slate-200'}
+                className={`w-18 h-14 sm:h-16 sm:w-18 text-center rounded-lg text-black border    ${isDayBeforeToday(day) ?'bg-slate-500 sm:bg-slate-300 sm:hover:bg-gray-400'  : 'hover:bg-slate-200'}
                
                    ${window.innerWidth <= 768 ? (isDayBeforeToday(day) ? 'bg-gray-400 hover:bg-gray-400' : getDayClassforSmallScreens(day)):''}
                    border-gray-300 mb-2 md:grid md:grid-cols-12 items-center `}
@@ -216,16 +237,16 @@ const getDayClassforSmallScreens = day =>{
                 <span className="font-bold flex text-xs text-center justify-center md:text-sm block md:col-span-2 pr-1 sm:pl-5">{format(day, 'd')}</span>
                 <div className="text-xs md:text-base block md:col-span-8 flex flex-col items-center justify-center">
                   {bookings[format(day, 'yyyy-MM-dd')] === 0 ? (
-                    <div className="grid grid-rows-2 pl-4">
-                     {<div className="hidden sm:block"><FaTicketAlt className={`text-red-500 `} /></div>}
-                      <div className='sm:text-red-500 sm:text-base font-mono pr-5 text-xs text-white'>NA</div>
+                    <div className="grid pl-4">
+                     {<div className="hidden sm:block"><FaTicketAlt size={25}className={`text-red-500 `} /></div>}
+                      {/* <div className='sm:text-red-500 sm:text-base font-mono pr-5 text-xs text-white'>NA</div> */}
                     </div>
                   ) : (
                     <>
                       {/* <span className="md:hidden">{bookings[format(day, 'yyyy-MM-dd')]}/6</span> */}
-                      <div className="grid grid-rows-2 text-center justify-center pl-6">
-                       { <div className="hidden sm:block"><FaTicketAlt className={`${getDayClass(day)} text-base  `} /></div>}
-                        <div className="pr-5 text-white sm:text-black">Avl:{bookings[format(day, 'yyyy-MM-dd')]}</div>
+                      <div className="grid  text-center justify-center pl-6">
+                       { <div className="hidden sm:block"><FaTicketAlt  size={25} className={`${getDayClass(day)} text-base  `} /></div>}
+                        {/* <div className="pr-5 text-white sm:text-black">Avl:{bookings[format(day, 'yyyy-MM-dd')]}</div> */}
                       </div>
                     </>
                   )}
@@ -235,15 +256,26 @@ const getDayClassforSmallScreens = day =>{
           </div>
         ))}
       </div>
+           {/* Legend */}
+           <div className="flex justify-center mt-4 space-x-6 font-mono">
+        <div className="flex items-center ">
+          <FaTicketAlt className="text-red-500" />
+          <span className="ml-2">Booked</span>
+        </div>
+        <div className="flex items-center">
+          <FaTicketAlt className="text-lime-500" />
+          <span className="ml-2">Available</span>
+        </div>
+      </div>
       {
       // bookings[selectedDate] > 0 && 
       (
         <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
-          <AddEditForm
+          <AddEditFormNewLayout
             getPilgrimDetails={getPilgrimDetails}
             bookingsObject={bookings}
             date={selectedDate}
-            bookingsLeft={bookings[selectedDate]}
+            bookingsCount={bookings[selectedDate]}
             setIsModalOpen={setIsModalOpen}
             setToastMessage={setToastMessage}
             isModalOpen={isModalOpen}

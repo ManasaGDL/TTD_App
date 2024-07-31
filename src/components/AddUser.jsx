@@ -88,6 +88,7 @@ const RegistrationForm = () => {
     }
   };
 
+  
   return (
     <>
       <Toaster richColors position='top-center' />

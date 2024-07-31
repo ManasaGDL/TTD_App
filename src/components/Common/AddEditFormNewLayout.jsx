@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { Pencil } from "lucide-react";
 import { IoPersonAddSharp } from "react-icons/io5";
-import { format, parseISO, isValid ,differenceInHours} from "date-fns";
+import { format, parseISO, isValid ,differenceInHours,subDays} from "date-fns";
 import PropTypes from 'prop-types';
 import apis from "../../api/apis";
 import { constants } from "../../constant";
@@ -43,7 +43,7 @@ const schema = yup.object({
   ),
 });
 
-const AddEditForm = ({ bookingsObject,getPilgrimDetails, date, bookingsLeft, setIsModalOpen, setToastMessage, isModalOpen, bookedPilgrimDetails }) => {
+const AddEditFormNewLayout = ({ bookingsObject,getPilgrimDetails, date, bookingsCount, setIsModalOpen, setToastMessage, isModalOpen, bookedPilgrimDetails=[] }) => {
   const [initialBookings, setInitialBookings] = useState(localStorage.getItem('is_mla')==='true' ? constants.Mla : constants.Mp);
   const [ deleteIndex, setDeleteIndex] = useState(null)
   const [ openModal , setOpenModal] = useState(false)
@@ -53,6 +53,9 @@ const AddEditForm = ({ bookingsObject,getPilgrimDetails, date, bookingsLeft, set
   const [ showMaster , setShowMaster] = useState(false)
   const [payloadForDownload , setPayloadForDownload] = useState({})
   const [ startPreviewDownload , setStartPreviewDownload] = useState(false)
+  const [pilgrimCount , setPilgrimCount] = useState(bookingsCount)
+  const [ hideAddCountButton , setHideAddCountButton] = useState(false)
+  const [editMode, setEditMode] = useState(false); 
   const { register, control, handleSubmit, formState: { errors }, reset ,setValue, watch,trigger} = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -71,6 +74,11 @@ const AddEditForm = ({ bookingsObject,getPilgrimDetails, date, bookingsLeft, set
     name: "pilgrims",
   });
 const watchFields = watch('pilgrims')
+useEffect(()=>{  
+    //set pilgrimscount
+console.log("BCount",bookingsCount)
+    setPilgrimCount(bookingsCount?bookingsCount:1)
+},[bookingsCount])
 useEffect(() => {
   const subscription = watch((value, { name, type }) =>{if(type==='change')
 trigger(name)
@@ -80,7 +88,8 @@ trigger(name)
 }, [watch])
 
   useEffect(() => {
-    
+
+
     reset({
       pilgrims: bookedPilgrimDetails.map(pilgrim => ({
         ...pilgrim,
@@ -93,8 +102,15 @@ trigger(name)
   }, [date, bookedPilgrimDetails, reset]);
 
   useEffect(() => {
-    if (!isModalOpen) reset();
-  }, [isModalOpen, reset]);
+   
+    if (!isModalOpen) 
+        {
+            reset();
+            setHideAddCountButton(false)
+            setPilgrimCount(bookingsCount?bookingsCount:1)
+        }
+       
+  }, [isModalOpen, reset,bookingsCount]);
 const shouldDisableEditDeleteIn38hrs=(bookingDate)=>{
   const currentDate = new Date();
   const parsedBookingDate = parseISO(bookingDate);
@@ -124,13 +140,16 @@ const extractErrorMessage = (error) => {
   }
   return "Unknown error";
 };
-
+const pilgrimCountsallowed = Array.from({length:initialBookings},(_,index)=>index+1)
   const onSubmit = async (data) => {
-   
+
     try {
       // Filter out pilgrims that are already booked and should not be added again
       // const newPilgrims = data.pilgrims.filter(pilgrim => !bookedPilgrimDetails.some(bookedPilgrim => bookedPilgrim.aadhaar_number === pilgrim.aadhaar_number));
-  const editPilgrims =[]
+  data.pilgrims.forEach((pilgrim,index)=>{
+    pilgrim.is_master=index===0
+  })
+      const editPilgrims =[]
   const newPilgrims =[]
 
   data.pilgrims.forEach(pilgrim=>{
@@ -145,12 +164,20 @@ const extractErrorMessage = (error) => {
  if(!Object.prototype.hasOwnProperty.call(pilgrim, 'editable'))
      newPilgrims.push(pilgrim)
   })
-
+ 
   // Object.values(data).flat()
   if(newPilgrims.length>0)
-     { const response = await apis.addPilgrims(newPilgrims);
+
+     { 
+        
+        const response = await apis.addPilgrims( { pilgrims:newPilgrims,
+            pilgrim_count:pilgrimCount,
+            booked_datetime: newPilgrims.length > 0 ? newPilgrims[0].booked_datetime : "" 
+       });
+      
       if (response.status === 201) {
         setIsModalOpen(false);
+        
         setToastMessage({ type: 'success', message: "Booked Successfully" });
         reset();
       }
@@ -160,12 +187,18 @@ const extractErrorMessage = (error) => {
         const response = await apis.updatePilgrims(editPilgrims);
         if (response.status === 200) {
           setIsModalOpen(false);
+          setHideAddCountButton(false)
+       
           setToastMessage({ type: 'success', message: "Booked/Edited Successfully" });
           reset();
         }
   
       }
-    } catch (e) {
+    
+   
+}catch (e) {
+    setHideAddCountButton(false)
+          setPilgrimCount(1)
       if (e.response && e.response.status === 400) {
         const errorMessage = extractErrorMessage(e.response?.data?.error);
        
@@ -176,9 +209,15 @@ const extractErrorMessage = (error) => {
       }
     }
   };
-
+// const convertData =(dataArray)=>{
+//     return { pilgrims:dataArray,
+//          pilgrim_count:pilgrimCount,
+//          booked_datetime: inputArray.length > 0 ? inputArray[0].booked_datetime : "" 
+//     }
+// }
   const addPilgrim = () => {
-    if (fields.length < initialBookings) {
+    setHideAddCountButton(true)
+    if (fields.length < pilgrimCount) {
       append({
         pilgrim_name: "",
         age: "",
@@ -188,19 +227,23 @@ const extractErrorMessage = (error) => {
         booked_datetime: date
       });
     }
+    
   };
 
   const toggleEdit = (index) => {
- 
+    setEditMode(!editMode)
     const updatedPilgrims = [...fields];
    
     updatedPilgrims[index].editable = !updatedPilgrims[index].editable;
-    updatedPilgrims[index].clicked = true
+    updatedPilgrims[index].clicked = !updatedPilgrims[index].clicked;
     update(index, updatedPilgrims[index]);
+
     // reset({
     //   pilgrims: updatedPilgrims
     // });
   };
+
+
 
   const parseDate = (date) => {
     const parsedDate = parseISO(date);
@@ -220,40 +263,8 @@ const extractErrorMessage = (error) => {
       else remove(index)
     
     }
-    useEffect(()=>{
-if(selectedPilgrims.length>0 && masterPilgrim !== null && masterPilgrim !== undefined && masterPilgrim >= 0)
- { 
-const master_id= bookedPilgrimDetails[masterPilgrim].pilgrim_id;
-const exists = selectedPilgrims.some(pilgrim=>pilgrim.pilgrim_id===master_id)
+   
 
-if(exists)
-  {setStartPreviewDownload(true)
-  
-  const ids=selectedPilgrims.map(pilgrim => pilgrim.pilgrim_id)
-
-   setPayloadForDownload({"pilgrim_id":ids,is_master:true,"accommodation_date":format(parseISO(bookedPilgrimDetails[masterPilgrim]?.booked_datetime),"yyyy-MM-dd"),"darshan_date":format(parseISO(bookedPilgrimDetails[masterPilgrim]?.booked_datetime),'yyyy-MM-dd'),"email":bookedPilgrimDetails[masterPilgrim]?.email,"contact":bookedPilgrimDetails[masterPilgrim]?.phone_number})
-  }
-  else{
-    toast.error("Master Pilgrim not checked for print. Please check!")
-    setStartPreviewDownload(false)
-  }
-  }
-    },[masterPilgrim ,selectedPilgrims])
-    const handleCheckboxChange = (index, checked) => {
-      const updatedPilgrims = [...fields];
-      updatedPilgrims[index].selected = checked;
-      update(index, updatedPilgrims[index]);
-  
-      if (checked) {
-        
-        setSelectedPilgrims([...selectedPilgrims, updatedPilgrims[index]]);
- 
-      } else {
-      
-       
-        setSelectedPilgrims(selectedPilgrims.filter(pilgrim=>!(pilgrim.pilgrim_id === updatedPilgrims[index].pilgrim_id && !updatedPilgrims[index].selected)));
-      }
-    };
     const handlePilgrimDelete=async()=>{
 
       try{
@@ -272,18 +283,11 @@ if(exists)
       
     //  P
       const handlePreviewOrDownload = () => {
-       
-       if(selectedPilgrims.length<=0)
-       {
-        toast.error("Select the Checkboxes for print")
-       }
-       
-        else if (masterPilgrim === null) {
-          setShowMaster(true)
-          toast.error('Please select a master pilgrim before previewing or downloading.');
-          return;
-
-        }
+      
+       setStartPreviewDownload(true)
+        setPayloadForDownload({"pilgrims":bookedPilgrimDetails,"accommodation_date":format(subDays(format(parseISO(bookedPilgrimDetails[0]?.booked_datetime),"yyyy-MM-dd"),1),'yyyy-MM-dd'),
+            "darshan_date":format(parseISO(bookedPilgrimDetails[0]?.booked_datetime),'yyyy-MM-dd'),
+           "pilgrim_count":bookingsCount})
       
   
       };
@@ -294,11 +298,29 @@ if(exists)
         if (bookingsLeft > 0) return 'text-orange-500';
         return 'text-red-500';
       };
+
+  
   return (
     <div className="overflow-y-auto h-full max-h-screen">
       <MyModal isOpen={openModal} handlePilgrimDelete = { handlePilgrimDelete} setIsModalOpen={setOpenModal} title="Delete?" message="Are you sure to Delete the Booked Pilgrim"/>
        <div className="flex justify-between ">
-       <span>{date && <span className="font-mono text-sm">Date: {parseDate(date)} </span>}</span> 
+    
+       { <div className="text-sm text-black-600 font-mono">
+       <div>{date && <span className="font-mono text-sm">Date: {parseDate(date)} </span>}</div> 
+       <label> Enter number of pilgrims
+            <select onChange={e=>setPilgrimCount(e.target.value)} value={pilgrimCount} disabled={bookingsCount>0}
+            className="border border-green-300 rounded ml-3 focus:outline-none p-2">
+            {pilgrimCountsallowed.map(val=>{
+            return <option  key={val} value={val}>{val}</option>
+            })}
+            </select>
+            { bookingsCount===null && <button type="submit" onClick={addPilgrim}
+             className="ml-2 bg-lime-500 text-white py-1 w-20 px-2 rounded hover:bg-lime-700" >
+            Submit
+          </button>}
+</label>
+
+</div>}
      
        {
        bookedPilgrimDetails.length>0 
@@ -309,7 +331,7 @@ if(exists)
           <button className=" px-4 py-2 rounded" onClick={()=>{
             handlePreviewOrDownload()
           }}>
-            <PDFViewer payloadForDownload={payloadForDownload} download={startPreviewDownload} setSelectedPilgrims={setSelectedPilgrims} setMasterPilgrim={setMasterPilgrim}/>
+            { <PDFViewer payloadForDownload={payloadForDownload} download={startPreviewDownload} />}
             {/* <IoPrint size={25}></IoPrint><span className="font-mono text-xs text-lime-700">{selectedPilgrims.length>0?"Pilgrims selected for print":""} </span> */}
           </button>
           </div>
@@ -319,37 +341,16 @@ if(exists)
               <polygon className="fill-current" points="0,0 127.5,127.5 255,0" />
             </svg>
           </div>}
-        {date && <span className={`font-mono ml-4 text-base mr-5 text-black font-bold ${getTicketClass(bookingsLeft)} `}> Available:{bookingsLeft}</span>}
+        {/* {date && <span className={`font-mono ml-4 text-base mr-5 text-black font-bold ${getTicketClass(bookingsLeft)} `}> Available:{bookingsLeft}</span>} */}
         </div>
 }
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-lg p-6 w-full max-w-8xl">
-        {/* {bookedPilgrimDetails.length > 0 && <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-mono">Pilgrim Details</h2>
-        </div>} */}
-
+       
 {fields.map((field, index) =>(
-  <div key={field.id} className="grid gap-2 mb-4" style={{ gridTemplateColumns: 'repeat(14, 1fr)' }}>
+  <div key={field.id} className="grid gap-2 mb-4" style={{ gridTemplateColumns: 'repeat(14, 1fr)' }}>   
  
-     
-    
-     {bookedPilgrimDetails.some(pilgrim => pilgrim.aadhaar_number === field.aadhaar_number) && (
-      <div className="flex flex-col items-center col-span-1">
-        <label htmlFor="master" className="text-sm font-medium text-gray-700">
-          Master
-        </label>
-        <input
-          type="radio"
-          id={`pilgrims.${index}.is_master`}
-          name="is_master"
-          value={index}
-          checked={masterPilgrim === index}
-          onChange={() => setMasterPilgrim(index)}
-          className="mt-1 focus:ring-green-500 h-4 w-4 text-green-600 border-gray-300"
-        />
-      </div>
-    )}
     
     <div className="col-span-12 md:col-span-3 relative ml-2">
       <input
@@ -475,31 +476,23 @@ if(exists)
       >
         <MdDeleteOutline size={24} />
       </button>}
-<div>
-             {bookedPilgrimDetails.some(pilgrim => pilgrim.aadhaar_number === field.aadhaar_number) &&<input
-                type="checkbox"
-                id={`pilgrims.${index}.select`}
-                name={`pilgrims.${index}.select`}
-                onChange={(e) => {
-                  const checked = e.target.checked;
-                  const updatedPilgrims = [...fields];
-                  updatedPilgrims[index].selected = checked;
-                  update(index, updatedPilgrims[index]);
-                  handleCheckboxChange(index,e.target.checked)
-                }}
-                checked={field.selected||false}
-              />}
-              </div>
+
           
     </div>}
   </div>
 ))}
 
-    
+  <div className="flex text-center justify-center">
+  {
+            fields.some(field=>field.clicked===true) && <button type="submit" className="bg-lime-500 text-white py-2 w-20 px-2 rounded hover:bg-lime-700" >
+          Edit
+          </button>
+          }
+    </div>  
 
 <div className={`grid grid-cols-2 gap-2`}>
     <div className="flex justify-end">
-    { fields.length < initialBookings &&(
+    { hideAddCountButton && fields.length < pilgrimCount &&(
           <button
             type="button"
             onClick={addPilgrim}
@@ -508,15 +501,18 @@ if(exists)
              text-xs"
           
           >
-            <IoPersonAddSharp className="sm:text-l mr-1 text-lime-500 text-sm " />
-            Add  Pilgrim
+            <IoPersonAddSharp className="sm:text-xs mr-1 text-lime-500 text-xs " />
+           <label className="text-xs">Click to add details of other pilgrims(not mandatory)</label>
           </button>
         )}
    </div>
         <div className={`flex justify-start `}>
-          {!bookingsLeft==0 &&<button type="submit" className="bg-lime-500 text-white py-2 w-20 px-2 rounded hover:bg-lime-700" >
+          {hideAddCountButton &&!bookedPilgrimDetails.length> 0&& <button type="submit" className="bg-lime-500 text-white py-2 w-20 px-2 rounded hover:bg-lime-700" >
             Submit
-          </button>}
+          </button>
+      
+          }
+         
         </div>
         </div>
        
@@ -525,7 +521,7 @@ if(exists)
   );
 };
 
-AddEditForm.propTypes = {
+AddEditFormNewLayout.propTypes = {
   bookingsObject: PropTypes.object,
   date: PropTypes.string,
   bookingsLeft: PropTypes.number,
@@ -535,4 +531,4 @@ AddEditForm.propTypes = {
   bookedPilgrimDetails: PropTypes.array
 };
 
-export default AddEditForm;
+export default AddEditFormNewLayout;

@@ -16,6 +16,7 @@ getMonthSlotAvailability:(month,year)=>{
     return axios_instance.get(`/api/users/pilgrimstats/?month=${month}&year=${year}`)
 },
 addPilgrims:(data)=>{
+ 
     return axios_instance.post(`/api/users/pilgrims/`,data)
 },
 getBlockedDates:()=>{
