@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState} from "react";
 import PropTypes from 'prop-types';
 
 const Modal = ({ open, onClose, children }) => {
@@ -9,9 +9,8 @@ const Modal = ({ open, onClose, children }) => {
       className={`fixed inset-0 flex justify-center items-center transition-colors w-full sm:max-w-9xl ${
         open ? "visible bg-black/20" : "invisible"
       }`}
-      onClick={onClose}
     >
-      <div
+      <div 
         className={`bg-white rounded-lg shadow p-6 transition-all ${
           open ? "scale-100 opacity-100" : "scale-110 opacity-0"
         } max-w-7xl flex w-full mx-4 sm:max-w-7xl md:max-w-7xl lg:max-w-4xl`}

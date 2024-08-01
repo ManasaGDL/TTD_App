@@ -1,8 +1,9 @@
 import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 import { useState } from 'react'
+import { useLoading } from '../../context/LoadingContext'
 
 export default function MyModal({isOpen,setIsModalOpen,title,message,handlePilgrimDelete,id}) {
-  
+
 
   // function open() {
   //   setIsOpen(true)
@@ -15,7 +16,7 @@ export default function MyModal({isOpen,setIsModalOpen,title,message,handlePilgr
   return (
     <>
        <Dialog open={isOpen} as="div" className="relative z-10 ml-2 text-center text-black focus:outline-none" onClose={() => setIsModalOpen(false)}>
-        <div className="fixed inset-0 z-10 overflow-y-auto ">
+        <div className="fixed inset-0 z-10 overflow-y-auto " >
           <div className="flex min-h-full items-center justify-center p-4">
             <DialogPanel className="w-full max-w-4xl rounded-xl bg-white/5 backdrop-blur-2xl p-6 border duration-300 ease-out transform transition-transform data-[closed]:scale-95 data-[closed]:opacity-0">
               <DialogTitle as="h3" className="text-lg font-medium text-black">

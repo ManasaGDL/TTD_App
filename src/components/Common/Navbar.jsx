@@ -15,10 +15,10 @@ const Navbar = ({ setBlur }) => {
   const location = useLocation();
 
   const navLinks = [
-    { label: "Dashboard", href: "/dashboard" },
+    // { label: "Dashboard", href: "/dashboard" },
     { label: "Bookings", href: "/bookings" },
-    { label: "About", href: "/about" },
-    { label: "Contact", href: "/contact" },
+    // { label: "About", href: "/about" },
+    // { label: "Contact", href: "/contact" },
   ];
 
   const toggleUserSettings = () => {
@@ -64,7 +64,7 @@ const Navbar = ({ setBlur }) => {
               key="view-users"
               className={`font-mono hover:text-xl hidden sm:block ${location.pathname === "/view-users" ? 'text-lime-500 text-xl' : 'text-black-400'}`}
             >
-              ViewUsers
+              View-Users
             </Link>
           )}
         </div>
@@ -93,7 +93,7 @@ const Navbar = ({ setBlur }) => {
             )}
           </section>
         </div>
-        <section className="flex items-center gap-4 font-mono">
+        {/* <section className="flex items-center gap-4 font-mono">
           <div className="grid grid-col-1">
             <div>
               <span>{localStorage.getItem('email')}</span>
@@ -119,7 +119,7 @@ const Navbar = ({ setBlur }) => {
                   to="/blockdates"
                   className={`block px-4 py-2 text-gray-800 hover:bg-gray-100 ${location.pathname === "/blockdates" ? 'text-red-400 text-xl' : 'text-black-400'}`}
                 >
-                  Block
+                  Block/Unblock
                 </Link>
                 {localStorage.getItem("super_user") === 'true' && (
                   <Link
@@ -135,7 +135,54 @@ const Navbar = ({ setBlur }) => {
               </div>
             )}
           </div>
-        </section>
+        </section> */}
+      <section className="flex flex-col sm:flex-row items-center gap-1 sm:gap-4 font-mono">
+  {/* User Info */}
+  <div className="flex flex-col gap-1 text-center sm:text-left">
+    <span className="text-xs sm:text-lg font-semibold">{localStorage.getItem('email')}</span>
+    <span className="sm:text-base text-xs text-red-600 font-semibold ">
+      {localStorage.getItem('user_name')},{' '}
+      {localStorage.getItem('is_mla') === 'true'
+        ? 'MLA'
+        : localStorage.getItem('is_mla') === 'false'
+        ? 'MP'
+        : 'Admin'}
+    </span>
+    <span className="sm:text-base text-xs text-red-600 font-bold ">
+      {localStorage.getItem('constituency')} Constituency
+    </span>
+  </div>
+  
+  {/* User Settings */}
+  <div className="relative sm:mt-0">
+    <button onClick={toggleUserSettings} className="p-2 rounded-full bg-green-500 hover:bg-green-600 transition-colors">
+      <RxAvatar className=" h-4 w-4 sm:h-8 sm:w-8 text-white" />
+    </button>
+    {openUserSettings && (
+      <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg" ref={userSettingsRef}>
+        <Link
+          to="/blockdates"
+          className={`block px-4 py-2 text-gray-800 hover:bg-gray-100 ${location.pathname === "/blockdates" ? 'text-red-500 font-semibold' : 'text-gray-700'}`}
+        >
+          Block/Unblock
+        </Link>
+        {localStorage.getItem("super_user") === 'true' && (
+          <Link
+            to="/add_newuser"
+            className={`block px-4 py-2 text-gray-800 hover:bg-gray-100 ${location.pathname === "/add_newuser" ? 'text-red-500 font-semibold' : 'text-gray-700'}`}
+          >
+            Add New User
+          </Link>
+        )}
+        <button onClick={() => logout()} className="block px-4 py-2 w-full text-left text-gray-800 hover:bg-gray-100">
+          Logout
+        </button>
+      </div>
+    )}
+  </div>
+</section>
+
+
       </nav>
     </main>
   );
