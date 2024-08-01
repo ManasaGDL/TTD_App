@@ -159,7 +159,7 @@ const Navbar = ({ setBlur }) => {
       <RxAvatar className=" h-4 w-4 sm:h-8 sm:w-8 text-white" />
     </button>
     {openUserSettings && (
-      <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg" ref={userSettingsRef}>
+      <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50" ref={userSettingsRef}>
         <Link
           to="/blockdates"
           className={`block px-4 py-2 text-gray-800 hover:bg-gray-100 ${location.pathname === "/blockdates" ? 'text-red-500 font-semibold' : 'text-gray-700'}`}
@@ -171,7 +171,7 @@ const Navbar = ({ setBlur }) => {
             to="/add_newuser"
             className={`block px-4 py-2 text-gray-800 hover:bg-gray-100 ${location.pathname === "/add_newuser" ? 'text-red-500 font-semibold' : 'text-gray-700'}`}
           >
-            Add New User
+            Add New-User
           </Link>
         )}
         <button onClick={() => logout()} className="block px-4 py-2 w-full text-left text-gray-800 hover:bg-gray-100">
