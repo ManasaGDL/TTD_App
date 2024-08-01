@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { startOfMonth, endOfMonth, eachDayOfInterval, format, addDays, subMonths, addMonths, getDay, getDaysInMonth,isBefore,startOfToday } from 'date-fns';
+import { startOfMonth, endOfMonth, eachDayOfInterval, format, addDays, subMonths, addMonths, isSameDay,getDay, getDaysInMonth,isBefore,startOfToday } from 'date-fns';
 import { FiArrowRight, FiArrowLeft } from 'react-icons/fi';
 import { FaTicketAlt } from 'react-icons/fa';
 import Modal from './Modal';
@@ -8,6 +8,7 @@ import { constants } from '../../constant';
 import apis from '../../api/apis';
 import { useLoading } from '../../context/LoadingContext';
 import { Toaster, toast } from 'sonner';
+
 
 import AddEditFormNewLayout from './AddEditFormNewLayout';
 
@@ -22,24 +23,27 @@ const Calendar = () => {
   const mid_bookings = localStorage.getItem('is_mla') ? 3 : 5;
   const [ bookedPilgrimDetails , setBookedPilgrimDetails] = useState([])
    const { setIsLoading} = useLoading()
+// useEffect(()=>{
+// console.log(bookings)
+// },[bookings])
   useEffect(() => {
 
-    const fetchBlockedDatesAndAvailability = async () => {
-      setIsLoading(true)
-      try {
-        await getBlockedDates()
   
-        await getMonthSlotAvailability(); // Call availability function after blockedDates is updated
-      } catch (error) {
-        console.error('Error fetching blocked dates and availability:', error);
-      }finally{
-        setIsLoading(false)
-      }
-    };
 
     fetchBlockedDatesAndAvailability();
   }, [currentPageStart]);
-  
+  const fetchBlockedDatesAndAvailability = async () => {
+    setIsLoading(true)
+    try {
+      await getBlockedDates()
+
+      await getMonthSlotAvailability(); // Call availability function after blockedDates is updated
+    } catch (error) {
+      console.error('Error fetching blocked dates and availability:', error);
+    }finally{
+      setIsLoading(false)
+    }
+  };
 useEffect(()=>{
 
 if(blockedDates.length>0)
@@ -71,7 +75,7 @@ if(blockedDates.length>0)
   const isDayBeforeToday = (day) => {
     const today = startOfToday();
    
-    return isBefore(day, today);
+    return isBefore(day, today)|| isSameDay(day, today);
   };
  const getBlockedDates=async()=>{
 try{
@@ -97,18 +101,11 @@ console.log(e)
       toast.error(toastMessage.message);
     }
   }, [toastMessage]);
-useEffect(()=>{
-console.log(bookings)
-},[bookings])
+
   const getMonthSlotAvailability = async () => {
     try {
       const res = await apis.getMonthSlotAvailability(currentPageStart.getMonth() + 1, currentPageStart.getFullYear());
-      // const transformedObject = res?.data.reduce((acc, { booked_datetime, vacant_count }) => {
-        
-        
-      //   acc[booked_datetime] = blockedDates.includes(booked_datetime) ? 0 : vacant_count;
-      //   return acc;
-      // }, {});
+     
 const transformedObject = blockedDates.reduce((acc,blockdate)=>{
   acc[blockdate]=0
   return acc;
@@ -123,18 +120,22 @@ res?.data.forEach(({booked_datetime,pilgrim_count})=>{
         const updatedBookings = { ...prev };
         Object.keys(updatedBookings).forEach(key => {
           if (Object.prototype.hasOwnProperty.call(transformedObject, key)) {
+            
             updatedBookings[key] = transformedObject[key];
           }
+          else updatedBookings[key]= null
         });
 
         return updatedBookings;
       });
+      setIsLoading(false)
     } catch (e) {
       console.log(e);
     }
   };
 
   const handleBooking = day => {
+ 
     setIsModalOpen(true);
     setSelectedDate(day);
     getPilgrimDetails(format(day,'yyyy-MM-dd'))
@@ -155,7 +156,7 @@ res?.data.forEach(({booked_datetime,pilgrim_count})=>{
     // return 'text-red-500';
   };
 const getDayClassforSmallScreens = day =>{
-  const bookingsDone = bookings[format(day, 'yyyy-MM-dd')]<6?true:false;
+  const bookingsDone = bookings[format(day, 'yyyy-MM-dd')]>0?true:false;
   if(bookingsDone)
     {
       return 'bg-red-500'
@@ -279,6 +280,7 @@ const getDayClassforSmallScreens = day =>{
             setIsModalOpen={setIsModalOpen}
             setToastMessage={setToastMessage}
             isModalOpen={isModalOpen}
+            getMonthSlotAvailability={getMonthSlotAvailability}
             bookedPilgrimDetails={bookedPilgrimDetails}
             
           />

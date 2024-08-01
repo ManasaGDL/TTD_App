@@ -20,7 +20,7 @@ const modalRef = useRef(null);
     const handleOutsideClick = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
         // Prevent closing modal when clicking inside the modal content
-        console.log("ouside")
+    
         // return ;
         // return;
       }

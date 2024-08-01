@@ -16,8 +16,8 @@ function ViewUsers() {
   const [idToDelete, setIdToDelete] = useState('');
 
   const columns = [
-    { field: 'user_id', headerClassName: 'custom-header', headerName: 'ID', minWidth: 90, flex: 0.5 },
-    { field: 'email', headerClassName: 'custom-header-bg', headerName: 'Email', minWidth: 200, flex: 1 },
+    { field: 'user_id',headerName: 'ID', minWidth: 90, flex: 0.5 },
+    { field: 'email', headerName: 'Email', minWidth: 200, flex: 1 },
     {
       field: 'FullName',
       headerName: 'Name',
@@ -109,7 +109,7 @@ function ViewUsers() {
         title="Delete?"
         message="Are you sure to Delete the User"
       />
-      <div className="w-full mx-auto sm:max-w-7xl mb-4 h-5/6 sm:h-[500px]">
+      <div className="w-full pt-3 mx-auto sm:max-w-7xl mb-4 h-5/6 sm:h-[500px]">
         {usersList?.length > 0 ? (
           <DataGrid
             rows={usersList}
