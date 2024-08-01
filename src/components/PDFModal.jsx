@@ -2,6 +2,7 @@ import React, { useEffect, useState , useRef } from 'react';
 import { Worker, Viewer } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
+import { pdfjs } from 'react-pdf';
 
 const PDFModal = ({ isOpen, onClose, pdfBlob, fileName }) => {
   const [blobUrl, setBlobUrl] = useState(null);
@@ -48,7 +49,7 @@ const modalRef = useRef(null);
         </button>
         <h2 className="text-xl font-bold mb-4">Preview of {fileName}</h2>
         <div className="overflow-auto max-h-96">
-          <Worker workerUrl={`https://unpkg.com/pdfjs-dist@3.0.279/build/pdf.worker.min.js`}>
+        <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
             <Viewer fileUrl={blobUrl} />
           </Worker>
         </div>
