@@ -109,7 +109,7 @@ function ViewUsers() {
         title="Delete?"
         message="Are you sure to Delete the User"
       />
-      <div className="w-full pt-3 mx-auto sm:max-w-7xl mb-4 h-5/6 sm:h-[500px]">
+      <div className="w-full pt-3 mx-auto sm:max-w-5xl mb-4 h-5/6 sm:h-[500px]">
         {usersList?.length > 0 ? (
           <DataGrid
             rows={usersList}
