@@ -15,13 +15,14 @@ import AddUser from './components/AddUser';
 import ViewUsers from './components/ViewUsers';
 import { useLoading } from './context/LoadingContext';
 import Spinner from './components/Common/Spinner';
+import ChakramSpinner from './components/Common/ChakramSpinner';
 
 const App = () => {
   const { auth } = useContext(AuthContext);
   const { isLoading } = useLoading();
   return (
     <div className="relative">
-    {isLoading && <Spinner/>}
+    {isLoading && <ChakramSpinner/>}
     <Routes>
       <Route path="/login" element={<Login2 />} />
       <Route

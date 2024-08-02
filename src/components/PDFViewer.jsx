@@ -4,46 +4,55 @@ import PDFModal from './PDFModal';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 import apis from '../api/apis';
-
-const PDFViewer = ({ payloadForDownload={}, download }) => {
+import { toast } from 'sonner';
+import { useLoading } from '../context/LoadingContext';
+import { FaTowerBroadcast } from 'react-icons/fa6';
+const PDFViewer = ({ payloadForDownload={}, download ,setPayloadForDownload,setStartPreviewDownload}) => {
   const [pdfBlob, setPdfBlob] = useState(null);
   const [fileName, setFileName] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
- 
+ const { setIsLoading , isLoading} = useLoading()
 
   useEffect(()=>{
     if(download)
-      previewLetter('VIP Darshan')
+      // previewLetter('VIP Darshan')
+    downloadPDF()
     },[download])
 
   const downloadAPicall = async () => {
+    setIsLoading(true)
     try {
+      
       if (payloadForDownload && payloadForDownload?.pilgrims.length > 0) {
         const response = await apis.downloadLetter(payloadForDownload);
+        setIsLoading(false)
+        toast.success("Successfully downloaded!")
         return response?.data;
       }
+      setPayloadForDownload({})
+      setStartPreviewDownload(false)
     } catch (error) {
       console.error('Error downloading PDF:', error);
       throw error;
     }
   };
 
-  const previewLetter = async (filename) => {
-    if(payloadForDownload && download && payloadForDownload?.pilgrims.length>0){try {
-      const pdfData = await downloadAPicall();
-      setPdfBlob(new Blob([pdfData], { type: 'application/pdf' }));
-      setFileName(filename);
-      setIsModalOpen(true);
-     // Reset flag
-    } catch (error) {
-      console.error('Error previewing PDF:', error);
-    }
-    finally{
-      // setIsModalOpen(false)
+  // const previewLetter = async (filename) => {
+  //   if(payloadForDownload && download && payloadForDownload?.pilgrims.length>0){try {
+  //     const pdfData = await downloadAPicall();
+  //     setPdfBlob(new Blob([pdfData], { type: 'application/pdf' }));
+  //     setFileName(filename);
+  //     setIsModalOpen(true);
+  //    // Reset flag
+  //   } catch (error) {
+  //     console.error('Error previewing PDF:', error);
+  //   }
+  //   finally{
+  //     // setIsModalOpen(false)
  
-    }
-  }
-  };
+  //   }
+  // }
+  // };
 
   const downloadPDF = async (filename) => {
     try {
@@ -67,12 +76,12 @@ const PDFViewer = ({ payloadForDownload={}, download }) => {
 
   return (
     <div>
-      <button
+      {/* <button
         className="px-4 py-2 bg-lime-500 text-white rounded hover:bg-green-700 mr-3 font-mono"
         onClick={handlePreviewClick} // Use handlePreviewClick
       >
         Preview
-      </button>
+      </button> */}
       <button
         onClick={() => downloadPDF('VIPBreak.pdf')}
         className="px-4 py-2 bg-lime-500 text-white rounded hover:bg-green-700 font-mono"
