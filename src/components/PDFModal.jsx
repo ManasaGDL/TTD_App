@@ -50,7 +50,7 @@ const pdfjsVersion = packageJson.dependencies['pdfjs-dist'].replace('^', '');
         </button>
         <h2 className="text-xl font-bold mb-4">Preview of {fileName}</h2>
         <div className="overflow-auto max-h-96">
-        <Worker workerUrl={`https://unpkg.com/pdfjs-dist@${pdfjsVersion}/build/pdf.worker.min.js`}>
+        <Worker workerUrl={`https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsVersion}/pdf.worker.min.js`}>
             <Viewer fileUrl={blobUrl} />
           </Worker>
         </div>
