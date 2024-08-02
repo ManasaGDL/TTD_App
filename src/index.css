@@ -10,3 +10,10 @@
   }
 
 
+  .spinner-container {
+    @apply flex justify-center items-center h-screen;
+  }
+  
+  .spinner-image {
+    @apply w-32 h-32; /* Adjust size as needed */
+  }

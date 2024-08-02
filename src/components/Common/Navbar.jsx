@@ -64,7 +64,7 @@ const Navbar = ({ setBlur }) => {
               key="view-users"
               className={`font-mono hover:text-xl hidden sm:block ${location.pathname === "/view-users" ? 'text-lime-500 text-xl' : 'text-black-400'}`}
             >
-              View-Users
+              Users
             </Link>
           )}
         </div>
