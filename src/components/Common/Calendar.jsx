@@ -82,7 +82,7 @@ if(blockedDates.length>0)
  const getBlockedDates=async()=>{
 try{
   const blockedDatesResponse = await apis.getBlockedDates();
-  const dates = blockedDatesResponse.data.map(item => format(new Date(item.blockdate), 'yyyy-MM-dd'));
+  const dates = blockedDatesResponse?.data?.map(item => format(new Date(item.blockdate), 'yyyy-MM-dd'));
   setBlockedDates(dates);
 }catch(e)
 {toast.error("Something went wrong!")
@@ -107,7 +107,8 @@ console.log(e)
   const getMonthSlotAvailability = async () => {
     try {
       const res = await apis.getMonthSlotAvailability(currentPageStart.getMonth() + 1, currentPageStart.getFullYear());
-     
+     if(res?.data)
+     {
 const transformedObject = blockedDates.reduce((acc,blockdate)=>{
   acc[blockdate]=0
   return acc;
@@ -131,16 +132,17 @@ res?.data.forEach(({booked_datetime,pilgrim_count})=>{
         return updatedBookings;
       });
       setIsLoading(false)
-    } catch (e) {
+   } } catch (e) {
       console.log(e);
     }
   };
 
   const handleBooking = day => {
- 
-    setIsModalOpen(true);
+ if(day)
+   { setIsModalOpen(true);
     setSelectedDate(day);
     getPilgrimDetails(format(day,'yyyy-MM-dd'))
+   }
   };
 
   const getDayClass = day => {
