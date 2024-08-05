@@ -23,9 +23,7 @@ const Calendar = () => {
   const mid_bookings = localStorage.getItem('is_mla') ? 3 : 5;
   const [ bookedPilgrimDetails , setBookedPilgrimDetails] = useState([])
    const { setIsLoading} = useLoading()
-   useEffect(()=>{
-console.log(blockedDates,bookings)
-   },[blockedDates,bookings])
+
 
   useEffect(() => {
 
