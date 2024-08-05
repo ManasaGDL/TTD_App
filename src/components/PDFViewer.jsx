@@ -27,6 +27,7 @@ const PDFViewer = ({ payloadForDownload={}, download ,setPayloadForDownload,setS
         const response = await apis.downloadLetter(payloadForDownload);
         setIsLoading(false)
         toast.success("Successfully downloaded!")
+        console.log("response",response?.data)
         return response?.data;
       }
       setPayloadForDownload({})
@@ -63,6 +64,9 @@ const PDFViewer = ({ payloadForDownload={}, download ,setPayloadForDownload,setS
       }
     } catch (error) {
       console.error('Error downloading PDF:', error);
+    }
+    finally{
+      setPayloadForDownload({})
     }
   };
 
