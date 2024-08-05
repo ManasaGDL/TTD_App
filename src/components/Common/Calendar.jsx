@@ -33,7 +33,7 @@ const Calendar = () => {
   const fetchBlockedDatesAndAvailability = async () => {
     setIsLoading(true)
     try {
-      await getBlockedDates()
+      // await getBlockedDates()
 
       await getMonthSlotAvailability(); // Call availability function after blockedDates is updated
     } catch (error) {
