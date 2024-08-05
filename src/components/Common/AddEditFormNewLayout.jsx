@@ -52,14 +52,13 @@ const AddEditFormNewLayout = ({ bookingsObject,getPilgrimDetails, getMonthSlotAv
   const mid_bookings = localStorage.getItem('is_mla') ? 3 : 5;
   const [ selectedPilgrims, setSelectedPilgrims] = useState([])
   const [ masterPilgrim ,setMasterPilgrim] = useState(null)
-  const [ showMaster , setShowMaster] = useState(false)
-  const [payloadForDownload , setPayloadForDownload] = useState({})
   const [ startPreviewDownload , setStartPreviewDownload] = useState(false)
   const [pilgrimCount , setPilgrimCount] = useState(bookingsCount)
   const [ hideAddCountButton , setHideAddCountButton] = useState(false)
   const [editMode, setEditMode] = useState(false); 
   const [ bookedDateTime , setBookedDateTime] = useState(bookedPilgrimDetails[0]?.bookedDateTime||'')
   const { setIsLoading} = useLoading()
+  const [payloadForDownload , setPayloadForDownload] = useState({})
   const { register, control, handleSubmit, formState: { errors }, reset ,setValue, watch,trigger} = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -72,13 +71,24 @@ const AddEditFormNewLayout = ({ bookingsObject,getPilgrimDetails, getMonthSlotAv
       }))
     },
   });
+ 
+useEffect(()=>{
+
+if(Object.keys(payloadForDownload).length===0)
+  setStartPreviewDownload(false)
+},[payloadForDownload])
+
+
+
 useEffect(()=>{
     setIsLoading(true)
 if(bookedPilgrimDetails.length>0)
 {
     setBookedDateTime(bookedPilgrimDetails[0].booked_datetime)
 }
-else setBookedDateTime('')
+else {setBookedDateTime('')
+ 
+}
 setIsLoading(false)
 },[bookedPilgrimDetails[0]?.booked_datetime,date])
   const { fields, append ,remove,update} = useFieldArray({
@@ -278,6 +288,7 @@ const pilgrimCountsallowed = Array.from({length:initialBookings},(_,index)=>inde
 
 
   const parseDate = (date) => {
+    if (!date) return 'No Date Available'; 
     const parsedDate = parseISO(date);
     if (isValid(parsedDate)) {
       return format(parsedDate, 'd-MMMM-yyyy');

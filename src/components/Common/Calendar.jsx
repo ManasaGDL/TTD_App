@@ -16,7 +16,7 @@ const Calendar = () => {
   const [currentPageStart, setCurrentPageStart] = useState(startOfMonth(new Date()));
   const [bookings, setBookings] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedDate, setSelectedDate] = useState();
+  const [selectedDate, setSelectedDate] = useState('');
   const [blockedDates, setBlockedDates] = useState([]);
   const [initialBookings, setInitialBookings] = useState(localStorage.getItem('is_mla')==='true' ? constants.Mla : constants.Mp);
   const [toastMessage, setToastMessage] = useState({ type: '', message: '' });
@@ -33,9 +33,9 @@ const Calendar = () => {
   const fetchBlockedDatesAndAvailability = async () => {
     setIsLoading(true)
     try {
-      await getBlockedDates()
+      // await getBlockedDates()
 
-      // await getMonthSlotAvailability(); // Call availability function after blockedDates is updated
+      await getMonthSlotAvailability(); // Call availability function after blockedDates is updated
     } catch (error) {
       console.error('Error fetching blocked dates and availability:', error);
     }finally{
