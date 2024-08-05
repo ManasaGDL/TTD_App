@@ -23,17 +23,18 @@ const Calendar = () => {
   const mid_bookings = localStorage.getItem('is_mla') ? 3 : 5;
   const [ bookedPilgrimDetails , setBookedPilgrimDetails] = useState([])
    const { setIsLoading} = useLoading()
+   useEffect(()=>{
+console.log(blockedDates,bookings)
+   },[blockedDates,bookings])
 
   useEffect(() => {
-
-  
 
     fetchBlockedDatesAndAvailability();
   }, [currentPageStart]);
   const fetchBlockedDatesAndAvailability = async () => {
     setIsLoading(true)
     try {
-      // await getBlockedDates()
+      await getBlockedDates()
 
       await getMonthSlotAvailability(); // Call availability function after blockedDates is updated
     } catch (error) {
