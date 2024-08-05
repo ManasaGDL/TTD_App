@@ -23,10 +23,10 @@ const Calendar = () => {
   const mid_bookings = localStorage.getItem('is_mla') ? 3 : 5;
   const [ bookedPilgrimDetails , setBookedPilgrimDetails] = useState([])
    const { setIsLoading} = useLoading()
-   useEffect(()=>{
-console.log(blockedDates,bookings)
-   },[blockedDates,bookings])
 
+useEffect(()=>{
+console.log(blockedDates)
+},[blockedDates])
   useEffect(() => {
 
     fetchBlockedDatesAndAvailability();
@@ -161,7 +161,9 @@ res?.data.forEach(({booked_datetime,pilgrim_count})=>{
     // return 'text-red-500';
   };
 const getDayClassforSmallScreens = day =>{
-  const bookingsDone = bookings[format(day, 'yyyy-MM-dd')]>0?true:false;
+  console.log(bookings)
+  const bookingsDone = (bookings[format(day, 'yyyy-MM-dd')]>0||bookings[format(day, 'yyyy-MM-dd')]===0)?true:false;
+
   if(bookingsDone)
     {
       return 'bg-red-500'

@@ -70,7 +70,7 @@ const Navbar = ({ setBlur }) => {
         </div>
         <div
           className={clsx(
-            'fixed h-full w-screen lg:hidden bg-black/50 backdrop-blur-sm top-0 right-0 transition-transform transform',
+            'fixed h-full w-screen lg:hidden bg-black/50 backdrop-blur-sm top-0 right-0 transition-transform transform z-50',
             isSideMenuOpen ? 'translate-x-0' : 'translate-x-full'
           )}
         >
@@ -88,7 +88,7 @@ const Navbar = ({ setBlur }) => {
                 className="font-mono text-black-900"
                 onClick={() => setMenu(false)}
               >
-                ViewUsers
+                Users
               </Link>
             )}
           </section>
