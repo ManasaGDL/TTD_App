@@ -8,7 +8,8 @@ import { useLocation, useParams ,useNavigate } from 'react-router-dom';
 
 // Define the validation schema using yup
 const schema = yup.object().shape({
-  email: yup.string().email('Invalid email format').required('Email is required'),
+  username: yup.string().required("Enter email/username"),
+  email:yup.string().email('Invalid email format').required('Email is required'),
   password: yup.string().when('isEdit', {
     is: false,
     then: yup.string().required('Password is required'),
@@ -40,7 +41,8 @@ const RegistrationForm = () => {
       setValue('is_mla', initialData.is_mla ? '1' : '0');
     } else {
       reset({
-        email: '',
+        username: '',
+        email:'',
         password: '',
         first_name: '',
         last_name: '',
@@ -61,7 +63,8 @@ const RegistrationForm = () => {
       if (response.status === 201) {
         toast.success("New user added successfully!");
         reset({
-          email: '',
+          username: '',
+          email:'',
           password: '',
           first_name: '',
           last_name: '',
@@ -97,7 +100,6 @@ const RegistrationForm = () => {
         
         {/* Change 3: Hidden input for conditional validation */}
         <input type="hidden" {...register('isEdit')} value={Object.keys(initialData).length > 0} />
-
         <div className="mb-4">
           <label htmlFor="email" className="block text-gray-700">Email</label>
           <input
@@ -108,6 +110,17 @@ const RegistrationForm = () => {
             className={`w-full p-2 border ${errors.email ? 'border-red-500' : 'border-gray-300'} rounded`}
           />
           {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+        </div>
+        <div className="mb-4">
+          <label htmlFor="username" className="block text-gray-700">Username</label>
+          <input
+            // type="email"
+            id="username"
+            {...register('username')}
+            autoComplete='off'
+            className={`w-full p-2 border ${errors.username ? 'border-red-500' : 'border-gray-300'} rounded`}
+          />
+          {errors.username && <p className="text-red-500 text-sm">{errors.username.message}</p>}
         </div>
 
         {Object.keys(initialData).length === 0 && <div className="mb-4">

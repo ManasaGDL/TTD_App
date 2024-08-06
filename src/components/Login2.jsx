@@ -6,15 +6,19 @@ import { useNavigate } from "react-router-dom";
 import {Toaster,toast} from "sonner"
 const Login2 = () => {
     const { login , setAuth} = useContext(AuthContext)
-    const [loginDetails , setLoginDetails] = useState({"email":"","password":""})
-    const [ loginErrors, setLoginErrors] = useState({"email":"","password":""})
+    const [loginDetails , setLoginDetails] = useState({"username":"","password":""})
+    const [ loginErrors, setLoginErrors] = useState({"username":"","password":""})
     const navigate = useNavigate()
+//     useEffect(()=>{
+// if(localStorage.getItem('access_token'))
+//   navigate('/bookings')
+//     },[navigate])
     const handleSubmit =async(e)=>{
         e.preventDefault()
       
-      if(loginDetails.email=="")
+      if(loginDetails.username=="")
       {
-        setLoginErrors((prevErrors) => ({ ...prevErrors, email: "Email Required" }));
+        setLoginErrors((prevErrors) => ({ ...prevErrors, username: "Email/username Required" }));
       }
       if(loginDetails.password=="")
         {
@@ -22,7 +26,7 @@ const Login2 = () => {
         }
         
    try{
-    if(loginErrors.email==""  && loginErrors.password=="")
+    if(loginErrors.username==""  && loginErrors.password=="")
     {
       const res = await apis.login(loginDetails)
 
@@ -30,12 +34,13 @@ const Login2 = () => {
     if(res?.data?.access)
         {
             const profile_res = await apis.getProfile();
+            localStorage.setItem("username",profile_res?.data?.username)
             localStorage.setItem("email",profile_res?.data?.email)
             localStorage.setItem("is_mla",profile_res.data.is_mla)
             localStorage.setItem("super_user",profile_res.data.is_superuser)
             localStorage.setItem("user_name",profile_res.data.first_name+profile_res.data.last_name)
             profile_res.data.constituency && localStorage.setItem("constituency",profile_res.data.constituency)
-            setAuth({'token':localStorage.getItem('access_token'),'email':profile_res.data.email,user_id:profile_res.data.user_id,super_user:profile_res.data.is_superuser,isAuthenticated:true,is_mla:profile_res.data.is_mla})
+            setAuth({'token':localStorage.getItem('access_token'),'email':profile_res.data.email,username:profile_res.data.username,user_id:profile_res.data.user_id,super_user:profile_res.data.is_superuser,isAuthenticated:true,is_mla:profile_res.data.is_mla})
             navigate("/bookings")
         
         }
@@ -63,15 +68,15 @@ toast.error(e.response.data.detail)
         >
           <h2 className="text-4xl font-mono text-center py-2 relative">Login</h2>
           <div className="flex flex-col py-2">
-            <label className="text-black relative font-mono" >Email</label>
+            <label className="text-black relative font-mono" >Email/Username</label>
             <input
-            name={loginDetails?.email}
-            onChange={e=>{setLoginErrors({...loginErrors,"email":""})
-              setLoginDetails({...loginDetails,"email":e.target.value})}}
+            name={loginDetails?.username}
+            onChange={e=>{setLoginErrors({...loginErrors,"username":""})
+              setLoginDetails({...loginDetails,"username":e.target.value})}}
               type="text"
               className="p-2 relative bg-gray-100 rounded-lg border"
             />
-            <label className="text-red-500 font-mono relative">{loginErrors.email}</label>
+            <label className="text-red-500 font-mono relative">{loginErrors.username}</label>
           </div>
           <div className="flex flex-col py-2">
             <label className="text-black relative font-mono" htmlFor="password">Password</label>

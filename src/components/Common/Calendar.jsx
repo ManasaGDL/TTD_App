@@ -24,13 +24,20 @@ const Calendar = () => {
   const [ bookedPilgrimDetails , setBookedPilgrimDetails] = useState([])
    const { setIsLoading} = useLoading()
 
-useEffect(()=>{
-console.log(blockedDates)
-},[blockedDates])
+   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+   useEffect(() => {
+     // Update windowWidth when the window is resized
+     const handleResize = () => setWindowWidth(window.innerWidth);
+     window.addEventListener('resize', handleResize);
+ 
+     // Cleanup the event listener on component unmount
+     return () => window.removeEventListener('resize', handleResize);
+   }, []);
   useEffect(() => {
 
     fetchBlockedDatesAndAvailability();
-  }, [currentPageStart]);
+  }, [currentPageStart,windowWidth]);
   const fetchBlockedDatesAndAvailability = async () => {
     setIsLoading(true)
     try {
@@ -233,12 +240,17 @@ const getDayClassforSmallScreens = day =>{
                 onClick={() => !isDayBeforeToday(day) && handleBooking(format(day, 'yyyy-MM-dd'))}
                 style={{
                   width: 'auto',
-             
+                 
                   margin: 'auto',
                   ...(window.innerWidth <= 768 && {
                     height: '40px',
-                    width: '50px',
+                    width: '35px',
                     margin: 'auto',
+                    textAlign:"center",
+                    display:"flex",
+                    paddingLeft:"25px",
+                    justifyContent:"center",
+                    alignItems:"center"
                   }),
                 }}
               >
