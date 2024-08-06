@@ -59,6 +59,7 @@ const AddEditFormNewLayout = ({ bookingsObject,getPilgrimDetails, getMonthSlotAv
   const [ bookedDateTime , setBookedDateTime] = useState(bookedPilgrimDetails[0]?.bookedDateTime||'')
   const { setIsLoading} = useLoading()
   const [payloadForDownload , setPayloadForDownload] = useState({})
+
   const { register, control, handleSubmit, formState: { errors }, reset ,setValue, watch,trigger} = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -81,7 +82,7 @@ if(Object.keys(payloadForDownload).length===0)
 
 
 useEffect(()=>{
-    setIsLoading(true)
+ 
 if(bookedPilgrimDetails.length>0)
 {
     setBookedDateTime(bookedPilgrimDetails[0].booked_datetime)
@@ -97,8 +98,10 @@ setIsLoading(false)
   });
 const watchFields = watch('pilgrims')
 useEffect(()=>{  
+  
     //set pilgrimscount
-
+   if(bookingsCount>=0)
+    setIsLoading(false)
     setPilgrimCount(bookingsCount?bookingsCount:1)
 },[bookingsCount])
 useEffect(() => {

@@ -1,6 +1,6 @@
 // App.jsx
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, NavLink } from 'react-router-dom';
 import Login2 from './components/Login2';
 import Layouts from './components/app-layouts/Layouts';
 import Dashboard from './components/Dashboard';
@@ -24,6 +24,7 @@ const App = () => {
     <div className="relative">
     {isLoading && <ChakramSpinner/>}
     <Routes>
+      <Route path="/" element={<NavLink to="/login"><Login2/></NavLink>}/>
       <Route path="/login" element={<Login2 />} />
       <Route
          path="/dashboard"

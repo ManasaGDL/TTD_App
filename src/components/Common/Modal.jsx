@@ -1,9 +1,13 @@
-import { useState} from "react";
+import { useState,useEffect} from "react";
 import PropTypes from 'prop-types';
+import { useLoading} from '../../context/LoadingContext'
 
 const Modal = ({ open, onClose, children }) => {
   const [userDetails, setUserDetails] = useState({});
-
+const { setIsLoading} = useLoading()
+useEffect(()=>{
+setIsLoading(true)
+},[])
   return (
     <div
       className={`fixed inset-0 flex justify-center items-center transition-colors w-full sm:max-w-9xl ${
