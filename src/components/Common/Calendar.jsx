@@ -168,7 +168,7 @@ res?.data.forEach(({booked_datetime,pilgrim_count})=>{
     // return 'text-red-500';
   };
 const getDayClassforSmallScreens = day =>{
-  console.log(bookings)
+ 
   const bookingsDone = (bookings[format(day, 'yyyy-MM-dd')]>0||bookings[format(day, 'yyyy-MM-dd')]===0)?true:false;
 
   if(bookingsDone)

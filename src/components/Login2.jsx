@@ -30,7 +30,7 @@ const Login2 = () => {
     {
       const res = await apis.login(loginDetails)
 
-    login(res.data)
+    login(res?.data)
     if(res?.data?.access)
         {
             const profile_res = await apis.getProfile();
@@ -48,7 +48,18 @@ const Login2 = () => {
    }catch(e)
    { 
     if(e.response.status === 401)
-toast.error(e.response.data.detail)
+{ 
+const { data } = e.response;
+if(data?.detail)
+{
+  return toast.error(data.detail)
+}
+else if(data?.error)
+{
+  return toast.error(data.error)
+}
+else return toast.error("An unknown error!")
+}
     else toast.error("Something went wrong!")
    }
   
