@@ -55,9 +55,10 @@ axiosInstance.interceptors.response.use(
     console.log(error.response)
     if (error.response && error.response.status === 401) {
    const { data } = error.response;
+   
    if(data?.detail)
    {
-    toast.error(data?.detail+"Please login again")
+    toast.error(data?.detail+". Please login again")
    }
    else if(data?.error)
    {
