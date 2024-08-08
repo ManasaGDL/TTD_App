@@ -58,7 +58,7 @@ axiosInstance.interceptors.response.use(
    
    if(data?.detail)
    {
-    toast.error("Invalid token . Please login again")
+    toast.error("Invalid token. Please login again")
     localStorage.removeItem('access_token');
       localStorage.removeItem('refresh_token')
    }
