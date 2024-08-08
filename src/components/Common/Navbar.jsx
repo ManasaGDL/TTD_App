@@ -1,5 +1,5 @@
 import { FiMenu } from 'react-icons/fi';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation , useParams} from 'react-router-dom';
 import { useState, useContext, useRef, useEffect } from 'react';
 import { IoMdClose } from 'react-icons/io';
 import LordImage from '../../assets/LordImage.jpg';
@@ -13,7 +13,7 @@ const Navbar = ({ setBlur }) => {
   const [openUserSettings, setOpenUserSettings] = useState(false);
   const userSettingsRef = useRef(null);
   const location = useLocation();
-
+  const id = localStorage.getItem('userId')
   const navLinks = [
     // { label: "Dashboard", href: "/dashboard" },
     { label: "Bookings", href: "/bookings" },
@@ -139,7 +139,8 @@ const Navbar = ({ setBlur }) => {
       <section className="flex flex-col sm:flex-row items-center gap-1 sm:gap-4 font-mono">
   {/* User Info */}
   <div className="flex flex-col gap-1 text-center sm:text-left">
-    <span className="text-xs sm:text-lg font-semibold">{localStorage.getItem('email')}</span>
+    <span className="text-xs  text-green-700 sm:text-lg font-semibold">{localStorage.getItem('email')}</span>
+    {localStorage.getItem('super_user')==='true' && <span className="font-mono text-green-700">Admin</span>}
     <span className="sm:text-base text-xs text-red-600 font-semibold ">
       {localStorage.getItem('user_name')},{' '}
       {localStorage.getItem('is_mla') === 'true'
@@ -174,6 +175,12 @@ const Navbar = ({ setBlur }) => {
             Add New-User
           </Link>
         )}
+        <Link
+            to={`/edit-credentials/${id}`}
+            className={`block px-4 py-2 text-gray-800 hover:bg-gray-100 ${location.pathname === `/edit-credentials/${id}` ? 'text-red-500 font-semibold' : 'text-gray-700'}`}
+          >
+            Change Password
+          </Link>
         <button onClick={() => logout()} className="block px-4 py-2 w-full text-left text-gray-800 hover:bg-gray-100">
           Logout
         </button>

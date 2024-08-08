@@ -56,8 +56,8 @@ function ViewUsers() {
     {
       field: 'delete',
       headerName: 'Delete',
-      minWidth: 140,
-      flex: 0.5,
+      minWidth: 70,
+      flex: 0.2,
       renderCell: (params) => (
         <button
           onClick={() => {
@@ -68,6 +68,31 @@ function ViewUsers() {
           <CircleX className="text-red-500 text-center" />
         </button>
       ),
+    },
+    {
+      field: "ChangePassword/Reset",
+      headerName: "Change Password",
+      minWidth:160,
+      flex: 0.8,
+      renderCell: (params) => {
+        const id = params.row.user_id;
+    
+        return (
+          <button
+          className="bg-lime-600 hover:bg-lime-700 focus:ring-4 focus:ring-lime-300 rounded-lg h-12 w-full max-w-xs text-white font-mono transition-colors duration-300 ease-in-out"
+          onClick={() => navigate(`/edit-credentials/${id}`, {
+            state: {
+              username: params.row.username,
+              email: params.row.email,
+              constituency: params.row.constituency
+            }
+          })}
+          aria-label="Reset Password"
+        >
+          Reset Password
+        </button>
+        );
+      }
     },
   ];
 

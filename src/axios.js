@@ -52,13 +52,24 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   async(error) => {
+    console.log(error.response)
     if (error.response && error.response.status === 401) {
+   const { data } = error.response;
    
-      localStorage.removeItem('access_token');
+   if(data?.detail)
+   {
+    toast.error(data?.detail+". Please login again")
+   }
+   else if(data?.error)
+   {
+    toast.error(data?.error)
+   }
+     else{ localStorage.removeItem('access_token');
       localStorage.removeItem('refresh_token'); // Remove this if not using refresh tokens
        window.location.href = '/login';
        toast.error('Session expired. Please log in again.');
-    
+       window.location.href = '/login';
+     } 
     }
 
     if (error.response && error.response.status === 404) {

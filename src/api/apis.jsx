@@ -55,6 +55,9 @@ downloadLetter:(payload)=>{
     return axios_instance.post(`/api/users/vip-darshan-letter/`,payload, {
         responseType: 'blob', // Specify responseType as 'blob'
     })
+},
+resetPassword:(payload,id)=>{
+    return axios_instance.post(`/api/users/usersProfile/${id}/reset_password/`,payload)
 }
 }
 

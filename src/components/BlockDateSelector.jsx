@@ -11,10 +11,12 @@ export default function BlockDateSelector() {
   const [startMonth, setStartMonth] = useState(new Date().getMonth());
   const [startYear, setStartYear] = useState(new Date().getFullYear());
   const [ blockedDates , setBlockedDates] = useState([])
+
   useEffect(()=>{
     getBlockedDates()
+    // getBookedDates()
   },[])
- 
+
  const getBlockedDates = async()=>{
   try{
    const res = await apis.getBlockedDates()
@@ -25,6 +27,7 @@ export default function BlockDateSelector() {
     console.log(e)
   }
  }
+
   const handleDateClick = (value) => {
     const dateIndex = selectedDates.findIndex((date) =>
       isSameDay(date, value)
