@@ -8,8 +8,8 @@ import { constants } from '../../constant';
 import apis from '../../api/apis';
 import { useLoading } from '../../context/LoadingContext';
 import { Toaster, toast } from 'sonner';
-
-
+import { useDebounce } from '../../custom-hooks/useDebounce';
+import AddEditFormLayout2 from './AddEditFormLayout2';
 import AddEditFormNewLayout from './AddEditFormNewLayout';
 
 const Calendar = () => {
@@ -23,9 +23,10 @@ const Calendar = () => {
   const mid_bookings = localStorage.getItem('is_mla') ? 3 : 5;
   const [ bookedPilgrimDetails , setBookedPilgrimDetails] = useState([])
    const { setIsLoading} = useLoading()
+  
 
    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
+const debouncedWindowWidth = useDebounce(windowWidth,300)
    useEffect(() => {
      // Update windowWidth when the window is resized
      const handleResize = () => setWindowWidth(window.innerWidth);
@@ -37,7 +38,7 @@ const Calendar = () => {
   useEffect(() => {
 
     fetchBlockedDatesAndAvailability();
-  }, [currentPageStart,windowWidth]);
+  }, [currentPageStart,debouncedWindowWidth]);
   const fetchBlockedDatesAndAvailability = async () => {
     setIsLoading(true)
     try {
@@ -291,7 +292,7 @@ const getDayClassforSmallScreens = day =>{
       // bookings[selectedDate] > 0 && 
       (
         <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
-          <AddEditFormNewLayout
+          <AddEditFormLayout2
             getPilgrimDetails={getPilgrimDetails}
             bookingsObject={bookings}
             date={selectedDate}
