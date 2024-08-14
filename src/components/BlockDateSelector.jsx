@@ -11,6 +11,7 @@ export default function BlockDateSelector() {
   const [startMonth, setStartMonth] = useState(new Date().getMonth());
   const [startYear, setStartYear] = useState(new Date().getFullYear());
   const [ blockedDates , setBlockedDates] = useState([])
+  const [ bookedDates , setBookedDates] = useState([])
 
   useEffect(()=>{
     getBlockedDates()
@@ -20,8 +21,12 @@ export default function BlockDateSelector() {
  const getBlockedDates = async()=>{
   try{
    const res = await apis.getBlockedDates()
-   const dates = res.data.map(item=>new Date(item.blockdate))
-  setBlockedDates(dates)
+
+   const blocked_dates = res.data.Blocked.map(item=>new Date(item.blockdate))
+  setBlockedDates(blocked_dates)
+  const booked_dates = res.data.Booked.map(item=>new Date(item))
+  setBookedDates(booked_dates)
+
   }catch(e)
   { toast.error("Something went wrong!")
     console.log(e)
@@ -63,17 +68,32 @@ export default function BlockDateSelector() {
       nextLabel={null}
       
         onClickDay={handleDateClick}
-        tileClassName={({ date }) =>{
+       tileDisabled={({date})=>{ const isCurrentMonth = date.getMonth() === startMonth + monthOffset
+        return !isCurrentMonth
+       }}
+        tileClassName={({ date }) => {
           const isSelected = selectedDates.some((selectedDate) => isSameDay(selectedDate, date));
           const isBlocked = blockedDates.some((blockedDate) => isSameDay(blockedDate, date));
+          const isBooked = bookedDates.some((bookedDate) => isSameDay(bookedDate, date));
+          const isCurrentMonth = date.getMonth() === startMonth + monthOffset
+          
+          
           if (isSelected) {
-            return 'bg-blue-500 text-white rounded-full selected-full';
+            return `bg-blue-500 width-tile-size h-9 w-1 text-white ${isCurrentMonth?"rounded-full":''} `;
           } else if (isBlocked) {
-            return 'bg-red-500 text-white rounded-full';
+            return `bg-red-500 text-white h-9 w-1 ${isCurrentMonth?"rounded-full":''}`;
+          } else if (isBooked) {
+            return `bg-green-500 text-white h-9 w-1 ${isCurrentMonth?"rounded-full":''}`;
           } else {
             return ''; // No additional classes if not selected or blocked
           }
         }}
+        // tileContent={({ date }) => {
+        //   // Hide dates from previous or next month
+        //   const isCurrentMonth = date.getMonth() === startMonth + monthOffset;
+  
+        //   return isCurrentMonth ? null : <div className="text-transparent">.</div>;
+        // }}
       />
     );
   };
@@ -100,15 +120,23 @@ const handleBlock=async()=>{
 let transformedDates = selectedDates.map(date=>{
   return format(date,'yyyy-MM-dd')
 })
+const formattedSelectedDates = selectedDates.map(date => format(date, 'yyyy-MM-dd'));
+const formattedBookedDates = bookedDates.map(date => format(date, 'yyyy-MM-dd'));
 
+// Check if any of the selected dates are already booked
+const alreadyBookedDates = formattedSelectedDates.some(date => formattedBookedDates.includes(date));
 try{
-const res = await apis.blockDates({"dates":transformedDates})
+  if(!alreadyBookedDates)
+{const res = await apis.blockDates({"dates":transformedDates})
 if(res.status === 201)
   {
     toast.success(`${transformedDates.join(',')}  blocked successfully`)
     getBlockedDates()
     setSelectedDates([])
   }
+}else{
+  toast.warning("Trying to block already booked dates. Please check again!")
+}
 
 }catch(e)
 {
@@ -120,21 +148,29 @@ if(res.status === 201)
 const handleUnBlock=async()=>{
   if(selectedDates.length!==0)
   
-  {
-    let transformedDates = selectedDates.map(date=>{
-    return format(date,'yyyy-MM-dd')
-  })
+  { const formattedSelectedDates = selectedDates.map(date => format(date, 'yyyy-MM-dd'));
+    const formattedBookedDates = bookedDates.map(date => format(date, 'yyyy-MM-dd'));
+
+    // Check if any of the selected dates are already booked
+    const alreadyBookedDates = formattedSelectedDates.some(date => formattedBookedDates.includes(date));
+  
+   console.log(alreadyBookedDates)
   
   try{
-  const res = await apis.unBlockDates({"dates":transformedDates})
+    if(alreadyBookedDates)
+    {
+    toast.warning("Trying to unblock already booked date. Please verify once again! ")
+    }
+    else{
+  const res = await apis.unBlockDates({"dates":formattedSelectedDates})
   if(res.status === 200)
     {
-      toast.success(`${transformedDates.join(',')}  unblocked Successfully`)
+      toast.success(`${formattedSelectedDates.join(',')}  unblocked Successfully`)
       
       setSelectedDates([])
       getBlockedDates()
     }
-  
+    }
   }
 catch(e)
   {toast.error("Something went wrong!")
@@ -194,8 +230,16 @@ catch(e)
         >
          Unblock 
         </button>
-        
+        <div className="justify-end flex pt-3 font-mono">
+        <div className="w-3 h-3 bg-blue-500 rounded-full "></div>
+        <span className='text-xs mr-1 '>Selected</span>
+        <div className="w-3 h-3 bg-red-500 rounded-full  text-xs">  </div>
+        <span className='text-xs mr-1'>Blocked</span>
+          <div className="w-3 h-3 bg-green-500 rounded-full text-xs"></div>
+          <span className='text-xs mr-1'>Booked</span>
+        </div>
       </div>
+      
     </div>
   );
 }
