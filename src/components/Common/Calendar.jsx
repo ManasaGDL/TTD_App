@@ -23,7 +23,7 @@ import { useLoading } from "../../context/LoadingContext";
 import { Toaster, toast } from "sonner";
 import { useDebounce } from "../../custom-hooks/useDebounce";
 import AddEditFormLayout2 from "./AddEditFormLayout2";
-import AddEditFormNewLayout from "./ AddEditFormNewLayout";
+import AddEditFormNewLayout from "./AddEditFormNewLayout";
 import useMediaQuery from "../../hooks/useMediaQuery";
 
 const Calendar = () => {
