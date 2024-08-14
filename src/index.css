@@ -17,3 +17,7 @@
   .spinner-image {
     @apply w-32 h-32; /* Adjust size as needed */
   }
+
+  .underline-animate{
+    @apply relative after:absolute after:bottom-0 after:left-0 after:h-px after:w-0 after:bg-custom-header-bg  hover:after:w-full duration-200 after:duration-200; 
+  }
