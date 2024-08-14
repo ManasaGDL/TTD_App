@@ -20,6 +20,7 @@ import { IoIosWarning } from "react-icons/io";
 
 import { useLoading } from "../../context/LoadingContext";
 import PDFViewer from "../PDFViewer";
+import Swal from "sweetalert2";
 
 
 const schema = yup.object({
@@ -209,8 +210,13 @@ console.log("data",data)
       
       if (response.status === 201) {
         setIsModalOpen(false);
-        
-        setToastMessage({ type: 'success', message: `Booked Successfully - ${newPilgrims[0].booked_datetime}` });
+        Swal.fire({
+          title: 'Success',
+          text: `Booked Successfully - ${newPilgrims[0].booked_datetime}`,
+          icon: 'success',
+          confirmButtonText: 'Ok'
+        })
+        // setToastMessage({ type: 'success', message: `Booked Successfully - ${newPilgrims[0].booked_datetime}` });
         reset();
       }
     }
