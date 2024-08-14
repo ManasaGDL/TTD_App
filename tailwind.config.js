@@ -6,7 +6,9 @@ export default {
   ],
   theme: {
     extend:
+   
      {
+
       // textDecoration: ['hover', 'focus'],
       colors:{
         'custom-header-bg':"#4CAF50",

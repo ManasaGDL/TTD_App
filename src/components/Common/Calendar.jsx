@@ -70,56 +70,60 @@ const Calendar = () => {
     useEffect(() => {
         const endDate = endOfMonth(currentPageStart);
 
-        const days = eachDayOfInterval({
-            start: currentPageStart,
-            end: endDate,
-        }).reduce((acc, day) => {
-            acc[format(day, "yyyy-MM-dd")] = null;
-            return acc;
-        }, {});
-        setBookings(days);
-    }, [currentPageStart]);
-    const getPilgrimDetails = async (date) => {
-        try {
-            const res = await apis.getPilgrimDetails(format(date, "yyyy-MM-dd"));
-            setBookedPilgrimDetails(res?.data || []);
-        } catch (e) {
-            toast.error("Something went wrong!");
-            console.log(e);
-        }
-    };
-    useEffect(() => {
-        if (selectedDate) getPilgrimDetails(selectedDate);
-    }, [selectedDate]);
-    const isDayBeforeToday = (day) => {
-        const today = startOfToday();
+    const days = eachDayOfInterval({
+      start: currentPageStart,
+      end: endDate,
+    }).reduce((acc, day) => {
+      acc[format(day, 'yyyy-MM-dd')] = null;
+      return acc;
+    }, {});
+    setBookings(days);
+  }, [currentPageStart]);
+  const getPilgrimDetails=async(date)=>{
+    try{
 
-        return isBefore(day, today) || isSameDay(day, today);
-    };
-    const getBlockedDates = async () => {
-        try {
-            const blockedDatesResponse = await apis.getBlockedDates();
-            const dates = blockedDatesResponse?.data?.map((item) => format(new Date(item.blockdate), "yyyy-MM-dd"));
-            setBlockedDates(dates);
-        } catch (e) {
-            toast.error("Something went wrong!");
-            console.log(e);
-        }
-    };
+     const res = await apis.getPilgrimDetails(format(date,'yyyy-MM-dd'))
+    setBookedPilgrimDetails(res?.data || [])
+    }catch(e)
+    {toast.error("Something went wrong!")
+    console.log(e)
+    }
 
-    const isCurrentMonth = () => {
-        const today = startOfToday();
-        return currentPageStart.getFullYear() === today.getFullYear() && currentPageStart.getMonth() === today.getMonth();
-    };
-    useEffect(() => {
-        if (toastMessage.type === "success") {
-            toast.success(toastMessage.message);
-            getMonthSlotAvailability();
-        }
-        if (toastMessage.type === "error") {
-            toast.error(toastMessage.message);
-        }
-    }, [toastMessage]);
+  }
+  useEffect(()=>{
+    if(selectedDate)
+   getPilgrimDetails(selectedDate)
+  },[selectedDate])
+  const isDayBeforeToday = (day) => {
+    const today = startOfToday();
+   
+    return isBefore(day, today)|| isSameDay(day, today);
+  };
+ const getBlockedDates=async()=>{
+try{
+  const blockedDatesResponse = await apis.getBlockedDates();
+ 
+  const dates = blockedDatesResponse?.data?.Blocked.map(item => format(new Date(item.blockdate), 'yyyy-MM-dd'));
+  setBlockedDates(dates);
+}catch(e)
+{toast.error("Something went wrong!")
+console.log(e)
+}
+ }
+
+ const isCurrentMonth = () =>{
+  const today = startOfToday();
+  return (currentPageStart.getFullYear() === today.getFullYear() && currentPageStart.getMonth() === today.getMonth())
+ }
+  useEffect(() => {
+    if (toastMessage.type === 'success') {
+      toast.success(toastMessage.message);
+      getMonthSlotAvailability();
+    }
+    if (toastMessage.type === 'error') {
+      toast.error(toastMessage.message);
+    }
+  }, [toastMessage]);
 
     const getMonthSlotAvailability = async () => {
         try {
