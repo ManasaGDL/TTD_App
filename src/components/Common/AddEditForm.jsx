@@ -18,6 +18,7 @@ import { FaAddressCard } from "react-icons/fa6";
 import { MdOutlineEditOff } from "react-icons/md";
 
 import PDFViewer from "../PDFViewer";
+import Swal from "sweetalert2";
 
 
 const schema = yup.object({
@@ -151,7 +152,13 @@ const extractErrorMessage = (error) => {
      { const response = await apis.addPilgrims(newPilgrims);
       if (response.status === 201) {
         setIsModalOpen(false);
-        setToastMessage({ type: 'success', message: "Booked Successfully" });
+        // setToastMessage({ type: 'success', message: "Booked Successfully" });
+        Swal.fire({
+          title: 'Error!',
+          text: 'Do you want to continue',
+          icon: 'error',
+          confirmButtonText: 'Cool'
+        })
         reset();
       }
     }
