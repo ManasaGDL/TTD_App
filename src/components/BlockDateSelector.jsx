@@ -122,19 +122,27 @@ let transformedDates = selectedDates.map(date=>{
 })
 const formattedSelectedDates = selectedDates.map(date => format(date, 'yyyy-MM-dd'));
 const formattedBookedDates = bookedDates.map(date => format(date, 'yyyy-MM-dd'));
+const formattedBlockedDates = blockedDates.map(date=>format(date,'yyyy-MM-dd'))
+const isDateAlreadyBlocked = formattedSelectedDates.some(date=>formattedBlockedDates.includes(date))
 
 // Check if any of the selected dates are already booked
 const alreadyBookedDates = formattedSelectedDates.some(date => formattedBookedDates.includes(date));
 try{
-  if(!alreadyBookedDates)
-{const res = await apis.blockDates({"dates":transformedDates})
-if(res.status === 201)
-  {
-    toast.success(`${transformedDates.join(',')}  blocked successfully`)
-    getBlockedDates()
-    setSelectedDates([])
+  if(isDateAlreadyBlocked)
+    {
+    toast.warning("Date is already blocked!")
+    }
+ else 
+ if(!alreadyBookedDates )
+  {const res = await apis.blockDates({"dates":transformedDates})
+  if(res.status === 201)
+    {
+      toast.success(`${transformedDates.join(',')}  blocked successfully`)
+      getBlockedDates()
+      setSelectedDates([])
+    }
   }
-}else{
+else{
   toast.warning("Trying to block already booked dates. Please check again!")
 }
 
