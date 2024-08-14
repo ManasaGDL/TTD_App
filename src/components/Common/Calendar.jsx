@@ -91,7 +91,8 @@ if(blockedDates.length>0)
  const getBlockedDates=async()=>{
 try{
   const blockedDatesResponse = await apis.getBlockedDates();
-  const dates = blockedDatesResponse?.data?.map(item => format(new Date(item.blockdate), 'yyyy-MM-dd'));
+ 
+  const dates = blockedDatesResponse?.data?.Blocked.map(item => format(new Date(item.blockdate), 'yyyy-MM-dd'));
   setBlockedDates(dates);
 }catch(e)
 {toast.error("Something went wrong!")

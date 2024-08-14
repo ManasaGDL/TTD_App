@@ -17,7 +17,7 @@ import { IoMdPerson } from "react-icons/io";
 import { FaAddressCard } from "react-icons/fa6";
 import { MdOutlineEditOff } from "react-icons/md";
 import { IoIosWarning } from "react-icons/io";
-import { GrPowerReset } from "react-icons/gr";
+
 import { useLoading } from "../../context/LoadingContext";
 import PDFViewer from "../PDFViewer";
 
@@ -246,12 +246,7 @@ console.log("data",data)
       }
     }
   };
-// const convertData =(dataArray)=>{
-//     return { pilgrims:dataArray,
-//          pilgrim_count:pilgrimCount,
-//          booked_datetime: inputArray.length > 0 ? inputArray[0].booked_datetime : "" 
-//     }
-// }
+
   const addPilgrim = () => {
     setHideAddCountButton(true)
     if (fields.length < pilgrimCount) {
