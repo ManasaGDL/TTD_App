@@ -95,13 +95,14 @@ const RegistrationForm = () => {
   return (
     <>
       <Toaster richColors position='top-center' />
-      {Object.keys(initialData).length > 0 && <div className="max-w-2xl mx-auto text-lg font-mono">Edit Profile: {initialData.first_name + " " + initialData.last_name}</div>}
+      {Object.keys(initialData).length > 0 ? <div className="w-full text-center my-5 mx-auto text-xl font-bold font-mono">Edit Profile: {initialData.first_name + " " + initialData.last_name}</div>
+      : <div className="w-full text-center my-5 mx-auto text-xl font-bold font-mono">Add User</div>}
       <form onSubmit={handleSubmit(onSubmit)} className="max-w-2xl mx-auto p-4 grid grid-cols-1 gap-6 sm:grid-cols-2 bg-slate-50 rounded-lg">
         
         {/* Change 3: Hidden input for conditional validation */}
         <input type="hidden" {...register('isEdit')} value={Object.keys(initialData).length > 0} />
         <div className="mb-4">
-          <label htmlFor="email" className="block text-gray-700">Email</label>
+          <label htmlFor="email" className="block text-gray-700 pb-2">Email</label>
           <input
             type="email"
             id="email"
@@ -112,7 +113,7 @@ const RegistrationForm = () => {
           {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
         </div>
         <div className="mb-4">
-          <label htmlFor="username" className="block text-gray-700">Username</label>
+          <label htmlFor="username" className="block text-gray-700 pb-2">Username</label>
           <input
             // type="email"
             id="username"
@@ -124,7 +125,7 @@ const RegistrationForm = () => {
         </div>
 
         {Object.keys(initialData).length === 0 && <div className="mb-4">
-          <label htmlFor="password" className="block text-gray-700">Password</label>
+          <label htmlFor="password" className="block text-gray-700 pb-2">Password</label>
           <input
             type="password"
             id="password"
@@ -136,7 +137,7 @@ const RegistrationForm = () => {
         </div>}
 
         <div className="mb-4">
-          <label htmlFor="first_name" className="block text-gray-700">FirstName of MLA/MP</label>
+          <label htmlFor="first_name" className="block text-gray-700 pb-2">FirstName of MLA/MP</label>
           <input
             type="text"
             id="first_name"
@@ -147,7 +148,7 @@ const RegistrationForm = () => {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="last_name" className="block text-gray-700">LastName of MLA/MP</label>
+          <label htmlFor="last_name" className="block text-gray-700 pb-2">LastName of MLA/MP</label>
           <input
             type="text"
             id="last_name"
@@ -158,7 +159,7 @@ const RegistrationForm = () => {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="phone_number" className="block text-gray-700">Phone Number</label>
+          <label htmlFor="phone_number" className="block text-gray-700 pb-2">Phone Number</label>
           <input
             type="text"
             id="phone_number"
@@ -192,7 +193,7 @@ const RegistrationForm = () => {
           {errors.gender&& <p className="text-red-500 text-sm">{errors.gender.message}</p>}
         </div>
         <div className="mb-4">
-          <label htmlFor="constituency" className="block text-gray-700">Constituency</label>
+          <label htmlFor="constituency" className="block text-gray-700 pb-2">Constituency</label>
           <input
             type="test"
             id="constituency"

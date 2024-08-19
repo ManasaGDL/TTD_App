@@ -80,7 +80,8 @@ export default function BlockDateSelector() {
           
           if (isSelected) {
             return `bg-blue-500 width-tile-size h-9 w-1 text-white ${isCurrentMonth?"rounded-full":''} `;
-          } else if (isBlocked) {
+          }
+           else if (isBlocked) {
             return `bg-red-500 text-white h-9 w-1 ${isCurrentMonth?"rounded-full":''}`;
           } else if (isBooked) {
             return `bg-green-500 text-white h-9 w-1 ${isCurrentMonth?"rounded-full":''}`;
@@ -195,14 +196,14 @@ catch(e)
       <div className="flex justify-between mb-4">
         <button
           onClick={handlePrevious}
-          className="text-3xl text-black px-4 py-2 rounded hover:text-4xl"
+          className="text-3xl text-black px-4 py-2 rounded hover:text-custom-header-bg"
         >
           <FiArrowLeft />
         </button>
 
         <button
           onClick={handleNext}
-          className="text-3xl text-black px-4 py-2 rounded hover:text-4xl"
+          className="text-3xl text-black px-4 py-2 rounded hover:text-custom-header-bg"
         >
           <FiArrowRight />
         </button>
@@ -238,7 +239,7 @@ catch(e)
         >
          Unblock 
         </button>
-        <div className="justify-end flex pt-3 font-mono">
+        <div className="justify-end flex pt-3 font-mono gap-2 ml-2">
         <div className="w-3 h-3 bg-blue-500 rounded-full "></div>
         <span className='text-xs mr-1 '>Selected</span>
         <div className="w-3 h-3 bg-red-500 rounded-full  text-xs">  </div>

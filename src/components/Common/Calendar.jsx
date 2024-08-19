@@ -215,12 +215,12 @@ console.log(e)
             {/* <Toaster richColors position="top-center" /> */}
             <div className={`flex justify-center mb-4`}>
                 {!isCurrentMonth() && (
-                    <button onClick={goToPreviousPage} className="text-3xl text-black px-4 py-2 rounded hover:text-4xl">
+                    <button onClick={goToPreviousPage} className="text-2xl text-black p-2 rounded hover:text-custom-header-bg">
                         <FiArrowLeft />
                     </button>
                 )}
                 <h2 className={`text-xl mt-2`}>{format(currentPageStart, "MMMM yyyy")}</h2>
-                <button onClick={goToNextPage} className="text-2xl text-black p-2 rounded ">
+                <button onClick={goToNextPage} className="text-2xl text-black p-2 rounded hover:text-custom-header-bg">
                     <FiArrowRight />
                 </button>
             </div>
