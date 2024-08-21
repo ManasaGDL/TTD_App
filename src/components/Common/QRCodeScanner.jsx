@@ -4,7 +4,7 @@ import QrScanner from "react-qr-scanner";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import apis from "../../api/apis";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 
 const QRCodeScanner = () => {
   const [data, setData] = useState(null);
@@ -15,21 +15,31 @@ const QRCodeScanner = () => {
       setScanned(true);
       try {
         const details = result;
+        Swal.fire({
+            title:"Fetching... ",
+            timer:3000,
+            timerProgressBar: true,
+        })
+        setTimeout(() => {
+            
+       
         apis
           .getScanner(details.text.split("/")[5])
           .then((res) => {
             setData(res.data);
-            // toast.success("QR code scanned successfully!");
             Swal.fire({
-                title: "QR Scanned Successfully",
+                title: "Approved",
                 // text: "QR Scanned Successfully",
                 icon: "success",
+                iconColor: '#3fc3ee',
               });
+            // toast.success("QR code scanned successfully!");
           })
           .catch((error) => {
             console.error(error);
             toast.error("Error fetching data!");
           });
+        }, 3000);
       } catch (error) {
         console.error(error);
         toast.error("Invalid QR code format!");
@@ -50,7 +60,7 @@ const QRCodeScanner = () => {
         </h1>
       ) : (
         <h1 className="text-3xl font-mono font-semibold text-black mb-6">
-         Pilgrim Details 
+          Pilgrim Details
         </h1>
       )}
       <div className="w-full max-w-lg bg-white shadow-2xl font-mono rounded-lg p-6">
