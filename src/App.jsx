@@ -17,6 +17,7 @@ import { useLoading } from './context/LoadingContext';
 import Spinner from './components/Common/Spinner';
 import ChakramSpinner from './components/Common/ChakramSpinner';
 import  EditCredentials from "./components/EditCredentials"
+import QRCodeScanner from './components/Common/QRCodeScanner';
 const App = () => {
   const { auth } = useContext(AuthContext);
   const { isLoading } = useLoading();
@@ -39,6 +40,7 @@ const App = () => {
       <Route path="/edit_user/:id" element={<PrivateRoute><Layouts><AddUser/></Layouts></PrivateRoute>} />
       <Route path="/add_newuser" element={<PrivateRoute><Layouts><AddUser/></Layouts></PrivateRoute>} />
       <Route path="/view-users" element={<PrivateRoute><Layouts><ViewUsers/></Layouts></PrivateRoute>}/>
+      <Route path="/scan" element={<PrivateRoute><Layouts><QRCodeScanner /></Layouts></PrivateRoute>}/>
       <Route path="/edit-credentials/:id" element={<PrivateRoute><Layouts><EditCredentials/></Layouts></PrivateRoute>}/>
     </Routes>
     </div>

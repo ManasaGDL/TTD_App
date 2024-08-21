@@ -5,6 +5,10 @@ login:(payload)=>{
        
     )
 },
+getScanner:(details)=>{
+    return axios_instance.get(`/api/users/qr-verify/`+ details)
+},
+
 getRefreshToken:(payload)=>{
     return axios_instance.post(`/auth/token/refresh/`,payload)
 },
