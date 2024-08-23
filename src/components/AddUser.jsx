@@ -95,90 +95,105 @@ const RegistrationForm = () => {
   return (
     <>
       <Toaster richColors position='top-center' />
-      {Object.keys(initialData).length > 0 ? <div className="w-full text-center my-5 mx-auto text-xl font-bold font-mono">Edit Profile: {initialData.first_name + " " + initialData.last_name}</div>
-      : <div className="w-full text-center my-5 mx-auto text-xl font-bold font-mono">Add User</div>}
+      {Object.keys(initialData).length > 0 ? <div className="w-full text-center my-5 mx-auto text-xl text-gray-700 font-semibold font-mono">Edit Profile: {initialData.first_name + " " + initialData.last_name}</div>
+      : <div className="w-full text-center my-5 mx-auto text-xl font-semibold text-gray-700 font-mono">Add User</div>}
       <form onSubmit={handleSubmit(onSubmit)} className="max-w-2xl mx-auto p-4 grid grid-cols-1 gap-6 sm:grid-cols-2 bg-slate-50 rounded-lg">
         
         {/* Change 3: Hidden input for conditional validation */}
         <input type="hidden" {...register('isEdit')} value={Object.keys(initialData).length > 0} />
-        <div className="mb-4">
-          <label htmlFor="email" className="block text-gray-700 pb-2">Email</label>
+
+
+
+            {/* <div class="relative z-0 w-full mb-6 group">
+  <input type="text" id="floating_input" class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+  <label htmlFor="floating_input" class="absolute text-sm  text-gray-500 peer-focus:text-blue-500  bg-slate-50 duration-300 transform -translate-y-6 scale-75 top-4 left-2  z-10 px-2 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1 peer-focus:scale-75 peer-focus:-translate-y-6">Floating Label</label>
+</div> */}
+
+
+        <div className="relative z-0 w-full mb-6 group">
           <input
             type="email"
             id="email"
             {...register('email')}
             autoComplete='off'
-            className={`w-full p-2 border ${errors.email ? 'border-red-500' : 'border-gray-300'} rounded`}
+            placeholder=" "
+            className={`block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer ${errors.email ? '!border-custom-color-danger' : 'border-gray-300'} rounded` }
           />
-          {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+          <label htmlFor="email"  className="absolute text-sm  text-gray-500 peer-focus:text-blue-500  bg-slate-50 duration-300 transform -translate-y-6 scale-75 top-4 left-2  z-10 px-2 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1 peer-focus:scale-75 peer-focus:-translate-y-6">Email</label>
+          {errors.email && <p className="text-custom-color-danger text-sm">{errors.email.message}</p>}
         </div>
-        <div className="mb-4">
-          <label htmlFor="username" className="block text-gray-700 pb-2">Username</label>
+        <div className="relative z-0 w-full mb-6 group">
           <input
             // type="email"
             id="username"
             {...register('username')}
             autoComplete='off'
-            className={`w-full p-2 border ${errors.username ? 'border-red-500' : 'border-gray-300'} rounded`}
+            placeholder=" "
+            className={`block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer ${errors.username ? '!border-custom-color-danger' : 'border-gray-300'} rounded`}
           />
-          {errors.username && <p className="text-red-500 text-sm">{errors.username.message}</p>}
+          <label htmlFor="username" for="username" className="absolute text-sm  text-gray-500 peer-focus:text-blue-500  bg-slate-50 duration-300 transform -translate-y-6 scale-75 top-4 left-2  z-10 px-2 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1 peer-focus:scale-75 peer-focus:-translate-y-6">Username</label>
+          {errors.username && <p className="text-custom-color-danger text-sm">{errors.username.message}</p>}
         </div>
 
-        {Object.keys(initialData).length === 0 && <div className="mb-4">
-          <label htmlFor="password" className="block text-gray-700 pb-2">Password</label>
+        {Object.keys(initialData).length === 0 && <div className="relative z-0 w-full mb-6 group">
           <input
             type="password"
             id="password"
+            placeholder=" "
             autoComplete='new-password'
             {...register('password')}
-            className={`w-full p-2 border ${errors.password ? 'border-red-500' : 'border-gray-300'} rounded`}
+            className={`block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer ${errors.password ? '!border-custom-color-danger' : 'border-gray-300'} rounded`}
           />
-          {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
+          <label htmlFor="password" for="password" className="absolute text-sm  text-gray-500 peer-focus:text-blue-500  bg-slate-50 duration-300 transform -translate-y-6 scale-75 top-4 left-2  z-10 px-2 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1 peer-focus:scale-75 peer-focus:-translate-y-6">Password</label>
+          {errors.password && <p className="text-custom-color-danger text-sm">{errors.password.message}</p>}
         </div>}
 
-        <div className="mb-4">
-          <label htmlFor="first_name" className="block text-gray-700 pb-2">FirstName of MLA/MP</label>
+        <div className="relative z-0 w-full mb-6 group">
           <input
             type="text"
             id="first_name"
+            placeholder=" "
             {...register('first_name')}
-            className={`w-full p-2 border ${errors.first_name ? 'border-red-500' : 'border-gray-300'} rounded`}
+            className={`block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer ${errors.first_name ? '!border-custom-color-danger' : 'border-gray-300'} rounded`}
           />
-          {errors.first_name && <p className="text-red-500 text-sm">{errors.first_name.message}</p>}
+          <label htmlFor="first_name" for="first_name" className="absolute text-sm  text-gray-500 peer-focus:text-blue-500  bg-slate-50 duration-300 transform -translate-y-6 scale-75 top-4 left-2  z-10 px-2 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1 peer-focus:scale-75 peer-focus:-translate-y-6">FirstName of MLA/MP</label>
+          {errors.first_name && <p className="text-custom-color-danger text-sm">{errors.first_name.message}</p>}
         </div>
 
-        <div className="mb-4">
-          <label htmlFor="last_name" className="block text-gray-700 pb-2">LastName of MLA/MP</label>
+        <div className="relative z-0 w-full mb-6 group">
           <input
             type="text"
             id="last_name"
+            placeholder=" "
             {...register('last_name')}
-            className={`w-full p-2 border ${errors.last_name ? 'border-red-500' : 'border-gray-300'} rounded`}
+            className={`block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer ${errors.last_name ? '!border-custom-color-danger' : 'border-gray-300'} rounded`}
           />
-          {errors.last_name && <p className="text-red-500 text-sm">{errors.last_name.message}</p>}
+          <label htmlFor="last_name" for="last_name" className="absolute text-sm  text-gray-500 peer-focus:text-blue-500  bg-slate-50 duration-300 transform -translate-y-6 scale-75 top-4 left-2  z-10 px-2 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1 peer-focus:scale-75 peer-focus:-translate-y-6">LastName of MLA/MP</label>
+          {errors.last_name && <p className="text-custom-color-danger text-sm">{errors.last_name.message}</p>}
         </div>
 
-        <div className="mb-4">
-          <label htmlFor="phone_number" className="block text-gray-700 pb-2">Phone Number</label>
+        <div className="relative z-0 w-full mb-6 group">
           <input
             type="text"
             id="phone_number"
+            placeholder=" "
             {...register('phone_number')}
-            className={`w-full p-2 border ${errors.phone_number ? 'border-red-500' : 'border-gray-300'} rounded`}
+            className={`block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer ${errors.phone_number ? '!border-custom-color-danger' : 'border-gray-300'} rounded`}
           />
-          {errors.phone_number && <p className="text-red-500 text-sm">{errors.phone_number.message}</p>}
+          <label htmlFor="phone_number" for="phone_number" className="absolute text-sm  text-gray-500 peer-focus:text-blue-500  bg-slate-50 duration-300 transform -translate-y-6 scale-75 top-4 left-2  z-10 px-2 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1 peer-focus:scale-75 peer-focus:-translate-y-6">Phone Number</label>
+          {errors.phone_number && <p className="text-custom-color-danger text-sm">{errors.phone_number.message}</p>}
         </div>
-        <div className="mb-4">
+        <div className="relative z-0 w-full mb-6 group">
      
-          <div className="flex items-center space-x-4 pt-6">
+          <div className="flex items-center space-x-4 pt-6 ">
             <label className="inline-flex items-center">
               <input
                 type="radio"
                 value="F"
                 {...register('gender')}
-                className="form-radio"
+                className="form-radio "
               />
-              <span className="ml-2">Female</span>
+              <span className="ml-2 text-gray-500">Female</span>
             </label>
             <label className="inline-flex items-center">
               <input
@@ -187,21 +202,22 @@ const RegistrationForm = () => {
                 {...register('gender')}
                 className="form-radio"
               />
-              <span className="ml-2">Male</span>
+              <span className="ml-2 text-gray-500">Male</span>
             </label>
           </div>
-          {errors.gender&& <p className="text-red-500 text-sm">{errors.gender.message}</p>}
+          {errors.gender&& <p className="text-custom-color-danger text-sm">{errors.gender.message}</p>}
         </div>
-        <div className="mb-4">
-          <label htmlFor="constituency" className="block text-gray-700 pb-2">Constituency</label>
+        <div className="relative z-0 w-full mb-6 group">
           <input
             type="test"
+            placeholder=" "
             id="constituency"
             {...register('constituency')}
             autoComplete='off'
-            className={`w-full p-2 border ${errors.constituency? 'border-red-500' : 'border-gray-300'} rounded`}
+            className={`block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer ${errors.constituency? '!border-custom-color-danger' : 'border-gray-300'} rounded`}
           />
-          {errors.constituency && <p className="text-red-500 text-sm">{errors.constituency.message}</p>}
+          <label htmlFor="constituency" for="constituency" className="absolute text-sm  text-gray-500 peer-focus:text-blue-500  bg-slate-50 duration-300 transform -translate-y-6 scale-75 top-4 left-2  z-10 px-2 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1 peer-focus:scale-75 peer-focus:-translate-y-6">Constituency</label>
+          {errors.constituency && <p className="text-custom-color-danger text-sm">{errors.constituency.message}</p>}
         </div>
         <div className="mb-4">
           <div className="flex items-center space-x-4 pt-6">
@@ -212,7 +228,7 @@ const RegistrationForm = () => {
                 {...register('is_mla')}
                 className="form-radio"
               />
-              <span className="ml-2">MLA</span>
+              <span className="ml-2 text-gray-500">MLA</span>
             </label>
             <label className="inline-flex items-center">
               <input
@@ -221,10 +237,10 @@ const RegistrationForm = () => {
                 {...register('is_mla')}
                 className="form-radio"
               />
-              <span className="ml-2">MP</span>
+              <span className="ml-2 text-gray-500">MP</span>
             </label>
           </div>
-          {errors.is_mla && <p className="text-red-500 text-sm">{errors.is_mla.message}</p>}
+          {errors.is_mla && <p className="text-custom-color-danger text-sm">{errors.is_mla.message}</p>}
         </div>
 
         <div className="col-span-2 flex justify-center">

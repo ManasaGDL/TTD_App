@@ -17,6 +17,9 @@ const Navbar = ({ setBlur }) => {
     const navLinks = [
         // { label: "Dashboard", href: "/dashboard" },
         { label: "Bookings", href: "/bookings" },
+        {label: "QR Scanner", href:"/scan"},
+        {label: "Users", href:"/view-users"},
+        
         // { label: "About", href: "/about" },
         // { label: "Contact", href: "/contact" },
     ];
@@ -60,7 +63,7 @@ const Navbar = ({ setBlur }) => {
                             {link.label}
                         </Link>
                     ))}
-                    {localStorage.getItem("super_user") === "true" && (
+                    {/* {localStorage.getItem("super_user") === "true" && (
                         <Link
                             to="/view-users"
                             key="view-users"
@@ -70,7 +73,7 @@ const Navbar = ({ setBlur }) => {
                         >
                             Users
                         </Link>
-                    )}
+                    )} */}
                 </div>
                 <div
                     className={clsx(
