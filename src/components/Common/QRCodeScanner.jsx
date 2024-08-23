@@ -13,37 +13,61 @@ const QRCodeScanner = () => {
   const handleScan = (result) => {
     if (result && !scanned) {
       setScanned(true);
-      try {
-        const details = result;
-        Swal.fire({
-            title:"Fetching... ",
-            timer:3000,
-            timerProgressBar: true,
-        })
-        setTimeout(() => {
-            
-       
-        apis
-          .getScanner(details.text.split("/")[5])
-          .then((res) => {
-            setData(res.data);
-            Swal.fire({
-                title: "Approved",
-                // text: "QR Scanned Successfully",
-                icon: "success",
+      Swal.fire({
+        title: 'Fetching...',
+        // text: 'Please wait while we fetch the data.',
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        // icon: 'success',
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+      setTimeout(() => {
+        try {
+          const details = result;
+          // console.log(details)
+          // console.log(details.text.split("/")[5])
+          apis
+            .getScanner(details.text.split("/")[5])
+            .then((res) => {
+              setData(res.data);
+              console.log(res.data)
+              Swal.update({
+                title: 'Approved',
+                icon: 'success',
                 iconColor: '#3fc3ee',
+                showConfirmButton: true,
               });
-            // toast.success("QR code scanned successfully!");
-          })
-          .catch((error) => {
-            console.error(error);
-            toast.error("Error fetching data!");
+              Swal.hideLoading()
+            })
+            .catch((error) => {
+              console.error(error);
+              // toast.error("Error fetching data!");
+              Swal.update({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Invalid QR code format!',
+                                
+                showConfirmButton: true
+              });
+              Swal.hideLoading();
+              setScanned(false);
+            });
+        } catch (error) {
+          console.error(error);
+          // toast.error("Invalid QR code format!");
+          Swal.update({
+            icon: 'error',
+            title: 'Error!',
+            text: 'Error fetching data!',
+            // text: 'Invalid QR code format!',
+            showConfirmButton: true
           });
-        }, 3000);
-      } catch (error) {
-        console.error(error);
-        toast.error("Invalid QR code format!");
-      }
+          Swal.hideLoading();
+          setScanned(false);
+        }
+      }, 2000); 
     }
   };
 
@@ -76,7 +100,7 @@ const QRCodeScanner = () => {
         )}
         {data && (
           <div className="mt-4">
-            <h2 className="text-2xl fotnt-mono font-semibold text-gray-700 mb-4">
+            <h2 className="text-2xl font-mono font-semibold text-gray-700 mb-4">
               User Details
             </h2>
             <p className="text-gray-600 mb-2">
