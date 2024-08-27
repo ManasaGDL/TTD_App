@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import apis from "../api/apis";
-import Spinner from "./Common/Spinner";
 import { format, parseISO } from "date-fns";
 import ChakramSpinner from "./Common/ChakramSpinner";
+import { CircleCheck } from "lucide-react";
 
 export default function ScannedView() {
     const { id } = useParams();
@@ -27,7 +27,10 @@ export default function ScannedView() {
                 ) : (
                     <div className="mx-auto mt-12 w-11/12 md:w-8/12 lg:w-6/12">
                         <div className="overflow-x-auto">
-                            <div className="mx-auto"></div>
+                            <div className="mx-auto w-min grid place-items-center gap-2 p-2">
+                                <CircleCheck className="w-16 h-16 text-custom-header-bg " />
+                                <div className="">Verified</div>
+                            </div>
                             <div className="flex justify-center items-center gap-2 pb-3 font-mono">
                                 <p className="text-gray-600 mb-2">
                                     <strong>Name:</strong> {data.user.first_name} {data.user.last_name}(MLA)
