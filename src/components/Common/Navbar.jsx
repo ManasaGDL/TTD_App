@@ -75,7 +75,7 @@ const Navbar = ({ setBlur }) => {
               {link.label}
             </Link>
           ))}
-          {localStorage.getItem("super_user") === "true" && (
+          {/* {localStorage.getItem("super_user") === "true" && (
             <Link
               to="/scan"
               key="Scan"
@@ -87,7 +87,7 @@ const Navbar = ({ setBlur }) => {
             >
               QR Scanner
             </Link>
-          )}
+          )} */}
           {localStorage.getItem("super_user") === "true" && (
             <Link
               to="/view-users"
@@ -123,7 +123,7 @@ const Navbar = ({ setBlur }) => {
                 {link.label}
               </Link>
             ))}
-             {localStorage.getItem("super_user") === "true" && (
+             {/* {localStorage.getItem("super_user") === "true" && (
               <Link
                 to="/scan"
                 key="scan-mobile"
@@ -132,7 +132,7 @@ const Navbar = ({ setBlur }) => {
               >
                 QR Scanners
               </Link>
-            )}
+            )} */}
             {localStorage.getItem("super_user") === "true" && (
               <Link
                 to="/view-users"
