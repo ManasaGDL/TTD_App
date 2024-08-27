@@ -14,7 +14,6 @@ const QRCodeScanner = () => {
   const qrRef = useRef(null);
 
   const handleScan = (result) => {
-    console.log(result);
     
     if (result) {
       setScanned(true);
@@ -37,11 +36,11 @@ const QRCodeScanner = () => {
       setTimeout(() => {
         try {
           const details = result;
+          
           apis
             .getScanner(details.text.split("/")[5])
             .then((res) => {
               setData(res.data);
-              console.log(res.data);
               const tableRows = res.data.pilgrim
                 .map(
                   (item) => `
@@ -84,7 +83,6 @@ const QRCodeScanner = () => {
               </div>
             `;
 
-              console.log(res.data);
               Swal.update({
                 title: "Approved",
                 icon: "success",
