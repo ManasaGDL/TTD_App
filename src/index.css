@@ -21,3 +21,13 @@
   .underline-animate{
     @apply relative after:absolute after:bottom-0 after:left-0 after:h-px after:w-0 after:bg-custom-header-bg  hover:after:w-full duration-200 after:duration-200; 
   }
+
+.swal-icon-small{
+  @apply scale-75 mb-0 mt-3;
+}
+.swal-title-custom{
+  @apply p-0 m-0 text-green-500;
+}
+.swal2-confirm.swal2-styled{
+  @apply bg-green-500;
+}

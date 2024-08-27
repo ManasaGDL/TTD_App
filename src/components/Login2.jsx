@@ -38,7 +38,7 @@ const Login2 = () => {
             localStorage.setItem("email",profile_res?.data?.email)
             localStorage.setItem("is_mla",profile_res.data.is_mla)
             localStorage.setItem("super_user",profile_res.data.is_superuser)
-            localStorage.setItem("user_name",profile_res.data.first_name+profile_res.data.last_name)
+            localStorage.setItem("user_name",profile_res.data.first_name+' '+profile_res.data.last_name)
             profile_res.data.constituency && localStorage.setItem("constituency",profile_res.data.constituency)
             setAuth({'token':localStorage.getItem('access_token'),'email':profile_res.data.email,username:profile_res.data.username,user_id:profile_res.data.user_id,super_user:profile_res.data.is_superuser,isAuthenticated:true,is_mla:profile_res.data.is_mla})
             navigate("/bookings")

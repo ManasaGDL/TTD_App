@@ -12,7 +12,8 @@ export default {
       // textDecoration: ['hover', 'focus'],
       colors:{
         'custom-header-bg':"#4CAF50",
-        'custom-header-text': '#FFFFFF'
+        'custom-header-text': '#FFFFFF',
+        'custom-color-danger':'#b91c1c',
       }
     },
   },

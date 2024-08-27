@@ -86,18 +86,18 @@ const EditCredentials = () => {
         </div>
       ) : (
         <div className="max-w-2xl mx-auto mb-4 p-4  rounded-lg ">
-          <h2 className="text-xl font-mono font-semibold mb-2">Profile Information</h2>
+          <h2 className="text-xl text-gray-700 font-mono font-semibold mb-2">Profile Information</h2>
           <div className="space-y-2">
-            <div className="flex ">
-              <span className="font-mono font-semibold mr-3">Username:</span>
+            <div className="flex  ">
+              <span className="font-mono text-gray-700 font-semibold mr-3">Username:</span>
               <span>{localStorage.getItem("username")}</span>
             </div>
             <div className="flex ">
-              <span className="font-mono font-semibold mr-3">Email:</span>
+              <span className="font-mono text-gray-700 font-semibold mr-3">Email:</span>
               <span>{localStorage.getItem("email")}</span>
             </div>
             <div className="flex ">
-              <span className="font-mono font-semibold mr-3">Constituency:</span>
+              <span className="font-mono text-gray-700 font-semibold mr-3">Constituency:</span>
               <span>{localStorage.getItem("constituency")}</span>
             </div>
           </div>
@@ -107,7 +107,7 @@ const EditCredentials = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="max-w-2xl mx-auto p-4 bg-slate-50 rounded-lg text-center"
       >
-        <h2 className="text-center text-lg font-mono font-semibold mb-7">Change Password</h2>
+        <h2 className="text-center text-lg text-gray-700 font-mono font-semibold mb-7">Change Password</h2>
 
         <div className="mb-4 relative flex flex-col items-center">
           <label
