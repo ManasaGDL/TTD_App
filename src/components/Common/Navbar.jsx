@@ -66,11 +66,10 @@ const Navbar = ({ setBlur }) => {
             <Link
               to={link.href}
               key={key}
-              className={`font-mono hover:text-custom-header-bg underline-animate hidden lg:block ${
-                location.pathname === link.href
-                  ? "text-lime-500 after:w-4"
-                  : "text-black-400"
-              }`}
+              className={`font-mono hover:text-custom-header-bg underline-animate hidden lg:block ${location.pathname === link.href
+                ? "text-lime-500 after:w-4"
+                : "text-black-400"
+                }`}
             >
               {link.label}
             </Link>
@@ -92,11 +91,10 @@ const Navbar = ({ setBlur }) => {
             <Link
               to="/view-users"
               key="view-users"
-              className={`font-mono hover:text-custom-header-bg underline-animate hidden lg:block ${
-                location.pathname === "/view-users"
-                  ? "text-lime-500 after:w-4"
-                  : "text-black-400"
-              }`}
+              className={`font-mono hover:text-custom-header-bg underline-animate hidden lg:block ${location.pathname === "/view-users"
+                ? "text-lime-500 after:w-4"
+                : "text-black-400"
+                }`}
             >
               Users
             </Link>
@@ -123,7 +121,7 @@ const Navbar = ({ setBlur }) => {
                 {link.label}
               </Link>
             ))}
-             {/* {localStorage.getItem("super_user") === "true" && (
+            {/* {localStorage.getItem("super_user") === "true" && (
               <Link
                 to="/scan"
                 key="scan-mobile"
@@ -190,28 +188,44 @@ const Navbar = ({ setBlur }) => {
         </section> */}
         <section className="flex flex-col sm:flex-row items-center gap-1 sm:gap-4 font-mono">
           {/* User Info */}
-          <div className="flex flex-col gap-1 text-center sm:text-left">
-            <div className="">
-              <span className="text-xs  text-green-700 md:text-lg font-semibold">
-                {localStorage.getItem("email")}
-              </span>
-              {localStorage.getItem("super_user") === "true" && (
-                <span className="font-mono text-green-700 text-sm rounded-sm bg-zinc-200 w-min px-2 py-px mx-2 font-semibold">
-                  Admin
+          <div className="flex flex-col text-center sm:text-left">
+            {localStorage.getItem("super_user")==="true"
+              ? <div className='flex flex-col sm:text-sm text-xs'>
+                <div className=" flex flex-row">
+                <span className="text-custom-header-bg capitalize sm:text-base text-md font-sans font-semibold">{localStorage.getItem("user_name")},{" "}</span>
+                {localStorage.getItem("super_user") === "true" && (
+                  <span className="font-mono  text-custom-color-danger ml-2 sm:text-base text-center text-sm font-semibold">
+                    Admin
+                  </span>
+                )}</div>
+                <span className="text-gray-700">
+                  {localStorage.getItem("email")}
                 </span>
-              )}
-            </div>
-            <span className="lg:text-base text-xs text-red-600 font-semibold ">
-              {localStorage.getItem("user_name")},{" "}
-              {localStorage.getItem("is_mla") === "true"
-                ? "MLA"
-                : localStorage.getItem("is_mla") === "false"
-                ? "MP"
-                : "Admin"}
-            </span>
-            <span className="lg:text-base text-xs text-zinc-700 font-bold ">
-              {localStorage.getItem("constituency")} Constituency
-            </span>
+                
+              </div>
+              :
+              <div><span className="sm:text-base text-md capitalize text-green-600 font-sans font-semibold">
+                {localStorage.getItem("user_name")},{" "}
+                <span className=" text-custom-color-danger">{localStorage.getItem("is_mla") === "true"
+                  ? "MLA"
+                  : localStorage.getItem("is_mla") === "false"
+                    ? "MP"
+                    : "Admin"}</span>
+              </span>
+                <div className='flex flex-col sm:text-sm text-xs'>
+                  <span className="text-gray-700">
+                    {localStorage.getItem("email")}
+                  </span>
+                  {/* {localStorage.getItem("super_user") === "true" && (
+                    <span className="font-mono text-red-600 sm:text-base text-center text-sm rounded-md w-min bg-zinc-200 px-2 py-px font-semibold">
+                      Admin
+                    </span>
+                  )} */}
+                  <span className="text-gray-700 ">
+                    {localStorage.getItem("constituency")} Constituency
+                  </span>
+                </div></div>
+            }
           </div>
 
           {/* User Settings */}
@@ -229,33 +243,30 @@ const Navbar = ({ setBlur }) => {
               >
                 <Link
                   to="/blockdates"
-                  className={`block px-4 py-2 text-gray-800 hover:bg-gray-100 ${
-                    location.pathname === "/blockdates"
-                      ? "text-red-500 font-semibold"
-                      : "text-gray-700"
-                  }`}
+                  className={`block px-4 py-2 text-gray-800 hover:bg-gray-100 ${location.pathname === "/blockdates"
+                    ? "text-red-500 font-semibold"
+                    : "text-gray-700"
+                    }`}
                 >
                   Block/Unblock
                 </Link>
                 {localStorage.getItem("super_user") === "true" && (
                   <Link
                     to="/add_newuser"
-                    className={`block px-4 py-2 text-gray-800 hover:bg-gray-100 ${
-                      location.pathname === "/add_newuser"
-                        ? "text-red-500 font-semibold"
-                        : "text-gray-700"
-                    }`}
+                    className={`block px-4 py-2 text-gray-800 hover:bg-gray-100 ${location.pathname === "/add_newuser"
+                      ? "text-red-500 font-semibold"
+                      : "text-gray-700"
+                      }`}
                   >
                     Add New-User
                   </Link>
                 )}
                 <Link
                   to={`/edit-credentials/${id}`}
-                  className={`block px-4 py-2 text-gray-800 hover:bg-gray-100 ${
-                    location.pathname === `/edit-credentials/${id}`
-                      ? "text-red-500 font-semibold"
-                      : "text-gray-700"
-                  }`}
+                  className={`block px-4 py-2 text-gray-800 hover:bg-gray-100 ${location.pathname === `/edit-credentials/${id}`
+                    ? "text-red-500 font-semibold"
+                    : "text-gray-700"
+                    }`}
                 >
                   Change Password
                 </Link>
