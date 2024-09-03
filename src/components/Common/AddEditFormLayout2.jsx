@@ -332,11 +332,18 @@ const AddEditFormLayout2 = ({
     }
     return "Invalid Date";
   };
+
+  useEffect(()=>{
+
+  },[pilgrimCount])
+
   const handleDelete = (index) => {
     setDeleteIndex(index);
     if (Object.prototype.hasOwnProperty.call(fields[index], "editable")) {
       setOpenModal(true);
     } else remove(index);
+    if (fields.length !== 1 )
+    setPilgrimCount(fields.length - 1)
   };
 
   const handlePilgrimDelete = async () => {
@@ -344,12 +351,12 @@ const AddEditFormLayout2 = ({
       const res = await apis.deletePilgrim(fields[deleteIndex].pilgrim_id);
       let date = format(
         parseISO(fields[deleteIndex]?.booked_datetime),
-        "yyyy-MM-dd"
+        "dd MMM yyyy"
       );
       if (res.status == 204) {
         setToastMessage({
           type: "success",
-          message: `Successfully deleted bookings on date-${date}`,
+          message: `Successfully deleted bookings on ${date}`,
         });
         setOpenModal(false);
         setIsModalOpen(false);
@@ -412,6 +419,8 @@ const AddEditFormLayout2 = ({
     if (bookingsLeft > 0) return "text-orange-500";
     return "text-red-500";
   };
+
+  console.log(pilgrimCount);
 
   return (
     <div className="overflow-y-auto h-full max-h-screen">
@@ -529,6 +538,7 @@ const AddEditFormLayout2 = ({
             Pilgrim Detail(s):
           </div>
         )}
+        <div>
         {fields.map((field, index) => (
           <div
             key={field.id}
@@ -679,7 +689,7 @@ const AddEditFormLayout2 = ({
             }
           </div>
         ))}
-
+        </div>
         <div className="flex text-center justify-center">
           {(fields.some((field) => field.clicked === true) ||
             (editMode && bookedPilgrimDetails.length > 0)) && (
