@@ -47,7 +47,7 @@ function ViewUsers() {
       renderCell: (params) => (
         <button
           className="text-green-700"
-          onClick={() => navigate(`/edit_user/${params.row.user_id}`, { state: params.row })}
+          onClick={() => navigate(`/edit_user/${params.row.user_id}`, { state: {...params.row, isEdit:true} })}
         >
           <PencilIcon />
         </button>
