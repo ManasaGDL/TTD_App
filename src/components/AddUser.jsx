@@ -53,7 +53,6 @@ const RegistrationForm = () => {
         // Change 1: Set default values including converting is_mla to '1' or '0'
         defaultValues: { ...initialData, is_mla: initialData.is_mla ? "1" : "0" },
     });
-console.log(initialData)
     useEffect(() => {
         if (Object.keys(initialData).length > 0) {
             Object.keys(initialData).forEach((key) => setValue(key, initialData[key]));
