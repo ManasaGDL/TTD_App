@@ -51,7 +51,7 @@ const RegistrationForm = () => {
     } = useForm({
         resolver: yupResolver(schema),
         // Change 1: Set default values including converting is_mla to '1' or '0'
-        defaultValues: { ...initialData, is_mla: initialData.is_mla ? "1" : "0" ,password:''},
+        defaultValues: { ...initialData, is_mla: initialData.is_mla ? "1" : "0" },
     });
 console.log(initialData)
     useEffect(() => {
@@ -95,9 +95,7 @@ console.log(initialData)
                     });
                     // navigate('/view-users')
                 }
-                // else if (response.status === 200) {
-                //   toast.success("User updated successfully!");
-                // }
+               
             } else {
                
                 const res = await apis.updateUser(id, data);
@@ -105,8 +103,10 @@ console.log(initialData)
                  navigate('/view-users')
             }
         } catch (e) {
-            console.log(e);
-            toast.error("Something went wrong!");
+             if (e.response.status === 500) {
+                toast.error("Email or Username already exists.");
+              }
+            else toast.error("Something went wrong!");
         }
     };
 
