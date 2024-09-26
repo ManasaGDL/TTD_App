@@ -12,7 +12,7 @@ const schema = yup.object().shape({
     email: yup.string().email("Invalid email format").required("Email is required"),
     password: yup.string().when("isEdit", {
         is: false,
-        then: yup.string().required("Password is required"),
+        then: yup.string().required("Password is required").min(8,"Password must be at least 8 characters long"),
     }),
    
     first_name: yup.string().required("First name is required"),
