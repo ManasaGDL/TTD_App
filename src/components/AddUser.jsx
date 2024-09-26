@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect , useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import apis from "../api/apis";
 import { Toaster, toast } from "sonner";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
-
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 // Define the validation schema using yup
 const schema = yup.object().shape({
     username: yup.string().required("Enter email/username"),
@@ -14,14 +14,22 @@ const schema = yup.object().shape({
         is: false,
         then: yup.string().required("Password is required"),
     }),
-    password: yup.string().required("Password is required").min(8, "Password must be at least 8 characters"),
-
+   
     first_name: yup.string().required("First name is required"),
     last_name: yup.string().required("Last name is required"),
+    // phone_number: yup
+    // .string()
+    // .matches(/^[0-9]{10}$/, "Phone number must be exactly 10 digits")
+    // .required("Phone number is required"),
     phone_number: yup
-        .string()
-        .matches(/^[0-9]{10}$/, "Phone number must be exactly 10 digits")
-        .required("Phone number is required"),
+    .number()
+    .typeError("Phone number must be a number")
+    .test(
+      "len",
+      "Phone number must be exactly 10 digits",
+      (value) => value && value.toString().length === 10
+    )
+    .required("Phone number is required"),
     is_mla: yup.string().oneOf(["1", "0"], "Role is required").required("Role is required"),
     constituency: yup.string().required("Enter Constituency"),
     gender: yup.string().required("Select Gender"),
@@ -32,6 +40,7 @@ const RegistrationForm = () => {
     const initialData = location.state || {};
     const { id } = useParams();
     const navigate = useNavigate();
+    const [showPassword, setshowPassword] = useState(false)
     // Initialize useForm with validation schema
     const {
         register,
@@ -42,9 +51,9 @@ const RegistrationForm = () => {
     } = useForm({
         resolver: yupResolver(schema),
         // Change 1: Set default values including converting is_mla to '1' or '0'
-        defaultValues: { ...initialData, is_mla: initialData.is_mla ? "1" : "0" },
+        defaultValues: { ...initialData, is_mla: initialData.is_mla ? "1" : "0" ,password:''},
     });
-
+console.log(initialData)
     useEffect(() => {
         if (Object.keys(initialData).length > 0) {
             Object.keys(initialData).forEach((key) => setValue(key, initialData[key]));
@@ -67,6 +76,7 @@ const RegistrationForm = () => {
 
     // Handle form submission
     const onSubmit = async (data) => {
+        console.log(data)
         try {
             if (!id) {
                 const response = await apis.addNewUser(data);
@@ -89,9 +99,10 @@ const RegistrationForm = () => {
                 //   toast.success("User updated successfully!");
                 // }
             } else {
+               
                 const res = await apis.updateUser(id, data);
                 toast.success("User updated successfully!");
-                //  navigate('/view-users')
+                 navigate('/view-users')
             }
         } catch (e) {
             console.log(e);
@@ -111,7 +122,7 @@ const RegistrationForm = () => {
             )}
             <form onSubmit={handleSubmit(onSubmit)} className="max-w-2xl mx-auto p-4 grid grid-cols-1 gap-6 sm:grid-cols-2 bg-slate-50 rounded-lg">
                 {/* Change 3: Hidden input for conditional validation */}
-                <input type="hidden" {...register("isEdit")} value={Object.keys(initialData).length > 0} />
+                <input type="hidden" {...register("isEdit")} value={Object.keys(initialData).length > 0 ? true : false} />
 
                 {/* <div class="relative z-0 w-full mb-6 group">
   <input type="text" id="floating_input" class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
@@ -158,10 +169,10 @@ const RegistrationForm = () => {
                     {errors.username && <p className="text-custom-color-danger text-sm">{errors.username.message}</p>}
                 </div>
 
-                {Object.keys(initialData).length === 0 && (
+                {!id && Object.keys(initialData).length === 0 && (
                     <div className="relative z-0 w-full mb-6 group">
                         <input
-                            type="password"
+                            type={showPassword ? "text" : "password"}
                             id="password"
                             placeholder=" "
                             autoComplete="new-password"
@@ -177,13 +188,16 @@ const RegistrationForm = () => {
                         >
                             Password
                         </label>
+                        <button  type="button" onClick={() => setshowPassword(!showPassword)} className="h-10 absolute inset-y-0 right-0 flex items-center pr-3">
+                        {showPassword ? <AiOutlineEyeInvisible size={20} /> : <AiOutlineEye size={20} />}
+                        </button>
                         {errors.password && <p className="text-custom-color-danger text-sm">{errors.password.message}</p>}
                     </div>
                 )}
 
                 <div className="relative z-0 w-full mb-6 group">
                     <input
-                        type="text"
+                    type="text"
                         id="first_name"
                         placeholder=" "
                         {...register("first_name")}

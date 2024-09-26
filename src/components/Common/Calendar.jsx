@@ -23,7 +23,7 @@ import { useLoading } from "../../context/LoadingContext";
 import { Toaster, toast } from "sonner";
 import { useDebounce } from "../../custom-hooks/useDebounce";
 import AddEditFormLayout2 from "./AddEditFormLayout2";
-import AddEditFormNewLayout from "./AddEditFormNewLayout";
+
 import useMediaQuery from "../../hooks/useMediaQuery";
 
 const Calendar = () => {
@@ -211,6 +211,7 @@ const Calendar = () => {
 
     return (
         <div className="w-full mx-auto sm:max-w-4xl md:max-w-4xl mb-4">
+        
             {/* <Toaster richColors position="top-center" /> */}
             <div className={`flex justify-center mb-4`}>
                 {!isCurrentMonth() && (

@@ -132,6 +132,9 @@ const AddEditFormLayout2 = ({
     control,
     name: "pilgrims",
   });
+  useEffect(()=>{
+console.log("changed",fields)
+  },[fields])
   const watchFields = watch("pilgrims");
   useEffect(() => {
     //set pilgrimscount
@@ -450,7 +453,7 @@ const AddEditFormLayout2 = ({
             </div>
             <label>
               {" "}
-              Enter number of pilgrims
+              Enter number of pilgrims and press OK
               <select
                 onChange={(e) => {
                   setEditMode(true);
@@ -475,7 +478,7 @@ const AddEditFormLayout2 = ({
                   onClick={addPilgrimCount} //for old layout -> getting rows use addPilgrim
                   className="ml-2 bg-lime-500 text-white py-1 w-20 px-2 rounded hover:bg-lime-700"
                 >
-                  Submit
+                 OK
                 </button>
               )}
             </label>
@@ -533,7 +536,7 @@ const AddEditFormLayout2 = ({
         onSubmit={handleSubmit(onSubmit)}
         className="bg-white rounded-lg p-6 w-full max-w-8xl"
       >
-        {(hideAddCountButton || bookedPilgrimDetails.length > 0) && (
+        {(hideAddCountButton || bookedPilgrimDetails.length > 0) && (fields.length >0) && (
           <div className="tex-xs text-lime-500 font-mono">
             Pilgrim Detail(s):
           </div>
@@ -704,7 +707,7 @@ const AddEditFormLayout2 = ({
 
         <div>
           <div className={`flex text-center justify-center `}>
-            {hideAddCountButton && !bookedPilgrimDetails.length > 0 && (
+            {hideAddCountButton && !bookedPilgrimDetails.length > 0 && fields.length > 0 && (
               <button
                 type="submit"
                 disabled={disableAddPilgrimsButton}
@@ -712,9 +715,9 @@ const AddEditFormLayout2 = ({
                   disableAddPilgrimsButton
                     ? "bg-transparent"
                     : "bg-lime-500 hover:bg-lime-700"
-                } text-white font-mono text-xs py-3 w-20 px-1 rounded `}
+                } text-white font-mono text-md py-2 w-20 px-1 rounded `}
               >
-                AddPilgrims
+                Submit
               </button>
             )}
           </div>
