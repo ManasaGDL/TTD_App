@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -166,7 +166,7 @@ const RegistrationForm = () => {
                     />
                     <label
                         htmlFor="username"
-                        for="username"
+                    
                         className="absolute text-sm  text-gray-500 peer-focus:text-blue-500  bg-slate-50 duration-300 transform -translate-y-6 scale-75 top-4 left-2  z-10 px-2 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1 peer-focus:scale-75 peer-focus:-translate-y-6"
                     >
                         Username
@@ -188,7 +188,7 @@ const RegistrationForm = () => {
                         />
                         <label
                             htmlFor="password"
-                            for="password"
+                        
                             className="absolute text-sm  text-gray-500 peer-focus:text-blue-500  bg-slate-50 duration-300 transform -translate-y-6 scale-75 top-4 left-2  z-10 px-2 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1 peer-focus:scale-75 peer-focus:-translate-y-6"
                         >
                             Password
@@ -212,7 +212,7 @@ const RegistrationForm = () => {
                     />
                     <label
                         htmlFor="first_name"
-                        for="first_name"
+                   
                         className="absolute text-sm  text-gray-500 peer-focus:text-blue-500  bg-slate-50 duration-300 transform -translate-y-6 scale-75 top-4 left-2  z-10 px-2 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1 peer-focus:scale-75 peer-focus:-translate-y-6"
                     >
                         FirstName of MLA/MP
@@ -232,7 +232,7 @@ const RegistrationForm = () => {
                     />
                     <label
                         htmlFor="last_name"
-                        for="last_name"
+                       
                         className="absolute text-sm  text-gray-500 peer-focus:text-blue-500  bg-slate-50 duration-300 transform -translate-y-6 scale-75 top-4 left-2  z-10 px-2 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1 peer-focus:scale-75 peer-focus:-translate-y-6"
                     >
                         LastName of MLA/MP
@@ -252,7 +252,7 @@ const RegistrationForm = () => {
                     />
                     <label
                         htmlFor="phone_number"
-                        for="phone_number"
+                      
                         className="absolute text-sm  text-gray-500 peer-focus:text-blue-500  bg-slate-50 duration-300 transform -translate-y-6 scale-75 top-4 left-2  z-10 px-2 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1 peer-focus:scale-75 peer-focus:-translate-y-6"
                     >
                         Phone Number
@@ -285,7 +285,7 @@ const RegistrationForm = () => {
                     />
                     <label
                         htmlFor="constituency"
-                        for="constituency"
+                     
                         className="absolute text-sm  text-gray-500 peer-focus:text-blue-500  bg-slate-50 duration-300 transform -translate-y-6 scale-75 top-4 left-2  z-10 px-2 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1 peer-focus:scale-75 peer-focus:-translate-y-6"
                     >
                         Constituency

@@ -1,10 +1,12 @@
+
+
 import { useForm, useFieldArray } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useEffect } from "react";
 import { useState } from "react";
 import { Pencil } from "lucide-react";
-import { IoPersonAddSharp } from "react-icons/io5";
+
 import {
   format,
   parseISO,
@@ -16,7 +18,7 @@ import PropTypes from "prop-types";
 import apis from "../../api/apis";
 import { constants } from "../../constant";
 import { MdDeleteOutline } from "react-icons/md";
-import { Toaster, toast } from "sonner";
+import {  toast } from "sonner";
 import MyModal from "./MyModal";
 import { FaPhoneAlt } from "react-icons/fa";
 import { IoMdPerson } from "react-icons/io";
@@ -63,7 +65,7 @@ const schema = yup.object({
 });
 
 const AddEditFormLayout2 = ({
-  bookingsObject,
+
   getPilgrimDetails,
   getMonthSlotAvailability,
   date,
@@ -73,13 +75,14 @@ const AddEditFormLayout2 = ({
   isModalOpen,
   bookedPilgrimDetails = [],
 }) => {
+  // eslint-disable-next-line no-unused-vars
   const [initialBookings, setInitialBookings] = useState(
     localStorage.getItem("is_mla") === "true" ? constants.Mla : constants.Mp
   );
   const [deleteIndex, setDeleteIndex] = useState(null);
   const [openModal, setOpenModal] = useState(false);
-  const mid_bookings = localStorage.getItem("is_mla") ? 3 : 5;
-  const [selectedPilgrims, setSelectedPilgrims] = useState([]);
+ 
+// eslint-disable-next-line no-unused-vars
   const [masterPilgrim, setMasterPilgrim] = useState(null);
   const [startPreviewDownload, setStartPreviewDownload] = useState(false);
   const [pilgrimCount, setPilgrimCount] = useState(bookingsCount);
@@ -99,7 +102,7 @@ const AddEditFormLayout2 = ({
     handleSubmit,
     formState: { errors },
     reset,
-    setValue,
+
     watch,
     trigger,
   } = useForm({
@@ -134,7 +137,7 @@ const AddEditFormLayout2 = ({
   });
   useEffect(()=>{
   },[fields])
-  const watchFields = watch("pilgrims");
+  // const watchFields = watch("pilgrims");
   useEffect(() => {
     //set pilgrimscount
     if (bookingsCount >= 0) setIsLoading(false);
@@ -177,7 +180,7 @@ const AddEditFormLayout2 = ({
   };
   useEffect(() => {
     if (!isModalOpen) {
-      setSelectedPilgrims([]);
+    
       setMasterPilgrim(null);
     }
   }, [isModalOpen]);
@@ -281,19 +284,19 @@ const AddEditFormLayout2 = ({
     }
   };
 
-  const addPilgrim = () => {
-    setHideAddCountButton(true);
-    if (fields.length < pilgrimCount) {
-      append({
-        pilgrim_name: "",
-        age: "",
-        aadhaar_number: "",
-        seva: "",
-        phone_number: "",
-        booked_datetime: date,
-      });
-    }
-  };
+  // const addPilgrim = () => {
+  //   setHideAddCountButton(true);
+  //   if (fields.length < pilgrimCount) {
+  //     append({
+  //       pilgrim_name: "",
+  //       age: "",
+  //       aadhaar_number: "",
+  //       seva: "",
+  //       phone_number: "",
+  //       booked_datetime: date,
+  //     });
+  //   }
+  // };
   const addPilgrimCount = () => {
     setDisableAddPilgrimsButton(false);
     setHideAddCountButton(true);
@@ -413,12 +416,12 @@ const AddEditFormLayout2 = ({
         pilgrim_count: bookingsCount,
       });
   }, [bookedPilgrimDetails, startPreviewDownload]);
-  const getTicketClass = (bookingsLeft) => {
-    if (bookingsLeft === initialBookings) return "text-lime-500";
-    if (bookingsLeft > mid_bookings) return "text-yellow-500";
-    if (bookingsLeft > 0) return "text-orange-500";
-    return "text-red-500";
-  };
+  // const getTicketClass = (bookingsLeft) => {
+  //   if (bookingsLeft === initialBookings) return "text-lime-500";
+  //   if (bookingsLeft > mid_bookings) return "text-yellow-500";
+  //   if (bookingsLeft > 0) return "text-orange-500";
+  //   return "text-red-500";
+  // };
 
 
   return (
@@ -504,7 +507,7 @@ const AddEditFormLayout2 = ({
                     setPayloadForDownload={setPayloadForDownload}
                   />
                 }
-                {/* <IoPrint size={25}></IoPrint><span className="font-mono text-xs text-lime-700">{selectedPilgrims.length>0?"Pilgrims selected for print":""} </span> */}
+              
               </button>
             </div>
             {
@@ -731,6 +734,10 @@ AddEditFormLayout2.propTypes = {
   setToastMessage: PropTypes.func,
   isModalOpen: PropTypes.bool,
   bookedPilgrimDetails: PropTypes.array,
+  getPilgrimDetails:PropTypes.func,
+  getMonthSlotAvailability:PropTypes.func,
+  bookingsCount:PropTypes.number
+
 };
 
 export default AddEditFormLayout2;
