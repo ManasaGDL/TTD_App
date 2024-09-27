@@ -1,4 +1,4 @@
-import React, { useEffect , useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -7,14 +7,10 @@ import { Toaster, toast } from "sonner";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 // Define the validation schema using yup
-const schema = yup.object().shape({
+const addSchema = yup.object().shape({
     username: yup.string().required("Enter email/username"),
     email: yup.string().email("Invalid email format").required("Email is required"),
-    password: yup.string().when("isEdit", {
-        is: false,
-        then: yup.string().required("Password is required").min(8,"Password must be at least 8 characters long"),
-    }),
-   
+    password: yup.string().required("Password is required").min(8, "Password must be at least 8 characters long"),
     first_name: yup.string().required("First name is required"),
     last_name: yup.string().required("Last name is required"),
     // phone_number: yup
@@ -22,14 +18,28 @@ const schema = yup.object().shape({
     // .matches(/^[0-9]{10}$/, "Phone number must be exactly 10 digits")
     // .required("Phone number is required"),
     phone_number: yup
-    .number()
-    .typeError("Phone number must be a number")
-    .test(
-      "len",
-      "Phone number must be exactly 10 digits",
-      (value) => value && value.toString().length === 10
-    )
-    .required("Phone number is required"),
+        .number()
+        .typeError("Phone number must be a number")
+        .test("len", "Phone number must be exactly 10 digits", (value) => value && value.toString().length === 10)
+        .required("Phone number is required"),
+    is_mla: yup.string().oneOf(["1", "0"], "Role is required").required("Role is required"),
+    constituency: yup.string().required("Enter Constituency"),
+    gender: yup.string().required("Select Gender"),
+});
+const editSchema = yup.object().shape({
+    username: yup.string().required("Enter email/username"),
+    email: yup.string().email("Invalid email format").required("Email is required"),
+    first_name: yup.string().required("First name is required"),
+    last_name: yup.string().required("Last name is required"),
+    // phone_number: yup
+    // .string()
+    // .matches(/^[0-9]{10}$/, "Phone number must be exactly 10 digits")
+    // .required("Phone number is required"),
+    phone_number: yup
+        .number()
+        .typeError("Phone number must be a number")
+        .test("len", "Phone number must be exactly 10 digits", (value) => value && value.toString().length === 10)
+        .required("Phone number is required"),
     is_mla: yup.string().oneOf(["1", "0"], "Role is required").required("Role is required"),
     constituency: yup.string().required("Enter Constituency"),
     gender: yup.string().required("Select Gender"),
@@ -40,8 +50,9 @@ const RegistrationForm = () => {
     const initialData = location.state || {};
     const { id } = useParams();
     const navigate = useNavigate();
-    const [showPassword, setshowPassword] = useState(false)
+    const [showPassword, setshowPassword] = useState(false);
     // Initialize useForm with validation schema
+    const schema = Object.keys(initialData).length > 0 ? editSchema : addSchema
     const {
         register,
         handleSubmit,
@@ -75,7 +86,7 @@ const RegistrationForm = () => {
 
     // Handle form submission
     const onSubmit = async (data) => {
-        console.log(data)
+        console.log(data);
         try {
             if (!id) {
                 const response = await apis.addNewUser(data);
@@ -94,18 +105,15 @@ const RegistrationForm = () => {
                     });
                     // navigate('/view-users')
                 }
-               
             } else {
-               
                 const res = await apis.updateUser(id, data);
                 toast.success("User updated successfully!");
-                 navigate('/view-users')
+                navigate("/view-users");
             }
         } catch (e) {
-             if (e.response.status === 500) {
+            if (e.response.status === 500) {
                 toast.error("Email or Username already exists.");
-              }
-            else toast.error("Something went wrong!");
+            } else toast.error("Something went wrong!");
         }
     };
 
@@ -113,9 +121,7 @@ const RegistrationForm = () => {
         <>
             <Toaster richColors position="top-center" />
             {Object.keys(initialData).length > 0 ? (
-                <div className="w-full text-center my-5 mx-auto text-xl text-gray-700 font-semibold font-mono">
-                    Edit Profile: {initialData.first_name + " " + initialData.last_name}
-                </div>
+                <div className="w-full text-center my-5 mx-auto text-xl text-gray-700 font-semibold font-mono">Edit Profile: {initialData.first_name + " " + initialData.last_name}</div>
             ) : (
                 <div className="w-full text-center my-5 mx-auto text-xl font-semibold text-gray-700 font-mono">Add User</div>
             )}
@@ -187,8 +193,8 @@ const RegistrationForm = () => {
                         >
                             Password
                         </label>
-                        <button  type="button" onClick={() => setshowPassword(!showPassword)} className="h-10 absolute inset-y-0 right-0 flex items-center pr-3">
-                        {showPassword ? <AiOutlineEyeInvisible size={20} /> : <AiOutlineEye size={20} />}
+                        <button type="button" onClick={() => setshowPassword(!showPassword)} className="h-10 absolute inset-y-0 right-0 flex items-center pr-3">
+                            {showPassword ? <AiOutlineEyeInvisible size={20} /> : <AiOutlineEye size={20} />}
                         </button>
                         {errors.password && <p className="text-custom-color-danger text-sm">{errors.password.message}</p>}
                     </div>
@@ -196,7 +202,7 @@ const RegistrationForm = () => {
 
                 <div className="relative z-0 w-full mb-6 group">
                     <input
-                    type="text"
+                        type="text"
                         id="first_name"
                         placeholder=" "
                         {...register("first_name")}
