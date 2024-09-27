@@ -133,7 +133,6 @@ const AddEditFormLayout2 = ({
     name: "pilgrims",
   });
   useEffect(()=>{
-console.log("changed",fields)
   },[fields])
   const watchFields = watch("pilgrims");
   useEffect(() => {
@@ -200,7 +199,6 @@ console.log("changed",fields)
     (_, index) => index + 1
   );
   const onSubmit = async (data) => {
-    console.log("data", data);
     try {
       // Filter out pilgrims that are already booked and should not be added again
       // const newPilgrims = data.pilgrims.filter(pilgrim => !bookedPilgrimDetails.some(bookedPilgrim => bookedPilgrim.aadhaar_number === pilgrim.aadhaar_number));
@@ -219,7 +217,6 @@ console.log("changed",fields)
           (pilgrim.clicked && pilgrim.editable == false) ||
           (editMode && bookedPilgrimDetails.length > 0)
         ) {
-          console.log("edited", pilgrim);
           editPilgrims.push(pilgrim);
         }
         if (!Object.prototype.hasOwnProperty.call(pilgrim, "editable"))
@@ -423,7 +420,6 @@ console.log("changed",fields)
     return "text-red-500";
   };
 
-  console.log(pilgrimCount);
 
   return (
     <div className="overflow-y-auto h-full max-h-screen">
@@ -436,11 +432,11 @@ console.log("changed",fields)
       />
       <div className="flex justify-between ">
         {bookingsCount === 0 ? (
-          <div className="text-sm text-red-700 font-mono flex ml-30">
-            <label className="flex ml-30">
+          <div className=" text-sm text-red-700 font-mono ml-30">
+            <div className="flex ml-30 items-center gap-4 ">
               <IoIosWarning size={30} />
               This is Blocked Date. Please Unblock to continue booking!
-            </label>
+            </div>
           </div>
         ) : (
           <div className="text-sm text-black-600 font-mono">
