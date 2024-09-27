@@ -23,9 +23,11 @@ const PDFViewer = ({ payloadForDownload={}, download ,setPayloadForDownload,setS
     setIsLoading(true)
     try {
       
+      const response = await apis.downloadLetter(payloadForDownload);
       if (payloadForDownload && payloadForDownload?.pilgrims.length > 0) {
-        const response = await apis.downloadLetter(payloadForDownload);
         setIsLoading(false)
+        if( response.status!==500) return;
+        
         toast.success("Successfully downloaded!")
    
         return response?.data;
