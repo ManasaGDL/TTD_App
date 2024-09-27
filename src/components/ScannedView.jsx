@@ -50,13 +50,13 @@ export default function ScannedView() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {data.pilgrim.map((item) => {
+                                    {data.pilgrim.map((item,index) => {
                                         return (
-                                            <tr class="border-b font-mono">
-                                                <td class="px-4 py-2">{item.pilgrim_name}</td>
-                                                <td class="px-4 py-2">{item.seva}</td>
-                                                <td class="px-4 py-2">{format(parseISO(item.booked_date), "dd-MM-yyyy")}</td>
-                                                <td class="px-4 py-2">{item.aadhar_number}</td>
+                                            <tr className="border-b font-mono" key={index}>
+                                                <td className="px-4 py-2">{item.pilgrim_name}</td>
+                                                <td className="px-4 py-2">{item.seva}</td>
+                                                <td className="px-4 py-2">{format(parseISO(item.booked_date), "dd-MM-yyyy")}</td>
+                                                <td className="px-4 py-2">{item.aadhar_number}</td>
                                             </tr>
                                         );
                                     })}
