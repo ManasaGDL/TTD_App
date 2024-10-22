@@ -69,6 +69,12 @@ const Navbar = ({ setBlur }) => {
                             Users
                         </Link>
                     )}
+                    <Link
+                        to="/history"
+                        className={`font-mono hover:text-custom-header-bg underline-animate hidden lg:block ${location.pathname === "/history" ? "text-lime-500 after:w-4" : "text-black-400"}`}
+                    >
+                        Booking History
+                    </Link>
                 </div>
                 <div
                     className={clsx(
@@ -188,7 +194,7 @@ const Navbar = ({ setBlur }) => {
                                         setOpenUserSettings(false);
                                     }}
                                 ></div>
-                                <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50" >
+                                <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
                                     <Link
                                         to="/blockdates"
                                         className={`block px-4 py-2 text-gray-800 hover:bg-gray-100 ${location.pathname === "/blockdates" ? "text-red-500 font-semibold" : "text-gray-700"}`}
