@@ -81,7 +81,7 @@ export default function BookingHistory() {
                     />
                     <label
                         htmlFor="constituency"
-                        className="absolute text-sm  text-gray-500 peer-focus:text-blue-500  bg-slate-50 duration-300 transform -translate-y-6 scale-75 top-4 left-2  z-10 px-2 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1 peer-focus:scale-75 peer-focus:-translate-y-6"
+                        className="absolute text-sm select-none text-gray-500 peer-focus:text-blue-500  bg-slate-50 duration-300 transform -translate-y-6 scale-75 top-4 left-2  z-10 px-2 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1 peer-focus:scale-75 peer-focus:-translate-y-6"
                     >
                         Constituency
                     </label>
