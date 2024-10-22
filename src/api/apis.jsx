@@ -94,6 +94,11 @@ const apis = {
             .post(`/api/users/usersProfile/${id}/reset_password/`, payload)
             .catch(() => toast.error("Failed to reset password!"));
     },
+    getBookingHistory:()=>{
+        return axios_instance
+            .get(`/api/users/userstats/?month=10&page=1&year=2024`, payload)
+            .catch(() => toast.error("Failed to reset password!"));
+    }
 };
 
 export default apis;
