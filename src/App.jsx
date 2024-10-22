@@ -19,6 +19,7 @@ import ChakramSpinner from './components/Common/ChakramSpinner';
 import  EditCredentials from "./components/EditCredentials"
 import QRCodeScanner from './components/Common/QRCodeScanner';
 import ScannedView from './components/ScannedView';
+import BookingHistory from './components/BookingHistory';
 const App = () => {
   const { auth } = useContext(AuthContext);
   const { isLoading } = useLoading();
@@ -44,6 +45,7 @@ const App = () => {
       <Route path="/scan" element={<PrivateRoute><Layouts><QRCodeScanner /></Layouts></PrivateRoute>}/>
       <Route path="/edit-credentials/:id" element={<PrivateRoute><Layouts><EditCredentials/></Layouts></PrivateRoute>}/>
       <Route path="/view/verify-qr/:id" element={<ScannedView/>}/>
+      <Route path="/history" element={<PrivateRoute><Layouts><BookingHistory/></Layouts></PrivateRoute>}/>
     </Routes>
     </div>
   );
