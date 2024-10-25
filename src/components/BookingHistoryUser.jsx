@@ -43,32 +43,32 @@ export default function BookingHistoryUser() {
     }, [fields]);
 
     const columns = [
-        { field: "id", headerName: <b>ID</b>, width: 70 },
+        { field: "id", headerName: <b>ID</b>, width: 80 },
         {
             field: "booked_datetime",
             headerName: <b>Booking Date</b>,
-            width: 150,
+            width: 160,
         },
 
         {
             field: "pilgrim_name",
             headerName: <b>Name</b>,
-            flex: 1,
+            width:250,
         },
         {
             field: "phone_number",
             headerName: <b>Phone Number</b>,
-            width: 140,
+            width: 170,
         },
         {
             field: "aadhaar_number",
             headerName: <b>Aadhar</b>,
-            width: 150,
+            width: 180,
         },
         {
             field: "age",
             headerName: <b>Age</b>,
-            width: 90,
+            width: 100,
         },
         // {
         //     field: "gender",
@@ -78,11 +78,11 @@ export default function BookingHistoryUser() {
         {
             field: "seva",
             headerName: <b>Seva</b>,
-            width: 90,
+            width: 100,
         },
     ];
     return (
-        <div>
+        <div className="flex flex-col items-center justify-center w-full">
             <div className="filters flex gap-4 py-4 items-center">
                 <div className="font-semibold text-zinc-600 text-sm ">Filters:</div>
                 <div className="relative z-0 w-64  group">
@@ -120,8 +120,9 @@ export default function BookingHistoryUser() {
                     </select>
                 </div>
             </div>
-
-            <DataGrid style={{ minHeight: "100px" }} rows={pilgrims.results} columns={columns} disableRowSelectionOnClick />
+            <div>
+            <DataGrid style={pilgrims.results.length >= 1 ? {minHeight: "100px" } : {height: 160 }} rows={pilgrims.results} columns={columns} disableRowSelectionOnClick />
+            </div>
         </div>
     );
 }
