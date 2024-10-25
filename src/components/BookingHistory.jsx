@@ -55,20 +55,32 @@ export default function BookingHistory() {
     }, [filters, history]);
 
     const columns = [
-        { field: "id", headerName: "ID", width: 90 },
+        { field: "id", headerName: <b>ID</b>, width: 120 },
 
         {
             field: "username",
-            headerName: "Username",
+            headerName:<b>Username</b>,
+            flex:1,
         },
         {
             field: "constituency",
-            headerName: "Constituency",
+            headerName: <b>Constituency</b>,
+            flex:0.5,
         },
+        // {
+        //     field: "pilgrim_count",
+        //     headerName: <b>Pilgrim Count</b>,
+        //     width: 160,
+        // },
         {
-            field: "pilgrim_count",
-            headerName: "Pilgrim Count",
-            width: 160,
+            field: "details",
+            headerName: <b>Details</b>,
+            
+            renderCell: (params) => (
+                <Button color="primary" onClick={() => handleButtonClick(params.row.id)}>
+                    <Ellipsis />
+                </Button>
+            ),
         },
     ];
 
@@ -87,7 +99,7 @@ export default function BookingHistory() {
                     />
                     <label
                         htmlFor="username"
-                        className="absolute text-sm select-none text-gray-500 peer-focus:text-blue-500  bg-slate-50 duration-300 transform -translate-y-6 scale-75 top-4 left-2  z-10 px-2 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1 peer-focus:scale-75 peer-focus:-translate-y-6"
+                        className="absolute text-sm select-none text-gray-500 peer-focus:text-blue-500  bg-white duration-300 transform -translate-y-6 scale-75 top-4 left-2  z-10 px-2 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1 peer-focus:scale-75 peer-focus:-translate-y-6"
                     >
                         Username
                     </label>
@@ -103,7 +115,7 @@ export default function BookingHistory() {
                     />
                     <label
                         htmlFor="constituency"
-                        className="absolute text-sm select-none text-gray-500 peer-focus:text-blue-500  bg-slate-50 duration-300 transform -translate-y-6 scale-75 top-4 left-2  z-10 px-2 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1 peer-focus:scale-75 peer-focus:-translate-y-6"
+                        className="absolute text-sm select-none text-gray-500 peer-focus:text-blue-500  bg-white duration-300 transform -translate-y-6 scale-75 top-4 left-2  z-10 px-2 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1 peer-focus:scale-75 peer-focus:-translate-y-6"
                     >
                         Constituency
                     </label>
@@ -136,19 +148,7 @@ export default function BookingHistory() {
             <DataGrid
                 style={{ minHeight: "100px" }}
                 rows={fHistory}
-                columns={[
-                    ...columns,
-                    {
-                        field: "details",
-                        headerName: "Details",
-                        width: 150,
-                        renderCell: (params) => (
-                            <Button color="primary" onClick={() => handleButtonClick(params.row.id)}>
-                                <Ellipsis />
-                            </Button>
-                        ),
-                    },
-                ]}
+                columns={columns}
                 disableRowSelectionOnClick
             />
             <PilgrimDialog open={open} handleClose={handleClose} currentRow={currentRow} />
