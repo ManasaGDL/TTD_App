@@ -55,17 +55,18 @@ export default function BookingHistory() {
     }, [filters, history]);
 
     const columns = [
-        { field: "id", headerName: <b>ID</b>, width: 120 },
+        { field: "id", headerName: <b>ID</b>, width: 150 },
 
         {
             field: "username",
             headerName:<b>Username</b>,
-            flex:1,
+            width:350,
+            // flex:0.5,
         },
         {
             field: "constituency",
             headerName: <b>Constituency</b>,
-            flex:0.5,
+            width:300,
         },
         // {
         //     field: "pilgrim_count",
@@ -85,8 +86,8 @@ export default function BookingHistory() {
     ];
 
     return (
-        <div className="w-full  p-4 pl-20">
-            <div className="flex gap-2 items-center">
+        <div className="w-full flex flex-col items-center justify-center  p-4 pl-20">
+            <div className="flex gap-2 items-center ">
                 <div className="text-sm font-semibold text-zinc-400">Filters:</div>
                 <div className="relative z-0 w-64 group">
                     <input
@@ -121,7 +122,7 @@ export default function BookingHistory() {
                     </label>
                 </div>
             </div>
-            <div className="py-2 space-x-2">
+            <div className="py-2 flex justify-between w-[76%]">
                 <Button
                     color="info"
                     variant="outlined"
@@ -145,13 +146,16 @@ export default function BookingHistory() {
                     <ChevronRight />
                 </Button>
             </div>
+            <div>
             <DataGrid
-                style={{ minHeight: "100px" }}
+                // style={{ minHeight: "100px",width: '70%' }}
+                style={fHistory.length >= 1 ? {minHeight: "100px" } : {height: 160}}
                 rows={fHistory}
                 columns={columns}
                 disableRowSelectionOnClick
             />
             <PilgrimDialog open={open} handleClose={handleClose} currentRow={currentRow} />
+            </div>
         </div>
     );
 }

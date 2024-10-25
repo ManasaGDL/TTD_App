@@ -35,7 +35,7 @@ export default function PilgrimDialog({ open, handleClose, currentRow }) {
         {
             field: "booked_datetime",
             headerName: <span style={{ fontWeight: 600 }}>Booking Date</span>,
-            width:140,
+            width:150,
             valueGetter: (params) => {
                 const dateValue = params;
                 // Check if dateValue is valid before trying to parse it
@@ -46,22 +46,22 @@ export default function PilgrimDialog({ open, handleClose, currentRow }) {
         {
             field: "pilgrim_name",
             headerName: <span style={{ fontWeight: 600 }}>Name</span>,
-            flex: 1,
+            width:220,
         },
         {
             field: "phone_number",
             headerName: <span style={{ fontWeight: 600 }}>Phone Number</span>,
-            width: 140,
+            width: 150,
         },
         {
             field: "aadhaar_number",
             headerName: <span style={{ fontWeight: 600 }}>Aadhar</span>,
-            width: 150,
+            width: 160,
         },
         {
             field: "age",
             headerName: <span style={{ fontWeight: 600 }}>Age</span>,
-            width: 90,
+            width: 100,
         },
         // {
         //     field: "gender",
@@ -71,12 +71,12 @@ export default function PilgrimDialog({ open, handleClose, currentRow }) {
         {
             field: "seva",
             headerName: <span style={{ fontWeight: 600 }}>Seva</span>,
-            width: 90,
+            width: 100,
         },
     ];
     return (
         <Dialog open={open} onClose={handleClose} fullWidth={true} maxWidth='lg'>
-            <div className="p-4">
+            <div className="p-4 flex flex-col items-center justify-center w-full">
                 <div className="mx-auto block text-lg font-semibold p-4">Pilgrim Details</div>
                 <div className="filters flex gap-4 py-4 items-center">
                     <div className="font-semibold text-zinc-600 text-sm ">Filters:</div>
@@ -115,8 +115,8 @@ export default function PilgrimDialog({ open, handleClose, currentRow }) {
                         </select>
                     </div>
                 </div>
-                <div className="relative overflow-x-auto shadow-md sm:rounded-lg ">
-                    {currentRow !== null ? <DataGrid style={{ minHeight: "100px" }} rows={pilgrims.results} columns={columns} /> : "loading"}
+                <div className="relative overflow-x-auto  sm:rounded-lg ">
+                    {currentRow !== null ? <DataGrid style={pilgrims.results.length >= 1 ? {minHeight: "100px" } : {height: 160 }} rows={pilgrims.results} columns={columns} /> : "loading"}
                 </div>
             </div>
         </Dialog>
