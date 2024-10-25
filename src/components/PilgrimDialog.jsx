@@ -15,7 +15,7 @@ export default function PilgrimDialog({ open, handleClose, currentRow }) {
             [e.target.name]: e.target.value,
         }));
     }
-
+ 
     async function fetchPilgrims(month,year,userId){
         apis.getPilgrimsForAdmin(month,year,userId)
         .then((data)=>{
@@ -31,41 +31,46 @@ export default function PilgrimDialog({ open, handleClose, currentRow }) {
         if(currentRow) fetchPilgrims(fields.month,fields.year,currentRow?.id);
     },[fields,currentRow])
     const columns = [
-        { field: "id", headerName: "ID", width: 50 },
+        { field: "id", headerName:<span style={{ fontWeight: 600 }}>ID</span>, width: 100 },
         {
             field: "booked_datetime",
-            headerName: "Booking Date",
-            width: 120,
+            headerName: <span style={{ fontWeight: 600 }}>Booking Date</span>,
+            width:140,
+            valueGetter: (params) => {
+                const dateValue = params;
+                // Check if dateValue is valid before trying to parse it
+                return dateValue ? format(parseISO(dateValue), "dd-MM-yyyy") : 'a';
+            },
         },
 
         {
             field: "pilgrim_name",
-            headerName: "Name",
+            headerName: <span style={{ fontWeight: 600 }}>Name</span>,
             flex: 1,
         },
         {
             field: "phone_number",
-            headerName: "Phone Number",
+            headerName: <span style={{ fontWeight: 600 }}>Phone Number</span>,
             width: 140,
         },
         {
             field: "aadhaar_number",
-            headerName: "Aadhar",
+            headerName: <span style={{ fontWeight: 600 }}>Aadhar</span>,
             width: 150,
         },
         {
             field: "age",
-            headerName: "Age",
+            headerName: <span style={{ fontWeight: 600 }}>Age</span>,
             width: 90,
         },
         // {
         //     field: "gender",
-        //     headerName: "Gender",
+        //     headerName: <b>Gender</b>,
         //     width: 90,
         // },
         {
             field: "seva",
-            headerName: "Seva",
+            headerName: <span style={{ fontWeight: 600 }}>Seva</span>,
             width: 90,
         },
     ];

@@ -43,31 +43,31 @@ export default function BookingHistoryUser() {
     }, [fields]);
 
     const columns = [
-        { field: "id", headerName: "ID", width: 50 },
+        { field: "id", headerName: <b>ID</b>, width: 70 },
         {
             field: "booked_datetime",
-            headerName: "Booking Date",
-            width: 120,
+            headerName: <b>Booking Date</b>,
+            width: 150,
         },
 
         {
             field: "pilgrim_name",
-            headerName: "Name",
+            headerName: <b>Name</b>,
             flex: 1,
         },
         {
             field: "phone_number",
-            headerName: "Phone Number",
+            headerName: <b>Phone Number</b>,
             width: 140,
         },
         {
             field: "aadhaar_number",
-            headerName: "Aadhar",
+            headerName: <b>Aadhar</b>,
             width: 150,
         },
         {
             field: "age",
-            headerName: "Age",
+            headerName: <b>Age</b>,
             width: 90,
         },
         // {
@@ -77,7 +77,7 @@ export default function BookingHistoryUser() {
         // },
         {
             field: "seva",
-            headerName: "Seva",
+            headerName: <b>Seva</b>,
             width: 90,
         },
     ];
@@ -121,7 +121,7 @@ export default function BookingHistoryUser() {
                 </div>
             </div>
 
-            <DataGrid style={{ minHeight: "100px" }} rows={pilgrims.results} columns={columns} checkboxSelection disableRowSelectionOnClick />
+            <DataGrid style={{ minHeight: "100px" }} rows={pilgrims.results} columns={columns} disableRowSelectionOnClick />
         </div>
     );
 }

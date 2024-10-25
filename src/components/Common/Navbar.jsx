@@ -68,7 +68,7 @@ const Navbar = ({ setBlur }) => {
                             </Link>
                         ))}
                         {localStorage.getItem("super_user") === "true" && (
-                            <Link to="/view-users" key="view-users-mobile" className={`w-max font-mono text-black-900 hover:text-custom-header-bg  underline-animate block ${location.pathname === '/view-users' ? "text-lime-500 after:w-4" : "text-black-400"}`} onClick={() => setMenu(false)} onClick={() => setMenu(false)}>
+                            <Link to="/view-users" key="view-users-mobile" className={`w-max font-mono text-black-900 hover:text-custom-header-bg  underline-animate block ${location.pathname === '/view-users' ? "text-lime-500 after:w-4" : "text-black-400"}`} onClick={() => setMenu(false)}>
                                 Users
                             </Link>
                         )}
