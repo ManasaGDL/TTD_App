@@ -41,9 +41,19 @@ const schema = yup.object({
             booked_datetime: yup.string(),
         })
     ),
+    pilgrim_reference: yup.string().notRequired(),
 });
 
-const AddEditFormLayout2 = ({ getPilgrimDetails, getMonthSlotAvailability, date, bookingsCount, setIsModalOpen, setToastMessage, isModalOpen, bookedPilgrimDetails = [] }) => {
+const AddEditFormLayout2 = ({
+    getPilgrimDetails,
+    getMonthSlotAvailability,
+    date,
+    bookingsCount,
+    setIsModalOpen,
+    setToastMessage,
+    isModalOpen,
+    bookedPilgrimDetails = [],
+}) => {
     // eslint-disable-next-line no-unused-vars
     const [initialBookings, setInitialBookings] = useState(localStorage.getItem("is_mla") === "true" ? constants.Mla : constants.Mp);
     const [deleteIndex, setDeleteIndex] = useState(null);
@@ -79,6 +89,7 @@ const AddEditFormLayout2 = ({ getPilgrimDetails, getMonthSlotAvailability, date,
                 seva: "VIP Break",
                 booked_datetime: pilgrim.booked_datetime, // All initially booked pilgrims are editable
             })),
+            pilgrim_reference: "",
         },
     });
 
@@ -186,6 +197,7 @@ const AddEditFormLayout2 = ({ getPilgrimDetails, getMonthSlotAvailability, date,
                     pilgrims: newPilgrims,
                     pilgrim_count: pilgrimCount,
                     booked_datetime: newPilgrims.length > 0 ? newPilgrims[0].booked_datetime : "",
+                    pilgrim_reference: data.pilgrim_reference,
                 });
 
                 if (response.status === 201) {
@@ -258,6 +270,7 @@ const AddEditFormLayout2 = ({ getPilgrimDetails, getMonthSlotAvailability, date,
                 append({
                     pilgrim_name: "",
                     age: "",
+                    // pilgrim_reference:"",
                     aadhaar_number: "",
                     seva: "",
                     phone_number: "",
@@ -296,8 +309,7 @@ const AddEditFormLayout2 = ({ getPilgrimDetails, getMonthSlotAvailability, date,
         if (Object.prototype.hasOwnProperty.call(fields[index], "editable")) {
             setOpenModal(true);
         } else remove(index);
-        if (fields.length !== 1 )
-        setPilgrimCount(fields.length - 1)
+        if (fields.length !== 1) setPilgrimCount(fields.length - 1);
     };
 
     const handlePilgrimDelete = async () => {
@@ -349,7 +361,13 @@ const AddEditFormLayout2 = ({ getPilgrimDetails, getMonthSlotAvailability, date,
 
     return (
         <div className="overflow-y-auto h-full max-h-screen">
-            <MyModal isOpen={openModal} handlePilgrimDelete={handlePilgrimDelete} setIsModalOpen={setOpenModal} title="Delete?" message="Are you sure to Delete the Booked Pilgrim" />
+            <MyModal
+                isOpen={openModal}
+                handlePilgrimDelete={handlePilgrimDelete}
+                setIsModalOpen={setOpenModal}
+                title="Delete?"
+                message="Are you sure to Delete the Booked Pilgrim"
+            />
             <div className="flex justify-between ">
                 {bookingsCount === 0 ? (
                     <div className=" text-sm text-red-700 font-mono ml-30">
@@ -392,7 +410,9 @@ const AddEditFormLayout2 = ({ getPilgrimDetails, getMonthSlotAvailability, date,
                                 </button>
                             </label>
                         )}
-                        {shouldDisableEditDeleteIn38hrs(bookedDateTime) && <div className="text-sm text-red-500 font-mono">Cannot edit before 36 hours of booking date</div>}
+                        {shouldDisableEditDeleteIn38hrs(bookedDateTime) && (
+                            <div className="text-sm text-red-500 font-mono">Cannot edit before 36 hours of booking date</div>
+                        )}
                     </div>
                 )}
 
@@ -430,10 +450,22 @@ const AddEditFormLayout2 = ({ getPilgrimDetails, getMonthSlotAvailability, date,
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-lg p-6 w-full max-w-8xl">
-                {(hideAddCountButton || bookedPilgrimDetails.length > 0) && fields.length > 0 && <div className="tex-xs text-lime-500 font-mono">Pilgrim Detail(s):</div>}
+                {(hideAddCountButton || !bookedPilgrimDetails.length > 0) && fields.length > 0 && (
+                    <div className="col-span-12 md:col-span-3 relative ml-2 mb-4">
+                        <input
+                            placeholder={`Reference (Optional)`}
+                            type="text"
+                            {...register(`pilgrim_reference`)} // Update to use a single reference field
+                            className={`border pl-1 border-gray-300 rounded p-2 w-54`}
+                        />
+                    </div>
+                )}
+                {(hideAddCountButton || bookedPilgrimDetails.length > 0) && fields.length > 0 && (
+                    <div className="tex-xs text-lime-500 font-mono">Pilgrim Detail(s):</div>
+                )}
                 <div>
                     {fields.map((field, index) => (
-                        <div key={field.id} className="grid gap-2 mb-4" style={{ gridTemplateColumns: "repeat(14, 1fr)" }}>
+                        <div key={field.id} className="flex  gap-2 mb-4" style={{ gridTemplateColumns: "repeat(14, 1fr)" }}>
                             <div className="col-span-12 md:col-span-3 relative ml-2">
                                 <input
                                     placeholder={`Name ${index + 1}`}
@@ -443,10 +475,12 @@ const AddEditFormLayout2 = ({ getPilgrimDetails, getMonthSlotAvailability, date,
                                     className={`border pl-6 border-gray-300 rounded p-2 w-full  ${field.editable ? "bg-slate-200" : ""}`}
                                     disabled={field.editable} // Disable input based on editable flag
                                 />
-                                <div className="absolute pl-2 inset-y-0 left-0 flex items-center pointer-events-none h-9">
+                                <div className="absolute px-1 inset-y-0 left-0 flex items-center pointer-events-none ">
                                     <IoMdPerson className="text-gray-400" />
                                 </div>
-                                {errors?.pilgrims?.[index]?.pilgrim_name && <p className="text-red-600 text-xs">{errors.pilgrims[index].pilgrim_name.message}</p>}
+                                {errors?.pilgrims?.[index]?.pilgrim_name && (
+                                    <p className="text-red-600 text-xs">{errors.pilgrims[index].pilgrim_name.message}</p>
+                                )}
                             </div>
 
                             <div className="md:col-span-2 col-span-6 relative">
@@ -459,10 +493,12 @@ const AddEditFormLayout2 = ({ getPilgrimDetails, getMonthSlotAvailability, date,
                                     disabled={field.editable} // Disable input based on editable flag
                                 />
                                 {/* <div className="absolute inset-y-0 left-0 flex items-center pointer-events-none pl-2"> */}
-                                <div className="flex absolute items-center inset-y-0 left-0 h-9 space-x-2">
-                                    <FaPhoneAlt className="text-gray-400" />
+                                <div className="flex absolute items-center inset-y-0 left-1.5  space-x-2">
+                                    <FaPhoneAlt className="text-gray-400 scale-95" />
                                 </div>
-                                {errors?.pilgrims?.[index]?.phone_number && <p className="text-red-600 text-xs mt-2">{errors.pilgrims[index].phone_number.message}</p>}
+                                {errors?.pilgrims?.[index]?.phone_number && (
+                                    <p className="text-red-600 text-xs mt-2">{errors.pilgrims[index].phone_number.message}</p>
+                                )}
                             </div>
                             <div className="md:col-span-3 col-span-6 relative">
                                 <input
@@ -473,10 +509,12 @@ const AddEditFormLayout2 = ({ getPilgrimDetails, getMonthSlotAvailability, date,
                                     className={`border border-gray-300 rounded p-2 pl-7 w-full ${field.editable ? "bg-slate-200" : ""}`}
                                     disabled={field.editable} // Disable input based on editable flag
                                 />
-                                <div className="absolute pl-2 inset-y-0 left-0 flex items-center pointer-events-none h-9">
+                                <div className="absolute pl-2 inset-y-0 left-0 flex items-center pointer-events-none ">
                                     <FaAddressCard className="text-gray-400" />
                                 </div>
-                                {errors?.pilgrims?.[index]?.aadhaar_number && <p className="text-red-600 text-xs">{errors.pilgrims[index].aadhaar_number.message}</p>}
+                                {errors?.pilgrims?.[index]?.aadhaar_number && (
+                                    <p className="text-red-600 text-xs">{errors.pilgrims[index].aadhaar_number.message}</p>
+                                )}
                             </div>
 
                             <div className="md:col-span-1 col-span-2 relative">
@@ -485,7 +523,7 @@ const AddEditFormLayout2 = ({ getPilgrimDetails, getMonthSlotAvailability, date,
                                     type="number"
                                     title={field.age}
                                     {...register(`pilgrims.${index}.age`)}
-                                    className={`border border-gray-300 rounded p-2 w-full disable-spinner ${field.editable ? "bg-slate-200" : ""}`}
+                                    className={`border border-gray-300 rounded p-2 w-16 disable-spinner ${field.editable ? "bg-slate-200" : ""}`}
                                     disabled={field.editable} // Disable input based on editable flag
                                 />
                                 <div className="absolute pl-8 inset-y-0 left-0 flex items-center pointer-events-none h-9"></div>
@@ -495,7 +533,7 @@ const AddEditFormLayout2 = ({ getPilgrimDetails, getMonthSlotAvailability, date,
                             <div className="md:col-span-3 col-span-4">
                                 <select
                                     {...register(`pilgrims.${index}.seva`)}
-                                    className={`border border-gray-300 rounded p-2 w-full ${field.editable ? "bg-slate-200" : ""}`}
+                                    className={`border border-gray-300 rounded p-2 w-full h-[2.62rem] ${field.editable ? "bg-slate-200" : ""}`}
                                     disabled={field.editable} // Disable input based on editable flag
                                     // defaultValue={"VIP Break"||field.seva}
                                     title={field.seva}
@@ -512,7 +550,12 @@ const AddEditFormLayout2 = ({ getPilgrimDetails, getMonthSlotAvailability, date,
                                     {bookedPilgrimDetails.some((pilgrim) => pilgrim.aadhaar_number === field.aadhaar_number) && (
                                         <div>
                                             {field.editable ? (
-                                                <button type="button" className="text-black" onClick={() => toggleEdit(index)} disabled={shouldDisableEditDeleteIn38hrs(field.booked_datetime)}>
+                                                <button
+                                                    type="button"
+                                                    className="text-black"
+                                                    onClick={() => toggleEdit(index)}
+                                                    disabled={shouldDisableEditDeleteIn38hrs(field.booked_datetime)}
+                                                >
                                                     <MdOutlineEditOff className="mx-auto" />
                                                 </button>
                                             ) : (
@@ -550,7 +593,9 @@ const AddEditFormLayout2 = ({ getPilgrimDetails, getMonthSlotAvailability, date,
                             <button
                                 type="submit"
                                 disabled={disableAddPilgrimsButton}
-                                className={`${disableAddPilgrimsButton ? "bg-transparent" : "bg-lime-500 hover:bg-lime-700"} text-white font-mono text-md py-2 w-20 px-1 rounded `}
+                                className={`${
+                                    disableAddPilgrimsButton ? "bg-transparent" : "bg-lime-500 hover:bg-lime-700"
+                                } text-white font-mono text-md py-2 w-20 px-1 rounded `}
                             >
                                 Submit
                             </button>
