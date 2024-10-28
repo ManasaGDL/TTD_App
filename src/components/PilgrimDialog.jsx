@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { parseISO, format, getYear } from "date-fns";
 import { DataGrid } from "@mui/x-data-grid";
 import apis from "../api/apis";
+import { X } from "lucide-react";
 
 export default function PilgrimDialog({ open, handleClose, currentRow }) {
     const [fields, setFields] = useState({ month: new Date().getMonth()+1, year: new Date().getFullYear() });
@@ -77,7 +78,10 @@ export default function PilgrimDialog({ open, handleClose, currentRow }) {
     return (
         <Dialog open={open} onClose={handleClose} fullWidth={true} maxWidth='lg'>
             <div className="p-4 flex flex-col items-center justify-center w-full">
+                <div className="flex w-full">
                 <div className="mx-auto block text-lg font-semibold p-4">Pilgrim Details</div>
+                <div className="cursor-pointer "><X onClick={handleClose} /></div>
+                </div>
                 <div className="filters flex gap-4 py-4 items-center">
                     <div className="font-semibold text-zinc-600 text-sm ">Filters:</div>
                     <div className="relative z-0 w-64  group">
