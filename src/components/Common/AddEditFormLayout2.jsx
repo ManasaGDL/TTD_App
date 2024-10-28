@@ -221,6 +221,7 @@ const AddEditFormLayout2 = ({
                 const transformedObject = editPilgrims.map((obj) => ({
                     ...obj,
                     pilgrim_count: parseInt(pilgrimCount),
+                    pilgrim_reference:data.pilgrim_reference,
                 }));
 
                 const response = await apis.updatePilgrims(transformedObject);
