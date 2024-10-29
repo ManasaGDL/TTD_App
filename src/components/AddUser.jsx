@@ -86,7 +86,7 @@ const RegistrationForm = () => {
 
     // Handle form submission
     const onSubmit = async (data) => {
-        console.log(data);
+  
         try {
             if (!id) {
                 const response = await apis.addNewUser(data);

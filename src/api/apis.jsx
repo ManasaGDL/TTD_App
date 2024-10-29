@@ -102,9 +102,7 @@ const apis = {
 
     },
     getPilgrimsForAdmin: async(month,year,id)=>{
-        console.log(typeof(month),month)
-        console.log(typeof(year),year)
-        console.log(typeof(id),id)
+
         return axios_instance
             .get(`/api/users/userstats/pilgrims/?month=${month}&year=${year}&user_id=${id}`)
             .catch(() => toast.error("Failed to fetch pilgrims!"));

@@ -83,7 +83,7 @@ const Calendar = () => {
             setBookedPilgrimDetails(res?.data || []);
         } catch (e) {
             toast.error("Something went wrong!");
-            console.log(e);
+            console.error(e);
         }
     };
 
@@ -104,7 +104,7 @@ const Calendar = () => {
             setBlockedDates(dates);
         } catch (e) {
             toast.error("Something went wrong!");
-            console.log(e);
+            console.error(e);
         }
     };
 
@@ -148,7 +148,7 @@ const Calendar = () => {
                 setIsLoading(false);
             }
         } catch (e) {
-            console.log(e);
+            console.error(e);
         }
     };
 
@@ -166,11 +166,6 @@ const Calendar = () => {
         if (bookingsDone) {
             return "text-red-500";
         } else return "text-lime-500";
-        // console.log("bl",bookingsLeft)
-        // if (bookingsLeft === initialBookings) return 'text-lime-500';
-        // if (bookingsLeft > mid_bookings) return 'text-yellow-500';
-        // if (bookingsLeft > 0) return 'text-orange-500';
-        // return 'text-red-500';
     };
     const getDayClassforSmallScreens = (day) => {
         const bookingsDone = bookings[format(day, "yyyy-MM-dd")] > 0 || bookings[format(day, "yyyy-MM-dd")] === 0 ? true : false;
