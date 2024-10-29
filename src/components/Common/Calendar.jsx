@@ -18,11 +18,12 @@ import { FaTicketAlt } from "react-icons/fa";
 import Modal from "./Modal";
 import apis from "../../api/apis";
 import { useLoading } from "../../context/LoadingContext";
-import {  toast } from "sonner";
+import { toast } from "sonner";
 
 import AddEditFormLayout2 from "./AddEditFormLayout2";
 
 import useMediaQuery from "../../hooks/useMediaQuery";
+import { Tooltip } from "@mui/material";
 
 const Calendar = () => {
     const [currentPageStart, setCurrentPageStart] = useState(startOfMonth(new Date()));
@@ -32,10 +33,10 @@ const Calendar = () => {
     const [bookings, setBookings] = useState({});
     // const [initialBookings, setInitialBookings] = useState(localStorage.getItem("is_mla") === "true" ? constants.Mla : constants.Mp);
     const [toastMessage, setToastMessage] = useState({ type: "", message: "" });
- 
+
     const [bookedPilgrimDetails, setBookedPilgrimDetails] = useState([]);
     const { setIsLoading } = useLoading();
-// eslint-disable-next-line no-unused-vars
+    // eslint-disable-next-line no-unused-vars
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const is768 = useMediaQuery("(max-width: 768px)");
     // const debouncedWindowWidth = useDebounce(windowWidth, 300);
@@ -162,7 +163,9 @@ const Calendar = () => {
 
     const getDayClass = (day) => {
         const bookingsDone = bookings[format(day, "yyyy-MM-dd")] > 0 ? true : false;
-
+        if (isDayBeforeToday(day)) {
+            return "text-zinc-500";
+        }
         if (bookingsDone) {
             return "text-red-500";
         } else return "text-lime-500";
@@ -204,7 +207,6 @@ const Calendar = () => {
 
     return (
         <div className="w-full mx-auto sm:max-w-4xl md:max-w-4xl mb-4">
-        
             {/* <Toaster richColors position="top-center" /> */}
             <div className={`flex justify-center mb-4`}>
                 {!isCurrentMonth() && (
@@ -231,62 +233,64 @@ const Calendar = () => {
                     </div>
                 ))}
                 {generateCalendarDays().map((day, index) => (
-                    <div key={index} className="text-center">
-                        {day && (
-                            <div
-                                className={`w-18 h-14 sm:h-16 sm:w-18 text-center rounded-lg text-black border    ${
-                                    isDayBeforeToday(day) ? "bg-slate-500 md:bg-slate-300 md:hover:bg-slate-400" : "hover:bg-slate-200"
-                                }
+                    <Tooltip title={isDayBeforeToday(day) ? "Past dates" : ""}>
+                        <div key={index} className="text-center">
+                            {day && (
+                                <div
+                                    className={`w-18 h-14 sm:h-16 sm:w-18 text-center rounded-lg text-black border    ${
+                                        isDayBeforeToday(day) ? "bg-slate-500 md:bg-slate-300 " : "hover:bg-slate-200"
+                                    }
                
                    ${is768 ? (isDayBeforeToday(day) ? "bg-slate-500 hover:bg-slate-300" : getDayClassforSmallScreens(day)) : ""}
                    border-gray-300 mb-2 md:grid md:grid-cols-12 items-center `}
-                                onClick={() => !isDayBeforeToday(day) && handleBooking(format(day, "yyyy-MM-dd"))}
-                                style={{
-                                    width: "auto",
+                                    onClick={() => !isDayBeforeToday(day) && handleBooking(format(day, "yyyy-MM-dd"))}
+                                    style={{
+                                        width: "auto",
 
-                                    margin: "auto",
-                                    ...(is768 && {
-                                        height: "40px",
-                                        width: "35px",
                                         margin: "auto",
-                                        textAlign: "center",
-                                        display: "flex",
-                                        paddingLeft: "25px",
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                    }),
-                                }}
-                            >
-                                <span className="font-bold flex text-xs text-center justify-center md:text-sm block md:col-span-2 pr-1 md:pl-5">
-                                    {format(day, "d")}
-                                </span>
-                                <div className="text-xs md:text-base block md:col-span-8 flex flex-col items-center justify-center">
-                                    {bookings[format(day, "yyyy-MM-dd")] === 0 ? (
-                                        <div className="grid pl-4">
-                                            {
-                                                <div className="hidden md:block">
-                                                    <FaTicketAlt size={25} className={`text-red-500 `} />
-                                                </div>
-                                            }
-                                            {/* <div className='sm:text-red-500 sm:text-base font-mono pr-5 text-xs text-white'>NA</div> */}
-                                        </div>
-                                    ) : (
-                                        <>
-                                            {/* <span className="md:hidden">{bookings[format(day, 'yyyy-MM-dd')]}/6</span> */}
-                                            <div className="grid  text-center justify-center pl-6">
+                                        ...(is768 && {
+                                            height: "40px",
+                                            width: "35px",
+                                            margin: "auto",
+                                            textAlign: "center",
+                                            display: "flex",
+                                            paddingLeft: "25px",
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                        }),
+                                    }}
+                                >
+                                    <span className="font-bold flex text-xs text-center justify-center md:text-sm block md:col-span-2 pr-1 md:pl-5">
+                                        {format(day, "d")}
+                                    </span>
+                                    <div className="text-xs md:text-base md:col-span-8 flex flex-col items-center justify-center">
+                                        {bookings[format(day, "yyyy-MM-dd")] === 0 ? (
+                                            <div className="grid pl-4">
                                                 {
-                                                    <div className="hidden md:block ">
-                                                        <FaTicketAlt size={25} className={`${getDayClass(day)} text-base  `} />
+                                                    <div className="hidden md:block">
+                                                        <FaTicketAlt size={25} className={`text-red-500 `} />
                                                     </div>
                                                 }
-                                                {/* <div className="pr-5 text-white sm:text-black">Avl:{bookings[format(day, 'yyyy-MM-dd')]}</div> */}
+                                                {/* <div className='sm:text-red-500 sm:text-base font-mono pr-5 text-xs text-white'>NA</div> */}
                                             </div>
-                                        </>
-                                    )}
+                                        ) : (
+                                            <>
+                                                {/* <span className="md:hidden">{bookings[format(day, 'yyyy-MM-dd')]}/6</span> */}
+                                                <div className="grid  text-center justify-center pl-6">
+                                                    {
+                                                        <div className="hidden md:block ">
+                                                            <FaTicketAlt size={25} className={`${getDayClass(day)} text-base `} />
+                                                        </div>
+                                                    }
+                                                    {/* <div className="pr-5 text-white sm:text-black">Avl:{bookings[format(day, 'yyyy-MM-dd')]}</div> */}
+                                                </div>
+                                            </>
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
-                        )}
-                    </div>
+                            )}
+                        </div>
+                    </Tooltip>
                 ))}
             </div>
             {/* Legend */}
@@ -298,6 +302,10 @@ const Calendar = () => {
                 <div className="flex items-center">
                     <FaTicketAlt className="text-lime-500" />
                     <span className="ml-2">Available</span>
+                </div>
+                <div className="flex items-center">
+                    <FaTicketAlt className="text-zinc-500" />
+                    <span className="ml-2">Past Dates</span>
                 </div>
             </div>
             {
