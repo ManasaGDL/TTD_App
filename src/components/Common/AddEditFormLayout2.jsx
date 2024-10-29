@@ -89,7 +89,7 @@ const AddEditFormLayout2 = ({
                 seva: "VIP Break",
                 booked_datetime: pilgrim.booked_datetime, // All initially booked pilgrims are editable
             })),
-            pilgrim_reference: "",
+            pilgrim_reference: bookedPilgrimDetails[0]?.pilgrim_reference || "",
         },
     });
 
@@ -221,7 +221,7 @@ const AddEditFormLayout2 = ({
                 const transformedObject = editPilgrims.map((obj) => ({
                     ...obj,
                     pilgrim_count: parseInt(pilgrimCount),
-                    pilgrim_reference:data.pilgrim_reference,
+                    pilgrim_reference: data.pilgrim_reference,
                 }));
 
                 const response = await apis.updatePilgrims(transformedObject);
@@ -330,7 +330,7 @@ const AddEditFormLayout2 = ({
             }
         } catch (e) {
             toast.error("Something went wrong!");
-            console.log(e);
+            console.error(e);
         }
     };
 
@@ -451,18 +451,24 @@ const AddEditFormLayout2 = ({
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-lg p-6 w-full max-w-8xl">
-                {(hideAddCountButton || !bookedPilgrimDetails.length > 0) && fields.length > 0 && (
-                    <div className="col-span-12 md:col-span-3 relative ml-2 mb-4">
-                        <input
-                            placeholder={`Reference (Optional)`}
-                            type="text"
-                            {...register(`pilgrim_reference`)} // Update to use a single reference field
-                            className={`border pl-1 border-gray-300 rounded p-2 w-54`}
-                        />
-                    </div>
-                )}
+                    {fields.length > 0 && (
+                        <div className="flex items-center pb-4">
+                            <div className="block  text-lime-500 font-mono">Referred By:</div>
+
+                            <div className="flex items-center ml-2">
+                                <input
+                                    placeholder={` Reference (Optional)`}
+                                    type="text"
+                                    value={bookedPilgrimDetails[0]?.pilgrim_reference}
+                                    {...register(`pilgrim_reference`)}
+                                    className={`read-only:bg-slate-200 read-only:outline-none border pl-1.5 border-gray-300 rounded p-2 w-54`}
+                                    readOnly={bookedPilgrimDetails.length > 0}
+                                />
+                            </div>
+                        </div>
+                    )}
                 {(hideAddCountButton || bookedPilgrimDetails.length > 0) && fields.length > 0 && (
-                    <div className="tex-xs text-lime-500 font-mono">Pilgrim Detail(s):</div>
+                    <div className="  text-lime-500 font-mono pb-2">Pilgrim Detail(s):</div>
                 )}
                 <div>
                     {fields.map((field, index) => (
