@@ -55,7 +55,7 @@ const EditCredentials = () => {
         navigate("/");
       }
     } catch (e) {
-      console.log(e);
+      console.error(e);
       toast.error("Something went wrong!");
     }
   };

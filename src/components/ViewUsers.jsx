@@ -118,7 +118,7 @@ function ViewUsers() {
       const filteredSuperUsers = response.data.filter(user => !user.is_superuser);
       setUsersList(filteredSuperUsers);
     } catch (e) {
-      console.log(e);
+      console.error(e);
     } finally {
       setIsLoading(false);
     }

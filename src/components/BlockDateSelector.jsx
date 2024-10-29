@@ -29,7 +29,7 @@ export default function BlockDateSelector() {
 
   }catch(e)
   { toast.error("Something went wrong!")
-    console.log(e)
+    console.error(e)
   }
  }
 
@@ -150,7 +150,7 @@ else{
 }catch(e)
 {
   toast.error("Something went wrong!")
-  console.log(e)
+  console.error(e)
 }
 
 }
@@ -163,7 +163,6 @@ const handleUnBlock=async()=>{
     // Check if any of the selected dates are already booked
     const alreadyBookedDates = formattedSelectedDates.some(date => formattedBookedDates.includes(date));
   
-   console.log(alreadyBookedDates)
   
   try{
     if(alreadyBookedDates)
@@ -183,7 +182,7 @@ const handleUnBlock=async()=>{
   }
 catch(e)
   {toast.error("Something went wrong!")
-    console.log(e)
+    console.error(e)
   }
 
   

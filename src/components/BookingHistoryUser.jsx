@@ -25,7 +25,6 @@ export default function BookingHistoryUser() {
     async function fetchPilgrims(month, year) {
         apis.getPilgrimsForUser(month, year)
             .then((data) => {
-                console.log(data.data);
                 const results = data.data.results
                     .map((row) => ({
                         ...row,

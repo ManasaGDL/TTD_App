@@ -33,7 +33,6 @@ export default function BookingHistory() {
     async function fetchUserHistory(page) {
         apis.getUserHistory(page)
             .then((data) => {
-                // console.log(data.data.results);
                 const results = data.data.results.map((row) => ({ ...row, id: row.user_id }));
                 setHistory({ ...data.data, results });
                 setFHistory(results);
